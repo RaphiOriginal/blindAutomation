@@ -1,6 +1,10 @@
 from meteomatics.meteomatics_api import MeteomaticsAPI
+from shelly import shelly_finder
 
 api = MeteomaticsAPI()
 (sunrise, sunset) = api.getSunriseAndSunset()
 print(api.getAzimuthTime(sunrise, sunset, 110.0))
 print(api.getAzimuthTime(sunrise, sunset, 290.0))
+
+shellys = shelly_finder.collect()
+print(shellys)
