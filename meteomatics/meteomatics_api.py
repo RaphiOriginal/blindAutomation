@@ -2,17 +2,16 @@ import yaml
 import requests
 from dateutil import parser, tz
 
-from settings import Settings
+from meteomatics.field import Field
+from meteomatics.interval import Interval
+from meteomatics.meteomatics_url_builder import MeteomaticsURLBuilder
+from settings.settings import Settings
 
 class MeteomaticsAPI:
 
     def __init__(self):
-        self.settingsFile = 'meteomatics.yaml'
-        self.url = 'http://api.meteomatics.com/'
-        self.fields = 'sunrise:sql,sunset:sql'
-        self.field = 'sun_azimuth:d'
-        self.json = 'json'
-        self.csv = 'csv'
+        self.settingsFile = 'meteomatics/meteomatics.yaml'
+        self.url = 'http://api.meteomatics.com'
 
         self.settings = None
 
@@ -29,10 +28,6 @@ class MeteomaticsAPI:
         self.settings = self.getSettings()
         return self.settings.getCoordinates()
 
-    def buildLocation(self):
-        coordinates = self.getCoordinates()
-        return '{},{}'.format(coordinates.lat, coordinates.long)
-
 
     def getSunriseAndSunset(self):
         try:
@@ -40,13 +35,15 @@ class MeteomaticsAPI:
             user = auth.user
             password = auth.password
 
-            time = 'now'
-            location = self.buildLocation()
+            builder = MeteomaticsURLBuilder(self.url)
+            url = builder.addField(Field.SUNRISE).addField(Field.SUNSET).setLocation(self.getCoordinates()).build()
+            print(url)
 
-            r = requests.get(self.url + time + '/' + self.fields + '/' + location + '/' + self.json, auth=(user, password))
+            r = requests.get(url, auth=(user, password))
 
             if r.status_code != 200:
-                print('Request failed, Status Code: ' + r.status_code)
+                print('Request failed, Status Code: ' + str(r.status_code))
+                print(r.text)
 
             values = r.json()
             print(values)
@@ -67,10 +64,11 @@ class MeteomaticsAPI:
         user = auth.user
         password = auth.password
 
-        time = '{}--{}:PT1M'.format(sunrise.isoformat(), sunset.isoformat())
-        location = self.buildLocation()
+        builder = MeteomaticsURLBuilder(self.url)
+        url = builder.setTimeRange(sunrise, sunset).addField(Field.AZIMUTH)\
+            .setInterval(Interval.MINUTELY).setLocation(self.getCoordinates()).build()
 
-        r = requests.get(self.url + time + '/' + self.field + '/' + location + '/' + self.json, auth=(user, password))
+        r = requests.get(url, auth=(user, password))
 
         if r.status_code != 200:
             print('Request failed, Status Code: ' + str(r.status_code))
