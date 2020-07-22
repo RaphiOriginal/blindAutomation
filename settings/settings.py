@@ -1,5 +1,9 @@
 import yaml
 
+from settings.auth import Auth
+from settings.coordinates import Coordinates
+
+
 class Settings:
 
     __auth = None
@@ -22,13 +26,3 @@ class Settings:
             self.__coordinates = Coordinates(coordinates.get('lat'), coordinates.get('long'))
 
         return self.__coordinates
-
-class Auth:
-    def __init__(self, user, password):
-        self.user = user
-        self.password = password
-
-class Coordinates:
-    def __init__(self, lat, long):
-        self.lat = lat
-        self.long = long
