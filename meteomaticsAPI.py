@@ -7,7 +7,7 @@ from settings import Settings
 class MeteomaticsAPI:
 
     def __init__(self):
-        self.settingsFile = 'settings.yaml'
+        self.settingsFile = 'meteomatics.yaml'
         self.url = 'http://api.meteomatics.com/'
         self.fields = 'sunrise:sql,sunset:sql'
         self.field = 'sun_azimuth:d'
