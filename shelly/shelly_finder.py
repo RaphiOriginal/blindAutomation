@@ -27,7 +27,6 @@ def find_shellys(mask):
         try:
             ip = mask + str(end)
             url = '{}/shelly/'.format(ip)
-            print(url)
             r = requests.get(url, timeout=0.3)
             if r.status_code == 200:
                 print('found ' + r.text)
