@@ -1,2 +1,6 @@
 # Project exclude paths
 /venv/
+.idea/
+
+#yaml files with settings
+*.yaml
