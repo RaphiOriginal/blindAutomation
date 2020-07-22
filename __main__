@@ -1,0 +1,6 @@
+from meteomatics.meteomatics_api import MeteomaticsAPI
+
+api = MeteomaticsAPI()
+(sunrise, sunset) = api.getSunriseAndSunset()
+print(api.getAzimuthTime(sunrise, sunset, 110.0))
+print(api.getAzimuthTime(sunrise, sunset, 290.0))
