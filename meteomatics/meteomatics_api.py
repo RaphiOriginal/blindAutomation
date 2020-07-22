@@ -7,6 +7,7 @@ from meteomatics.interval import Interval
 from meteomatics.meteomatics_url_builder import MeteomaticsURLBuilder
 from settings.settings import Settings
 
+
 class MeteomaticsAPI:
 
     def __init__(self):
@@ -28,7 +29,6 @@ class MeteomaticsAPI:
         self.settings = self.getSettings()
         return self.settings.getCoordinates()
 
-
     def getSunriseAndSunset(self):
         try:
             auth = self.getAuth()
@@ -37,7 +37,6 @@ class MeteomaticsAPI:
 
             builder = MeteomaticsURLBuilder(self.url)
             url = builder.addField(Field.SUNRISE).addField(Field.SUNSET).setLocation(self.getCoordinates()).build()
-            print(url)
 
             r = requests.get(url, auth=(user, password))
 
@@ -46,7 +45,6 @@ class MeteomaticsAPI:
                 print(r.text)
 
             values = r.json()
-            print(values)
 
             sunrise = values.get('data')[0].get('coordinates')[0].get('dates')[0].get('value')
             sunset = values.get('data')[1].get('coordinates')[0].get('dates')[0].get('value')
@@ -65,17 +63,16 @@ class MeteomaticsAPI:
         password = auth.password
 
         builder = MeteomaticsURLBuilder(self.url)
-        url = builder.setTimeRange(sunrise, sunset).addField(Field.AZIMUTH)\
+        url = builder.setTimeRange(sunrise, sunset).addField(Field.AZIMUTH) \
             .setInterval(Interval.MINUTELY).setLocation(self.getCoordinates()).build()
 
         r = requests.get(url, auth=(user, password))
 
         if r.status_code != 200:
             print('Request failed, Status Code: ' + str(r.status_code))
+            print(r.text)
 
         values = r.json().get('data')[0].get('coordinates')[0].get('dates')
-
-        print(values)
 
         best = -1000.0
         date = ''
@@ -85,8 +82,3 @@ class MeteomaticsAPI:
                 date = entry.get('date')
 
         return self.toDate(date)
-
-api = MeteomaticsAPI()
-(sunrise, sunset) = api.getSunriseAndSunset()
-print(api.getAzimuthTime(sunrise, sunset, 110.0))
-print(api.getAzimuthTime(sunrise, sunset, 290.0))
