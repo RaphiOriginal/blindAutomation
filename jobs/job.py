@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from sched import scheduler
 
-from jobs.request_task import Requesttask
+from jobs.send import send
 from jobs.task import Task
 from shelly.shelly import Shelly
 
@@ -17,16 +17,16 @@ class Job:
 
     def schedule(self, schedule: scheduler):
         delay = self.__calculate_delay()
-        tasks = self.__get_task()
-        for task in tasks:
-            schedule.enter(delay.seconds, 1, Requesttask(task).run())
+        urls = self.__get_urls()
+        for url in urls:
+            schedule.enter(delay.seconds, 1, send, argument=(url,))
             delay = delay + self.__delay
 
     def __calculate_delay(self):
         now = datetime.now(self.__time.tzinfo)
         return self.__time - now
 
-    def __get_task(self):
+    def __get_urls(self):
         if self.__task == Task.OPEN:
             return [self.__shelly.setRoller(100)]
         if self.__task == Task.CLOSE:
