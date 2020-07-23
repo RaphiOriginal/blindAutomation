@@ -1,0 +1,9 @@
+shellys:
+  - shelly:
+      name: Shelly1
+      id: 111111
+      direction: north
+  - shelly:
+      name: Shelly2
+      id: 222222
+      direction: south

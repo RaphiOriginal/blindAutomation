@@ -11,7 +11,7 @@ from settings.settings import Settings
 class MeteomaticsAPI:
 
     def __init__(self):
-        self.settingsFile = 'meteomatics/meteomatics.yaml'
+        self.settingsFile = 'meteomatics/configuration/meteomatics.yaml'
         self.url = 'http://api.meteomatics.com'
 
         self.settings = None
