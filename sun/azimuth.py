@@ -1,0 +1,7 @@
+from datetime import datetime
+
+
+class Azimuth:
+    def __init__(self, time: datetime, degree: float):
+        self.time: datetime = time
+        self.degree: float = degree

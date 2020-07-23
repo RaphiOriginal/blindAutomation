@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import yaml
 import requests
 from dateutil import parser, tz
@@ -6,6 +8,8 @@ from meteomatics.field import Field
 from meteomatics.interval import Interval
 from meteomatics.meteomatics_url_builder import MeteomaticsURLBuilder
 from settings.settings import Settings
+from sun.azimuth import Azimuth
+from sun.sundata import Sundata
 
 
 class MeteomaticsAPI:
@@ -16,27 +20,40 @@ class MeteomaticsAPI:
 
         self.settings = None
 
-    def get_settings(self):
-        if self.settings is None:
-            self.settings = Settings(self.settingsFile)
-        return self.settings
+    def get_sundata(self):
+        """Returns Sundata object containing array of azimuth per minute between sunrise and sunset, sunrise and
+        sunset """
+        auth = self.__get_auth()
+        user = auth.user
+        password = auth.password
 
-    def get_auth(self):
-        self.settings = self.get_settings()
-        return self.settings.get_auth()
+        (sunrise, sunset) = self.__get_sunrise_and_sunset(auth)
 
-    def get_coordinates(self):
-        self.settings = self.get_settings()
-        return self.settings.get_coordinates()
+        builder = MeteomaticsURLBuilder(self.url)
+        url = builder.set_time_range(sunrise, sunset).add_field(Field.AZIMUTH) \
+            .set_interval(Interval.MINUTELY).set_location(self.__get_coordinates()).build()
 
-    def get_sunrise_and_sunset(self):
+        r = requests.get(url, auth=(user, password))
+
+        if r.status_code != 200:
+            print('Request failed, Status Code: ' + str(r.status_code))
+            print(r.text)
+
+        values = r.json().get('data')[0].get('coordinates')[0].get('dates')
+
+        azimuth = []
+        for entry in values:
+            azimuth.append(self.__convert_to_azimuth(entry.get('date'), entry.get('value')))
+
+        return Sundata(sunrise, sunset, azimuth)
+
+    def __get_sunrise_and_sunset(self, auth):
         try:
-            auth = self.get_auth()
             user = auth.user
             password = auth.password
 
             builder = MeteomaticsURLBuilder(self.url)
-            url = builder.add_field(Field.SUNRISE).add_field(Field.SUNSET).set_location(self.get_coordinates()).build()
+            url = builder.add_field(Field.SUNRISE).add_field(Field.SUNSET).set_location(self.__get_coordinates()).build()
 
             r = requests.get(url, auth=(user, password))
 
@@ -49,37 +66,27 @@ class MeteomaticsAPI:
             sunrise = values.get('data')[0].get('coordinates')[0].get('dates')[0].get('value')
             sunset = values.get('data')[1].get('coordinates')[0].get('dates')[0].get('value')
 
-            return (self.to_date(sunrise), self.to_date(sunset))
+            return self.__to_date(sunrise), self.__to_date(sunset)
         except yaml.YAMLError as exp:
             print(exp)
 
     @staticmethod
-    def to_date(isodate):
+    def __to_date(isodate):
         date = parser.parse(isodate)
         return date.astimezone(tz.tzlocal())
 
-    def get_azimuth_time(self, sunrise, sunset, azimuth):
-        auth = self.get_auth()
-        user = auth.user
-        password = auth.password
+    def __convert_to_azimuth(self, date:str, degree: float):
+        return Azimuth(self.__to_date(date), degree)
 
-        builder = MeteomaticsURLBuilder(self.url)
-        url = builder.set_time_range(sunrise, sunset).add_field(Field.AZIMUTH) \
-            .set_interval(Interval.MINUTELY).set_location(self.get_coordinates()).build()
+    def __get_settings(self):
+        if self.settings is None:
+            self.settings = Settings(self.settingsFile)
+        return self.settings
 
-        r = requests.get(url, auth=(user, password))
+    def __get_auth(self):
+        self.settings = self.__get_settings()
+        return self.settings.get_auth()
 
-        if r.status_code != 200:
-            print('Request failed, Status Code: ' + str(r.status_code))
-            print(r.text)
-
-        values = r.json().get('data')[0].get('coordinates')[0].get('dates')
-
-        best = -1000.0
-        date = ''
-        for entry in values:
-            if abs(azimuth - best) > abs(azimuth - entry.get('value')):
-                best = entry.get('value')
-                date = entry.get('date')
-
-        return self.to_date(date)
+    def __get_coordinates(self):
+        self.settings = self.__get_settings()
+        return self.settings.get_coordinates()
