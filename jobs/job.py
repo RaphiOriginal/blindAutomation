@@ -13,6 +13,8 @@ class Job:
         self.__task: Task = task
         self.__delay = timedelta(seconds=25)
 
+        print('{}: Job for {} to {} created with {}'.format(datetime.now(), time, task, shelly))
+
     def schedule(self, schedule: scheduler):
         delay = self.__calculate_delay()
         tasks = self.__get_task()
