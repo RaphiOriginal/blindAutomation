@@ -9,23 +9,25 @@ from shelly.shelly import Shelly
 class Job:
     def __init__(self, time: datetime, shelly: Shelly, task: Task):
         self.__time: datetime = time
-        self.__tzinfo: tzinfo = time.tzinfo
+        self.tzinfo: tzinfo = time.tzinfo
         self.__shelly: Shelly = shelly
         self.__task: Task = task
 
-        print('{}: Job for {} to {} created with {}'.format(datetime.now(), time, task, shelly))
-
     def schedule(self, schedule: scheduler):
-        if self.__time > datetime.now(self.__tzinfo):
-            delay = self.__calculate_delay()
-            args = self.__get_args()
-            for arg in args:
-                schedule.enter(delay.seconds, 1, send, argument=arg)
-        else:
-            print('Time {} in the past, therefore ignoring it!'.format(self.__time))
+        """Schedules the Job at the given timestamp"""
+        delay = self.__calculate_delay()
+        args = self.__get_args()
+        for arg in args:
+            schedule.enter(delay.seconds, 1, send, argument=arg)
+
+    def get_time(self) -> datetime:
+        return self.__time
+
+    def get_id(self):
+        return self.__shelly.id
 
     def __calculate_delay(self):
-        now = datetime.now(self.__tzinfo)
+        now = datetime.now(self.tzinfo)
         return self.__time - now
 
     def __get_args(self):
@@ -35,3 +37,6 @@ class Job:
             return [(self.__shelly.set_roller(0),)]
         if self.__task == Task.TILT:
             return [(self.__shelly.set_roller(0),), (self.__shelly.set_roller(1), 0, self.__shelly.get_roller())]
+
+    def __repr__(self):
+        return 'Job: { time: %s, shelly: %s, task: %s' % (self.__time, self.__shelly, self.__task)

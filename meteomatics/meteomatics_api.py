@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import yaml
 import requests
@@ -20,14 +20,14 @@ class MeteomaticsAPI:
 
         self.settings = None
 
-    def get_sundata(self):
+    def fetch_sundata(self):
         """Returns Sundata object containing array of azimuth per minute between sunrise and sunset, sunrise and
         sunset """
         auth = self.__get_auth()
         user = auth.user
         password = auth.password
 
-        (sunrise, sunset) = self.__get_sunrise_and_sunset(auth)
+        (sunrise, sunset) = self.__fetch_sunrise_and_sunset(auth)
 
         builder = MeteomaticsURLBuilder(self.url)
         url = builder.set_time_range(sunrise, sunset).add_field(Field.AZIMUTH) \
@@ -45,15 +45,22 @@ class MeteomaticsAPI:
         for entry in values:
             azimuth.append(self.__convert_to_azimuth(entry.get('date'), entry.get('value')))
 
-        return Sundata(sunrise, sunset, azimuth)
+        sundata = Sundata(sunrise, sunset, azimuth)
+        print('Fetched {}'.format(sundata))
+        return sundata
 
-    def __get_sunrise_and_sunset(self, auth):
+    def __fetch_sunrise_and_sunset(self, auth):
         try:
             user = auth.user
             password = auth.password
 
             builder = MeteomaticsURLBuilder(self.url)
-            url = builder.add_field(Field.SUNRISE).add_field(Field.SUNSET).set_location(self.__get_coordinates()).build()
+
+            #Hacky solution to avoid old data between 24:00 and 02:00
+            now = datetime.now(tz.tzlocal()) + timedelta(hours=2)
+            print('Fetching sunrise and sunset for {}'.format(now))
+            url = builder.set_time(now).add_field(Field.SUNRISE).add_field(Field.SUNSET)\
+                .set_location(self.__get_coordinates()).build()
 
             r = requests.get(url, auth=(user, password))
 

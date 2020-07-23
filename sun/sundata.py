@@ -25,3 +25,6 @@ class Sundata:
 
     def get_sunset(self):
         return self.__sunset
+
+    def __repr__(self):
+        return 'Sundata: { sunrise: %s, sunset: %s, azimuths: %s }' % (self.__sunrise, self.__sunset, self.__azimuths)

@@ -1,3 +1,4 @@
+from datetime import datetime
 
 from meteomatics.field import Field
 from meteomatics.interval import Interval
@@ -16,13 +17,13 @@ class MeteomaticsURLBuilder:
         self.__location: Coordinates = None
         self.__type: Type = Type.JSON
 
-    def set_time(self, time):
+    def set_time(self, time: datetime):
         """setting a specific time in url, if nothing set now is the default"""
-        self.__time = time
+        self.__time = time.isoformat()
         self.__timerange = False
         return self
 
-    def set_time_range(self, start, end):
+    def set_time_range(self, start: datetime, end: datetime):
         """setting a rang of time in url, if nothing set only now will be used"""
         self.__time = '{}--{}'.format(start.isoformat(), end.isoformat())
         self.__timerange = True
