@@ -16,27 +16,27 @@ class MeteomaticsAPI:
 
         self.settings = None
 
-    def getSettings(self):
-        if self.settings == None:
+    def get_settings(self):
+        if self.settings is None:
             self.settings = Settings(self.settingsFile)
         return self.settings
 
-    def getAuth(self):
-        self.settings = self.getSettings()
-        return self.settings.getAuth()
+    def get_auth(self):
+        self.settings = self.get_settings()
+        return self.settings.get_auth()
 
-    def getCoordinates(self):
-        self.settings = self.getSettings()
-        return self.settings.getCoordinates()
+    def get_coordinates(self):
+        self.settings = self.get_settings()
+        return self.settings.get_coordinates()
 
-    def getSunriseAndSunset(self):
+    def get_sunrise_and_sunset(self):
         try:
-            auth = self.getAuth()
+            auth = self.get_auth()
             user = auth.user
             password = auth.password
 
             builder = MeteomaticsURLBuilder(self.url)
-            url = builder.addField(Field.SUNRISE).addField(Field.SUNSET).setLocation(self.getCoordinates()).build()
+            url = builder.add_field(Field.SUNRISE).add_field(Field.SUNSET).set_location(self.get_coordinates()).build()
 
             r = requests.get(url, auth=(user, password))
 
@@ -49,22 +49,23 @@ class MeteomaticsAPI:
             sunrise = values.get('data')[0].get('coordinates')[0].get('dates')[0].get('value')
             sunset = values.get('data')[1].get('coordinates')[0].get('dates')[0].get('value')
 
-            return (self.toDate(sunrise), self.toDate(sunset))
+            return (self.to_date(sunrise), self.to_date(sunset))
         except yaml.YAMLError as exp:
             print(exp)
 
-    def toDate(self, isoDate):
-        date = parser.parse(isoDate)
+    @staticmethod
+    def to_date(isodate):
+        date = parser.parse(isodate)
         return date.astimezone(tz.tzlocal())
 
-    def getAzimuthTime(self, sunrise, sunset, azimuth):
-        auth = self.getAuth()
+    def get_azimuth_time(self, sunrise, sunset, azimuth):
+        auth = self.get_auth()
         user = auth.user
         password = auth.password
 
         builder = MeteomaticsURLBuilder(self.url)
-        url = builder.setTimeRange(sunrise, sunset).addField(Field.AZIMUTH) \
-            .setInterval(Interval.MINUTELY).setLocation(self.getCoordinates()).build()
+        url = builder.set_time_range(sunrise, sunset).add_field(Field.AZIMUTH) \
+            .set_interval(Interval.MINUTELY).set_location(self.get_coordinates()).build()
 
         r = requests.get(url, auth=(user, password))
 
@@ -81,4 +82,4 @@ class MeteomaticsAPI:
                 best = entry.get('value')
                 date = entry.get('date')
 
-        return self.toDate(date)
+        return self.to_date(date)

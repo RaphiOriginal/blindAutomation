@@ -6,19 +6,19 @@ class Shelly:
         self.id: str = id
         self.direction: str = direction
 
-    def getStatus(self):
-        self.__checkIP()
+    def get_status(self):
+        self.__check_ip()
         return '{}/status'.format(self.ip)
 
-    def getRoller(self):
-        self.__checkIP()
+    def get_roller(self):
+        self.__check_ip()
         return '{}/roller/0'.format(self.ip)
 
-    def setRoller(self, pos):
-        self.__checkIP()
+    def set_roller(self, pos):
+        self.__check_ip()
         return '{}/roller/0?go=to_pos&roller_pos={}'.format(self.ip, pos)
 
-    def __checkIP(self):
+    def __check_ip(self):
         if self.ip is None:
             raise ValueError("IP must be set!")
 

@@ -7,7 +7,7 @@ import yaml
 from shelly.shelly import Shelly
 
 
-def checkId(shellys, text):
+def check_id(shellys, text):
     for shelly in shellys:
         if shelly.id.upper() in text:
             return True

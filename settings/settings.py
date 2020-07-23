@@ -8,18 +8,18 @@ class Settings:
     __auth = None
     __coordinates = None
 
-    def __init__(self, settingsFile):
-        with open(settingsFile, 'r') as stream:
+    def __init__(self, settingsfile):
+        with open(settingsfile, 'r') as stream:
             self.__root = yaml.safe_load(stream)
 
-    def getAuth(self):
+    def get_auth(self):
         if self.__auth is None:
             auth = self.__root.get('auth')
             self.__auth = Auth(auth.get('username'), auth.get('password'))
 
         return self.__auth
 
-    def getCoordinates(self):
+    def get_coordinates(self):
         if self.__coordinates is None:
             coordinates = self.__root.get('coordinates')
             self.__coordinates = Coordinates(coordinates.get('lat'), coordinates.get('long'))

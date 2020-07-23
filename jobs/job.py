@@ -26,8 +26,8 @@ class Job:
 
     def __get_args(self):
         if self.__task == Task.OPEN:
-            return [(self.__shelly.setRoller(100),)]
+            return [(self.__shelly.set_roller(100),)]
         if self.__task == Task.CLOSE:
-            return [(self.__shelly.setRoller(0),)]
+            return [(self.__shelly.set_roller(0),)]
         if self.__task == Task.TILT:
-            return [(self.__shelly.setRoller(0),), (self.__shelly.setRoller(1), 0, self.__shelly.getRoller())]
+            return [(self.__shelly.set_roller(0),), (self.__shelly.set_roller(1), 0, self.__shelly.get_roller())]
