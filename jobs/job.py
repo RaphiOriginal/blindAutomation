@@ -1,6 +1,5 @@
-from datetime import datetime
-import sched
-import time
+from datetime import datetime, timedelta
+from sched import scheduler
 
 from jobs.request_task import Requesttask
 from jobs.task import Task
@@ -12,21 +11,23 @@ class Job:
         self.__time: datetime = time
         self.__shelly: Shelly = shelly
         self.__task: Task = task
+        self.__delay = timedelta(seconds=25)
 
-    def schedule(self):
-        schedule = sched.scheduler(time.time)
+    def schedule(self, schedule: scheduler):
         delay = self.__calculate_delay()
-        schedule.enter(delay.seconds, 1, Requesttask(self.__get_task()).run())
-        schedule.run()
+        tasks = self.__get_task()
+        for task in tasks:
+            schedule.enter(delay.seconds, 1, Requesttask(task).run())
+            delay = delay + self.__delay
 
     def __calculate_delay(self):
-        now = datetime.now(self.__time.timetz())
+        now = datetime.now(self.__time.tzinfo)
         return self.__time - now
 
     def __get_task(self):
         if self.__task == Task.OPEN:
-            return self.__shelly.setRoller(100)
+            return [self.__shelly.setRoller(100)]
         if self.__task == Task.CLOSE:
-            return self.__shelly.setRoller(0)
+            return [self.__shelly.setRoller(0)]
         if self.__task == Task.TILT:
-            return self.__shelly.setRoller(1)
+            return [self.__shelly.setRoller(0), self.__shelly.setRoller(1)]
