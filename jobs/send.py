@@ -1,9 +1,21 @@
+import time
+
 import requests
 
 
-def send(url):
-    r = requests.get(url)
-    if r.status_code != 200:
-        print('Call with {} failed with status {} and content {}'.format(url, r.status_code, r.text))
+def send(url, precondition=None, checkUrl=''):
+    if precondition is not None and len(checkUrl) > 0:
+        response = requests.get(checkUrl)
+        while(not condition_met(response)):
+            time.sleep(5)
+            response = requests.get(checkUrl)
+
+    order = requests.get(url)
+    if order.status_code != 200:
+        print('Call with {} failed with status {} and content {}'.format(url, order.status_code, order.text))
     else:
-        print('Task {} completed: {}'.format(url, r.text))
+        print('Task {} completed: {}'.format(url, order.text))
+
+def condition_met(response, condition):
+    data = response.json()
+    return data.get('current_pos') == condition
