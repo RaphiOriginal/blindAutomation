@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, tzinfo
 from sched import scheduler
 
 from jobs.send import send
@@ -9,19 +9,23 @@ from shelly.shelly import Shelly
 class Job:
     def __init__(self, time: datetime, shelly: Shelly, task: Task):
         self.__time: datetime = time
+        self.__tzinfo: tzinfo = time.tzinfo
         self.__shelly: Shelly = shelly
         self.__task: Task = task
 
         print('{}: Job for {} to {} created with {}'.format(datetime.now(), time, task, shelly))
 
     def schedule(self, schedule: scheduler):
-        delay = self.__calculate_delay()
-        args = self.__get_args()
-        for arg in args:
-            schedule.enter(delay.seconds, 1, send, argument=arg)
+        if self.__time > datetime.now(self.__tzinfo):
+            delay = self.__calculate_delay()
+            args = self.__get_args()
+            for arg in args:
+                schedule.enter(delay.seconds, 1, send, argument=arg)
+        else:
+            print('Time {} in the past, therefore ignoring it!'.format(self.__time))
 
     def __calculate_delay(self):
-        now = datetime.now(self.__time.tzinfo)
+        now = datetime.now(self.__tzinfo)
         return self.__time - now
 
     def __get_args(self):
