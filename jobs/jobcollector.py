@@ -32,7 +32,7 @@ class Jobcollector:
             else:
                 for job in future:
                     job.schedule(self.__schedule)
-                print('{} jobs collected for {}: {}'.format(shelly, len(future), future))
+                print('{} jobs collected for {}: {}'.format(len(future), shelly, future))
 
         return self
 
