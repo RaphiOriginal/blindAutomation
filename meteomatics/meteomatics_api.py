@@ -8,7 +8,7 @@ from dateutil import parser, tz
 from meteomatics.field import Field
 from meteomatics.interval import Interval
 from meteomatics.meteomatics_url_builder import MeteomaticsURLBuilder
-from settings.settings import Settings
+from settings.settings import APISettings
 from sun.azimuth import Azimuth
 from sun.sundata import Sundata
 
@@ -88,7 +88,7 @@ class MeteomaticsAPI:
 
     def __get_settings(self):
         if self.settings is None:
-            self.settings = Settings(self.settingsFile)
+            self.settings = APISettings(self.settingsFile)
         return self.settings
 
     def __get_auth(self):
