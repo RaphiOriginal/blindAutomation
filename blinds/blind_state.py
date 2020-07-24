@@ -23,19 +23,18 @@ class State(Enum):
 
 
 class BlindState:
-    def __init__(self, position: int, direction: Direction):
+    def __init__(self, position: int, direction):
         self.__position: int = position
-        self.__last_direction: Direction = direction
-
-    def __int__(self, position: int, direction: str):
-        self.__position: int = position
-        self.__last_direction: Direction = Direction.from_name(direction)
+        if isinstance(direction, Direction):
+            self.__last_direction: Direction = direction
+        else:
+            self.__last_direction: Direction = Direction.from_name(direction)
 
     def state(self):
-        if self.__last_direction == Direction.CLOSE.value and self.__position == 0:
+        if self.__last_direction == Direction.CLOSE and self.__position == 0:
             return State.CLOSED
 
-        if self.__last_direction == Direction.OPEN.value and self.__position < 5:
+        if self.__last_direction == Direction.OPEN and self.__position < 5:
             return State.TILT
 
         return State.OPEN
