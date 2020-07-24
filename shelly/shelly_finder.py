@@ -9,7 +9,7 @@ import yaml
 from shelly.shelly import Shelly
 
 
-prefix = 'http://'
+scheme = 'http://'
 
 
 def check_id(shellys, text):
@@ -47,7 +47,7 @@ async def collect_shellys(mask: IPv4Network):
             loop = asyncio.get_event_loop()
             potentials = [
                 loop.run_in_executor(
-                    executor, fetch_shelly, *(session, '{}{}'.format(prefix, ip.exploded))
+                    executor, fetch_shelly, *(session, '{}{}'.format(scheme, ip.exploded))
                 )
                 for ip in mask.hosts()
             ]
@@ -74,4 +74,4 @@ def update_configured_shellys(shellys, pool):
         if len(match) != 1:
             raise ValueError('multiple or none device found in network for configured Shelly {}'.format(shelly.id))
         else:
-            shelly.ip = match[0][0]
+            shelly.url = match[0][0]
