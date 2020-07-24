@@ -1,10 +1,14 @@
 import asyncio
 from concurrent.futures.thread import ThreadPoolExecutor
+from ipaddress import IPv4Network
 
 import requests
 import yaml
 
 from shelly.shelly import Shelly
+
+
+prefix = 'http://'
 
 
 def check_id(shellys, text):
@@ -35,21 +39,16 @@ def fetch_shelly(session, ip):
         print(e)
 
 
-def build_ip(mask, end):
-    return mask + str(end)
-
-
-async def collect_shellys(mask):
+async def collect_shellys(mask: IPv4Network):
     shellys: [Shelly] = []
-    endings = range(1, 255)
     with ThreadPoolExecutor(max_workers=253) as executor:
         with requests.Session() as session:
             loop = asyncio.get_event_loop()
             potentials = [
                 loop.run_in_executor(
-                    executor, fetch_shelly, *(session, build_ip(mask, end))
+                    executor, fetch_shelly, *(session, '{}{}'.format(prefix, ip.exploded))
                 )
-                for end in endings
+                for ip in mask.hosts()
             ]
             for response in await asyncio.gather(*potentials):
                 if response is not None:
@@ -58,8 +57,9 @@ async def collect_shellys(mask):
 
 
 def collect():
+    mask = IPv4Network('192.168.178.0/24')
     loop = asyncio.get_event_loop()
-    future = asyncio.ensure_future(collect_shellys('http://192.168.178.'))
+    future = asyncio.ensure_future(collect_shellys(mask))
     pool = loop.run_until_complete(future)
 
     shellys = prepare_shellys()
