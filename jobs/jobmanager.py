@@ -14,6 +14,8 @@ def now():
 
 def delay(delta):
     if isinstance(delta, timedelta):
+        until = datetime.now(tz.tzlocal()) + delta
+        print('Wait until {}'.format(until.isoformat()))
         time.sleep(delta.seconds)
     if isinstance(delta, int):
         time.sleep(delta)
