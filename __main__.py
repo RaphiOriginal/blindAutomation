@@ -1,6 +1,3 @@
-import sched
-import time
-
 from jobs.job import Job
 from jobs.jobmanager import JobManager
 from jobs.task import Task
