@@ -5,7 +5,7 @@ from settings.auth import Auth
 from settings.coordinates import Coordinates
 
 
-class Settings:
+class APISettings:
     __auth = None
     __coordinates = None
 
@@ -26,3 +26,9 @@ class Settings:
             self.__coordinates = Coordinates(coordinates.get('lat'), coordinates.get('long'))
 
         return self.__coordinates
+
+class NetworkSettings:
+    def __init__(self, settingsfile):
+        with open(settingsfile, 'r') as stream:
+            root = yaml.safe_load(stream)
+            self.mask = root.get('networkmask')
