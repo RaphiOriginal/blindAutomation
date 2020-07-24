@@ -16,8 +16,10 @@ class Job:
     def schedule(self, schedule: scheduler):
         """Schedules the Job at the given timestamp"""
         args = self.__get_args()
+        prio = 1
         for arg in args:
-            schedule.enterabs(self.__time, 1, send, argument=arg)
+            schedule.enterabs(self.__time, prio, send, argument=arg)
+            prio += 1
 
     def get_time(self) -> datetime:
         return self.__time
