@@ -11,7 +11,7 @@ from shelly.shelly import Shelly
 
 
 scheme = 'http://'
-config = 'shelly/configuration/shelly.yaml'
+config = '../shelly/configuration/shelly.yaml'
 
 
 def check_id(shellys, text):
