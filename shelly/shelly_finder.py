@@ -6,10 +6,12 @@ from ipaddress import IPv4Network
 import requests
 import yaml
 
+from settings.settings import NetworkSettings
 from shelly.shelly import Shelly
 
 
 scheme = 'http://'
+config = 'shelly/configuration/shelly.yaml'
 
 
 def check_id(shellys, text):
@@ -21,7 +23,7 @@ def check_id(shellys, text):
 
 def prepare_shellys():
     shellys: [Shelly] = []
-    with open('shelly/configuration/shelly.yaml', 'r') as stream:
+    with open(config, 'r') as stream:
         data = yaml.safe_load(stream)
         for shelly in data.get('shellys'):
             data = shelly.get('shelly')
@@ -58,7 +60,8 @@ async def collect_shellys(mask: IPv4Network):
 
 
 def collect():
-    mask = IPv4Network('192.168.178.0/24')
+    settings = NetworkSettings(config)
+    mask = IPv4Network(settings.mask)
     loop = asyncio.get_event_loop()
     future = asyncio.ensure_future(collect_shellys(mask))
     pool = loop.run_until_complete(future)
