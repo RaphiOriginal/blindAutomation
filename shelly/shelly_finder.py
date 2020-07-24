@@ -29,13 +29,13 @@ def prepare_shellys():
     return shellys
 
 
-def fetch_shelly(session, ip):
+def fetch_shelly(session: requests.Session, base_url: str):
     try:
-        url = '{}/shelly/'.format(ip)
+        url = '{}/shelly/'.format(base_url)
         r = session.get(url, timeout=1)
         if r.status_code == 200:
             print('found ' + r.text)
-            return ip, r.text
+            return base_url, r.text
     except Exception as e:
         print(e)
 
