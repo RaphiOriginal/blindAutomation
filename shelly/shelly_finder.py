@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import asyncio
 from concurrent.futures.thread import ThreadPoolExecutor
 from ipaddress import IPv4Network

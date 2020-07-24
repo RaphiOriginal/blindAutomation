@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sched
 import time
 from collections import defaultdict

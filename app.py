@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from jobs.job import Job
 from jobs.jobmanager import JobManager
 from jobs.task import Task
