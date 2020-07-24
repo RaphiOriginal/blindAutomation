@@ -3,13 +3,16 @@ import time
 
 import requests
 
+from blinds.blind_state import BlindState
+from shelly.shelly import Shelly
 
-def send(url, precondition=None, checkUrl=''):
-    if precondition is not None and len(checkUrl) > 0:
-        response = requests.get(checkUrl)
-        while not condition_met(response, precondition):
+
+def send(url, precondition=None, shelly=None):
+    if precondition is not None and shelly is not None:
+        state = update_state(shelly)
+        while not precondition != state.state():
             time.sleep(5)
-            response = requests.get(checkUrl)
+            update_state()
 
     order = requests.get(url)
     if order.status_code != 200:
@@ -18,6 +21,10 @@ def send(url, precondition=None, checkUrl=''):
         print('Task {} completed: {}'.format(url, order.text))
 
 
-def condition_met(response, condition):
-    data = response.json()
-    return data.get('current_pos') == condition
+def update_state(shelly: Shelly):
+    response = requests.get(shelly.get_roller())
+    if response.status_code == 200:
+        data = response.json()
+        return BlindState(data.get('current_pos'), data.get('last_direction'))
+    raise ConnectionError('Negative answer from shelly {}: {} - {}'
+                          .format(shelly.id, response.status_code, response.text))
