@@ -15,20 +15,15 @@ class Job:
 
     def schedule(self, schedule: scheduler):
         """Schedules the Job at the given timestamp"""
-        delay = self.__calculate_delay()
         args = self.__get_args()
         for arg in args:
-            schedule.enter(delay.seconds, 1, send, argument=arg)
+            schedule.enterabs(self.__time, 1, send, argument=arg)
 
     def get_time(self) -> datetime:
         return self.__time
 
     def get_id(self):
         return self.__shelly.id
-
-    def __calculate_delay(self):
-        now = datetime.now(self.tzinfo)
-        return self.__time - now
 
     def __get_args(self):
         if self.__task == Task.OPEN:
