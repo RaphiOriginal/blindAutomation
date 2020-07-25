@@ -26,6 +26,7 @@ class JobManager:
     def __init__(self):
         self.__schedule = sched.scheduler(now, delay)
         self.__jobs = defaultdict(list)
+        self.__tzinfo = tz.tzlocal()
 
     def add(self, job: Job):
         self.__jobs[job.get_id()].append(job)
@@ -36,8 +37,8 @@ class JobManager:
         for shelly, jobs in self.__jobs.items():
             jobs.sort(key=lambda job: job.get_time())
 
-            future = list(filter(lambda job: job.get_time() > datetime.now(job.tzinfo), jobs))
-            past = list(filter(lambda job: job.get_time() < datetime.now(job.tzinfo), jobs))
+            future = list(filter(lambda job: job.get_time() > datetime.now(self.__tzinfo), jobs))
+            past = list(filter(lambda job: job.get_time() < datetime.now(self.__tzinfo), jobs))
             if len(past) > 0:
                 last = past[len(past) - 1]
                 last.schedule(self.__schedule)

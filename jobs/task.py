@@ -7,9 +7,9 @@ from shelly.shelly import Shelly
 
 
 class Task(Enum):
-    CLOSE = 1
-    OPEN = 2
-    TILT = 3
+    CLOSE = 'CLOSE'
+    OPEN = 'OPEN'
+    TILT = 'TILT'
 
     def get_for(self, shelly: Shelly):
         if self == self.OPEN:

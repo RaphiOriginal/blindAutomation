@@ -10,7 +10,7 @@ class Sundata:
         self.__sunset: datetime = sunset
         self.__azimuths: [Azimuth] = azimuths
 
-    def find_azimuth(self, degree: float):
+    def find_azimuth(self, degree: float) -> Azimuth:
         best = None
         for azimuth in self.__azimuths:
             if best is None:

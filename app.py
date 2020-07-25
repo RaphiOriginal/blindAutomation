@@ -2,6 +2,7 @@
 from jobs.job import Job
 from jobs.jobmanager import JobManager
 from jobs.task import Task
+from jobs.trigger import SunriseTrigger, SunsetTrigger, SunInTrigger, SunOutTrigger
 from meteomatics.meteomatics_api import MeteomaticsAPI
 from shelly import shelly_finder
 
@@ -14,10 +15,10 @@ def main():
     manager = JobManager()
 
     for shelly in shellys:
-        manager.add(Job(sun.get_sunrise(), shelly, Task.OPEN)) \
-            .add(Job(sun.get_sunset(), shelly, Task.CLOSE)) \
-            .add(Job(sun.find_azimuth(110).time, shelly, Task.TILT)) \
-            .add(Job(sun.find_azimuth(290).time, shelly, Task.OPEN))
+        manager.add(Job(SunriseTrigger(sun), shelly)) \
+            .add(Job(SunsetTrigger(sun), shelly)) \
+            .add(Job(SunInTrigger(sun, 110), shelly)) \
+            .add(Job(SunOutTrigger(sun, 290), shelly))
 
     manager.prepare().run()
 
