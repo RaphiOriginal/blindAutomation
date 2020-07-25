@@ -2,10 +2,11 @@
 class Shelly:
     url: str = None
 
-    def __init__(self, name: str, id: str, direction: str):
+    def __init__(self, name: str, id: str, direction: str, triggers: []):
         self.name: str = name
         self.id: str = id
         self.direction: str = direction
+        self.triggers: [] = triggers
 
     def get_status(self):
         self.__check_url()

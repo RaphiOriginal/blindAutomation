@@ -2,14 +2,13 @@
 from datetime import datetime, tzinfo
 from sched import scheduler
 
-from jobs.trigger import Trigger
 from jobs.worker import work
 from shelly.shelly import Shelly
 
 
 class Job:
-    def __init__(self, trigger: Trigger, shelly: Shelly):
-        self.__trigger: Trigger = trigger
+    def __init__(self, trigger, shelly: Shelly):
+        self.__trigger = trigger
         self.__shelly: Shelly = shelly
 
     def schedule(self, schedule: scheduler):

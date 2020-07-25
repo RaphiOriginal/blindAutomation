@@ -11,6 +11,13 @@ class Task(Enum):
     OPEN = 'OPEN'
     TILT = 'TILT'
 
+    @staticmethod
+    def from_name(name: str):
+        for _, task in Task.__members__.items():
+            if task.value == name:
+                return task
+        raise ValueError('No matching Enum for {}'.format(name))
+
     def get_for(self, shelly: Shelly):
         if self == self.OPEN:
             return [(Open(shelly),)]

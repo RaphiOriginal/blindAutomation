@@ -27,7 +27,10 @@ def prepare_shellys():
         data = yaml.safe_load(stream)
         for shelly in data.get('shellys'):
             data = shelly.get('shelly')
-            shellys.append(Shelly(data.get('name'), str(data.get('id')), data.get('direction')))
+            triggers: [] = []
+            if 'triggers' in data.keys():
+                triggers = data.get('triggers')
+            shellys.append(Shelly(data.get('name'), str(data.get('id')), data.get('direction'), triggers))
     return shellys
 
 
