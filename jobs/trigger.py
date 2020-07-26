@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from datetime import datetime, time
 
+from dateutil import tz
+
 from jobs.job import Job
 from jobs.jobmanager import JobManager
 from jobs.task import Task
@@ -77,9 +79,8 @@ class TimeTrigger(Trigger):
         super().__init__(task, self.__prepare_runtime(runtime))
 
     def __prepare_runtime(self, runtime: time) -> datetime:
-        now = datetime.now()
-        now.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second)
-        return now
+        now = datetime.now(tz.tzlocal())
+        return now.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second)
 
     @staticmethod
     def type():
