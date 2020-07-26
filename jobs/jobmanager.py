@@ -42,11 +42,11 @@ class JobManager:
             if len(past) > 0:
                 last = past[len(past) - 1]
                 last.schedule(self.__schedule)
-                print('One past job collected for {}: {}'.format(shelly, last))
+                print('One past job prepared for {}: {}'.format(shelly, last))
 
             for job in future:
                 job.schedule(self.__schedule)
-            print('{} jobs collected for {}: {}'.format(len(future), shelly, future))
+            print('{} jobs prepared for {}: {}'.format(len(future), shelly, future))
 
         return self
 
