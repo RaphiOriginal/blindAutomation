@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import asyncio
+from collections import defaultdict
 from concurrent.futures.thread import ThreadPoolExecutor
 from ipaddress import IPv4Network
 
@@ -8,10 +9,10 @@ import yaml
 
 from settings.settings import NetworkSettings
 from shelly.shelly import Shelly
-
+from shelly.wall import Wall
 
 scheme = 'http://'
-config = '../shelly/configuration/shelly.yaml'
+config = 'shelly/configuration/shelly.yaml'
 
 
 def check_id(shellys, text):
@@ -23,14 +24,19 @@ def check_id(shellys, text):
 
 def prepare_shellys():
     shellys: [Shelly] = []
+    walls = defaultdict(Wall)
     with open(config, 'r') as stream:
         data = yaml.safe_load(stream)
+        for wall in data.get('walls'):
+            w = wall.get('wall')
+            walls[w.get('name')] = Wall(w.get('name'), w.get('in'), w.get('out'))
         for shelly in data.get('shellys'):
-            data = shelly.get('shelly')
+            s = shelly.get('shelly')
             triggers: [] = []
-            if 'triggers' in data.keys():
-                triggers = data.get('triggers')
-            shellys.append(Shelly(data.get('name'), str(data.get('id')), data.get('direction'), triggers))
+            if 'triggers' in s.keys():
+                triggers = s.get('triggers')
+            w = s.get('wall')
+            shellys.append(Shelly(s.get('name'), str(s.get('id')), walls[w], triggers))
     return shellys
 
 
