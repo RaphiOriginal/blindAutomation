@@ -84,6 +84,7 @@ def update_configured_shellys(shellys, pool):
     for shelly in shellys:
         match = list(filter(lambda entry: shelly.id.upper() in entry[1], pool))
         if len(match) != 1:
-            raise ValueError('multiple or none device found in network for configured Shelly {}'.format(shelly.id))
+            print('multiple or none device found in network for configured Shelly: {}'.format(shelly))
+            shellys.remove(shelly)
         else:
             shelly.url = match[0][0]
