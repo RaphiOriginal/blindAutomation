@@ -53,3 +53,10 @@ Add cronjobs:
 ```
 0 3     * * *   root    python3 ~/blindAutomation/app.py
 @reboot         root    python3 ~/blindAutomation/app.py &
+```
+
+
+
+
+
+Made with ❤️ in 🇨🇭
