@@ -1,0 +1,39 @@
+meteomatics:
+  auth:
+    username: nocompanyprivatesorry_brunner
+    password: wmpYB93bR7zNL
+  coordinates:
+    lat: 47.3910
+    long: 8.0605
+networkmask: 192.168.178.0/24
+walls:
+  - wall:
+      name: south
+      in: 110
+      out: 290
+  - wall:
+      name: west
+      in: 227
+      out: 47
+shellys:
+  - shelly:
+      name: Büro
+      id: 10ee7d
+      wall: south
+      triggers:
+        - SUNRISE
+        - SUNSET
+        - SUNIN
+        - SUNOUT
+  - shelly:
+      name: Wohnzimmer
+      id: 110379
+      wall: south
+      triggers:
+        - SUNRISE
+        - SUNSET
+        - SUNIN
+        - SUNOUT
+        - TIME:
+            task: TILT
+            time: '20:20:00'

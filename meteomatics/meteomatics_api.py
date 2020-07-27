@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class MeteomaticsAPI:
 
     def __init__(self):
-        self.settingsFile = '/home/pi/blindAutomation/meteomatics/configuration/meteomatics.yaml'
+        self.settingsFile = 'settings.yaml'
         self.url = 'http://api.meteomatics.com'
 
         self.settings = None

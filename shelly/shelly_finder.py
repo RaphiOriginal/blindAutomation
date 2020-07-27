@@ -13,7 +13,7 @@ from shelly.shelly import Shelly
 from shelly.wall import Wall
 
 scheme = 'http://'
-config = '/home/pi/blindAutomation/shelly/configuration/shelly.yaml'
+config = 'settings.yaml'
 
 logger = logging.getLogger(__name__)
 

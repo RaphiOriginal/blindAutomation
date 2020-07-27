@@ -11,7 +11,7 @@ class APISettings:
 
     def __init__(self, settingsfile):
         with open(settingsfile, 'r') as stream:
-            self.__root = yaml.safe_load(stream)
+            self.__root = yaml.safe_load(stream).get('meteomatics')
 
     def get_auth(self):
         if self.__auth is None:
