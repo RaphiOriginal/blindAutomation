@@ -2,10 +2,10 @@
 from datetime import datetime
 
 
-class Azimuth:
+class Elevation:
     def __init__(self, time: datetime, degree: float):
         self.time: datetime = time
         self.degree: float = degree
 
     def __repr__(self):
-        return 'Azimuth: { time: %s, degree: %s}' % (self.time, self.degree)
+        return 'Elevation: { time: %s, degree: %s}' % (self.time, self.degree)

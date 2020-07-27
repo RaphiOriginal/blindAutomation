@@ -2,24 +2,28 @@
 from datetime import datetime
 
 from sun.azimuth import Azimuth
+from sun.position import Position
 
 
 class Sundata:
-    def __init__(self, sunrise: datetime, sunset: datetime, azimuths: [Azimuth]):
+    def __init__(self, sunrise: datetime, sunset: datetime, positions: [Position]):
         self.__sunrise: datetime = sunrise
         self.__sunset: datetime = sunset
-        self.__azimuths: [Azimuth] = azimuths
+        self.__positions: [Position] = positions
 
     def find_azimuth(self, degree: float) -> Azimuth:
         best = None
-        for azimuth in self.__azimuths:
+        for pos in self.__positions:
             if best is None:
-                best = azimuth
+                best = pos.azimuth()
                 continue
-            if abs(degree - best.degree) > abs(degree - azimuth.degree):
-                best = azimuth
+            if abs(degree - best.degree) > abs(degree - pos.azimuth().degree):
+                best = pos.azimuth()
 
         return best
+
+    def get_positions(self):
+        return self.__positions
 
     def get_sunrise(self):
         return self.__sunrise
@@ -28,4 +32,4 @@ class Sundata:
         return self.__sunset
 
     def __repr__(self):
-        return 'Sundata: { sunrise: %s, sunset: %s, azimuths: %s }' % (self.__sunrise, self.__sunset, self.__azimuths)
+        return 'Sundata: { sunrise: %s, sunset: %s, positions: %s }' % (self.__sunrise, self.__sunset, self.__positions)

@@ -6,3 +6,4 @@ class Field(Enum):
     SUNRISE = 'sunrise:sql'
     SUNSET = 'sunset:sql'
     AZIMUTH = 'sun_azimuth:d'
+    ELEVATION = 'sun_elevation:d'

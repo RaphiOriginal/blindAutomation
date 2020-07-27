@@ -9,23 +9,27 @@ from jobs import trigger
 from jobs.jobmanager import JobManager
 from meteomatics.meteomatics_api import MeteomaticsAPI
 from shelly import shelly_finder
-from tests.mock.mocks import SunAPIMock
+from sun.sundata import Sundata
+from tests.mock.mocks import SunAPIMock, SunAPIResponseMock
 
 logger = logging.getLogger(__name__)
 
-def prepare_api():
+
+def prepare_api() -> SunAPI:
     apis = defaultdict(SunAPI)
     apis['meteomatics'] = MeteomaticsAPI()
     apis['mock'] = SunAPIMock()
+    apis['responseMock'] = SunAPIResponseMock()
     with open('settings.yaml', 'r') as stream:
         settings = yaml.safe_load(stream)
         return apis[settings.get('api')]
 
+
 def main():
     logging.basicConfig(level=logging.DEBUG)
     shellys = shelly_finder.collect()
-    api = prepare_api()
-    sun = api.fetch_sundata()
+    api: SunAPI = prepare_api()
+    sun: Sundata = api.fetch_sundata()
 
     manager = JobManager()
 
