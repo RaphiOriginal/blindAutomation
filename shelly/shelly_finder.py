@@ -92,6 +92,7 @@ def update_configured_shellys(shellys, pool):
         else:
             shelly.url = match[0][0]
 
-        if match[0][1].get('rollers') is None or not match[0][1].get('rollers')[0].get('positioning'):
+        if len(match[0]) == 0 or match[0][1].get('rollers') is None or \
+                not match[0][1].get('rollers')[0].get('positioning'):
             logger.error('Shelly {} not configured as roller or calibrated'.format(shelly))
             shellys.remove(shelly)

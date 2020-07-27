@@ -8,29 +8,35 @@ It is necessary to have the shellys calibrated for it runtimes to get it working
 ## Configuration settings.yaml
 copy and rename settings.yaml.template to settings.yaml and update the properties:
 * meteomatics: Meteomatics api credentials
-  * username
-  * password
-  * coordinates of wall (i recommend to pick a corner of two walls) I did mine with the help of [SunCalc](https://www.suncalc.org/#/46.0162,8.4421,3/2020.07.27/19:54/1/1)
+  * username: from Meteomatics
+  * password: from Meteomatics
+  * coordinates: coordinates of wall (i recommend to pick a corner of two walls) I did mine with the help of [SunCalc](https://www.suncalc.org/#/46.0162,8.4421,3/2020.07.27/19:54/1/1)
     * lat: Latitude
     * long: Longitude
-* api which you want to use
-* networkmask where to to search for shellys
-* walls
-  * direction where the wall is (can be any name)
-  * in: When the sun azimuth starts to hit the wall
-  * out: When the sun azimuth stops to hit the wall
-* list of shellys
-  * How you'd like to name the shelly to recognise it in text outputs
-  * Shellyid (can be found in the shelly app in settings) usualy last 6 characters of macadress
-  * direction: At which wall is the shelly located (must match with a name from walls)
-  * triggers: You can add those triggers you'd like to be handled for each shelly
-    * SUNRISE: Will open the blinds on sunrise
-    * SUNSET: Will close the blinds on sunset
-    * SUNIN: Will tilt the blinds when the azimuth of the sun passes the azimuth defined for the related wall
-    * SUNOUT: Will open the blinds when the azimuth of the sun passes the azimuth defined for the related wall
-    * TIME: Add a Task (OPEN, CLOSE, TILT) you want at a given time, will be run at this time daily
-      * task: Can be OPEN, CLOSE or TILT. Tilt will close the blind completle and then open for around 2%
-      * time: Time when the task should be triggered in the HH:MM:SS format
+* api: Which api you want to use (meteomatics is recommended here)
+* networkmask: where to to search for shellys
+* walls:
+  * wall:
+    * name: where the wall is (can be any name, e.g. 'south' or 'green wall'')
+    * in: When the sun azimuth starts to hit the wall
+    * out: When the sun azimuth stops to hit the wall
+* shellys: list of shellys
+  * shelly:
+    * name: How you'd like to name the shelly to recognise it in text outputs
+    * id: Shellyid (can be found in the shelly app in settings) usualy last 6 characters of macadress
+    * direction: At which wall is the shelly located (must match with a name from walls)
+    * triggers: List of triggers you'd like to apply for the shelly
+      * SUNRISE: Will open the blinds on sunrise
+        * task: (optional) default is OPEN
+      * SUNSET: Will close the blinds on sunset
+        * task: (optional) default is CLOSE
+      * SUNIN: Will tilt the blinds when the azimuth of the sun passes the azimuth defined for the related wall
+        * task: (optional) default is TILT
+      * SUNOUT: Will open the blinds when the azimuth of the sun passes the azimuth defined for the related wall
+        * task: (optional) default is OPEN
+      * TIME: Add a Task (OPEN, CLOSE, TILT) you want at a given time, will be run at this time daily
+        * task: (mandatory) Can be OPEN, CLOSE or TILT. Tilt will close the blind completle and then open for around 2%
+        * time: (mandatory) Time when the task should be triggered in the HH:MM:SS format
 
 ## Meteomatics
 You have to get access to the meteomatics api and update your logins in the settings.yaml

@@ -8,12 +8,14 @@ meteomatics:
 api: meteomatics
 networkmask:  192.168.0.0/16
 walls:
-  - south:
-    in: 100
-    out: 200
-  - west:
-    in: 200
-    out: 300
+  - wall:
+      name: south
+      in: 100
+      out: 200
+  - wall:
+      name: north
+      in: 200
+      out: 300
 shellys:
   - shelly:
       name: Shelly1
@@ -29,10 +31,11 @@ shellys:
       id: 222222
       direction: south
       triggers:
-        - SUNRISE
+        - SUNRISE:
+            task: TILT
         - SUNSET
         - SUNIN
         - SUNOUT
         - TIME:
-          task: TILT
-          time: '16:00:00'
+            task: TILT
+            time: '16:00:00'

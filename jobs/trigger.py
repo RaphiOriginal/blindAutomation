@@ -102,28 +102,50 @@ def apply_triggers(manager: JobManager, sundata: Sundata, shelly: Shelly):
 def extract_triggers(triggerdata, wall: Wall, sundata: Sundata) -> [Trigger]:
     triggers: [Trigger] = []
     for trigger in triggerdata:
-        if trigger == SunriseTrigger.type():
-            sunrise = SunriseTrigger(sundata)
-            triggers.append(sunrise)
+        if isinstance(trigger, str):
+            if trigger == SunriseTrigger.type():
+                sunrise = SunriseTrigger(sundata)
+                triggers.append(sunrise)
+                continue
+            if trigger == SunsetTrigger.type():
+                sunset = SunsetTrigger(sundata)
+                triggers.append(sunset)
+                continue
+            if trigger == SunInTrigger.type():
+                sunin = SunInTrigger(sundata, wall.in_sun())
+                triggers.append(sunin)
+                continue
+            if trigger == SunOutTrigger.type():
+                sunout = SunOutTrigger(sundata, wall.out_sun())
+                triggers.append(sunout)
+                continue
+            logger.error('No Trigger for {} existing'.format(trigger))
             continue
-        if trigger == SunsetTrigger.type():
-            sunset = SunsetTrigger(sundata)
-            triggers.append(sunset)
+        if SunriseTrigger.type() in trigger.keys():
+            risetrigger = trigger.get(SunriseTrigger.type())
+            task = Task.from_name(risetrigger.get('task'))
+            triggers.append(SunriseTrigger(sundata, task))
             continue
-        if trigger == SunInTrigger.type():
-            sunin = SunInTrigger(sundata, wall.in_sun())
-            triggers.append(sunin)
+        if SunsetTrigger.type() in trigger.keys():
+            settrigger = trigger.get(SunsetTrigger.type())
+            task = Task.from_name(settrigger.get('task'))
+            triggers.append(SunsetTrigger(sundata, task))
             continue
-        if trigger == SunOutTrigger.type():
-            sunout = SunOutTrigger(sundata, wall.out_sun())
-            triggers.append(sunout)
+        if SunInTrigger.type() in trigger.keys():
+            intrigger = trigger.get(SunInTrigger.type())
+            task = Task.from_name(intrigger.get('task'))
+            triggers.append(SunInTrigger(sundata, wall.in_sun(), task))
+            continue
+        if SunOutTrigger.type() in trigger.keys():
+            outtrigger = trigger.get(SunOutTrigger.type())
+            task = Task.from_name(outtrigger.get('task'))
+            triggers.append(SunOutTrigger(sundata, wall.out_sun(), task))
             continue
         if TimeTrigger.type() in trigger.keys():
             timetrigger = trigger.get(TimeTrigger.type())
             task = Task.from_name(timetrigger.get('task'))
             runtime = time.fromisoformat(timetrigger.get('time'))
-            t = TimeTrigger(runtime, task)
-            triggers.append(t)
+            triggers.append(TimeTrigger(runtime, task))
             continue
         logger.error('No Trigger for {} existing'.format(trigger))
     return triggers
