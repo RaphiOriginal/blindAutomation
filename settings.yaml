@@ -5,6 +5,7 @@ meteomatics:
   coordinates:
     lat: 47.3910
     long: 8.0605
+api: meteomatics
 networkmask: 192.168.178.0/24
 walls:
   - wall:

@@ -2,8 +2,13 @@ from datetime import datetime, timedelta
 
 from dateutil import tz
 
+from api.api import SunAPI
 from sun.azimuth import Azimuth
 from sun.sundata import Sundata
+
+class SunAPIMock(SunAPI):
+    def fetch_sundata(self):
+        return get_sundata_mock()
 
 
 def get_sundata_mock(time_delta: int = 10):

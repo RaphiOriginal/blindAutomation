@@ -6,6 +6,7 @@ import yaml
 import requests
 from dateutil import parser, tz
 
+from api.api import SunAPI
 from meteomatics.field import Field
 from meteomatics.interval import Interval
 from meteomatics.meteomatics_url_builder import MeteomaticsURLBuilder
@@ -17,7 +18,7 @@ from sun.sundata import Sundata
 logger = logging.getLogger(__name__)
 
 
-class MeteomaticsAPI:
+class MeteomaticsAPI(SunAPI):
 
     def __init__(self):
         self.settingsFile = 'settings.yaml'
