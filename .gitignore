@@ -4,3 +4,4 @@
 
 #yaml files with settings
 *.yaml
+__pycache__
