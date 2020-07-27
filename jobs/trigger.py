@@ -30,8 +30,8 @@ class Trigger:
 
 
 class SunriseTrigger(Trigger):
-    def __init__(self, sundata: Sundata):
-        super().__init__(Task.OPEN, sundata.get_sunrise())
+    def __init__(self, sundata: Sundata, task: Task = Task.OPEN):
+        super().__init__(task, sundata.get_sunrise())
 
     @staticmethod
     def type():
@@ -42,8 +42,8 @@ class SunriseTrigger(Trigger):
 
 
 class SunsetTrigger(Trigger):
-    def __init__(self, sundata: Sundata):
-        super().__init__(Task.CLOSE, sundata.get_sunset())
+    def __init__(self, sundata: Sundata, task: Task = Task.CLOSE):
+        super().__init__(task, sundata.get_sunset())
 
     @staticmethod
     def type():
@@ -54,8 +54,8 @@ class SunsetTrigger(Trigger):
 
 
 class SunInTrigger(Trigger):
-    def __init__(self, sundata: Sundata, azimuth: int):
-        super().__init__(Task.TILT, sundata.find_azimuth(azimuth).time)
+    def __init__(self, sundata: Sundata, azimuth: int, task: Task = Task.TILT):
+        super().__init__(task, sundata.find_azimuth(azimuth).time)
 
     @staticmethod
     def type():
@@ -66,8 +66,8 @@ class SunInTrigger(Trigger):
 
 
 class SunOutTrigger(Trigger):
-    def __init__(self, sundata: Sundata, azimuth: int):
-        super().__init__(Task.OPEN, sundata.find_azimuth(azimuth).time)
+    def __init__(self, sundata: Sundata, azimuth: int, task: Task = Task.OPEN):
+        super().__init__(task, sundata.find_azimuth(azimuth).time)
 
     @staticmethod
     def type():
