@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
+import logging
 import time
 
 import requests
+
+logger = logging.getLogger(__name__)
 
 
 def work(task):
@@ -10,6 +13,6 @@ def work(task):
     if not task.done():
         order = requests.get(task.do())
         if order.status_code != 200:
-            print('Call with {} failed with status {} and content {}'.format(task.do(), order.status_code, order.text))
+            logger.error('Call with {} failed with status {} and content: {}'.format(task.do(), order.status_code, order.text))
         else:
-            print('Task {} completed: {}'.format(task.do(), order.text))
+            logger.info('Task {} completed: {}'.format(task.do(), order.text))

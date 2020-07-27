@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import logging
 from datetime import datetime, timedelta
 
 import yaml
@@ -11,6 +12,9 @@ from meteomatics.meteomatics_url_builder import MeteomaticsURLBuilder
 from settings.settings import APISettings
 from sun.azimuth import Azimuth
 from sun.sundata import Sundata
+
+
+logger = logging.getLogger(__name__)
 
 
 class MeteomaticsAPI:
@@ -37,8 +41,8 @@ class MeteomaticsAPI:
         r = requests.get(url, auth=(user, password))
 
         if r.status_code != 200:
-            print('Request failed, Status Code: ' + str(r.status_code))
-            print(r.text)
+            logger.error('Request failed, Status Code: ' + str(r.status_code))
+            logger.info(r.text)
 
         values = r.json().get('data')[0].get('coordinates')[0].get('dates')
 
@@ -47,7 +51,7 @@ class MeteomaticsAPI:
             azimuth.append(self.__convert_to_azimuth(entry.get('date'), entry.get('value')))
 
         sundata = Sundata(sunrise, sunset, azimuth)
-        print('Fetched {}'.format(sundata))
+        logger.info('Fetched {}'.format(sundata))
         return sundata
 
     def __fetch_sunrise_and_sunset(self, auth):
@@ -59,15 +63,15 @@ class MeteomaticsAPI:
 
             #Hacky solution to avoid old data between 24:00 and 02:00
             now = datetime.now(tz.tzlocal()) + timedelta(hours=2)
-            print('Fetching sunrise and sunset for {}'.format(now))
+            logger.info('Fetching sunrise and sunset for {}'.format(now))
             url = builder.set_time(now).add_field(Field.SUNRISE).add_field(Field.SUNSET)\
                 .set_location(self.__get_coordinates()).build()
 
             r = requests.get(url, auth=(user, password))
 
             if r.status_code != 200:
-                print('Request failed, Status Code: ' + str(r.status_code))
-                print(r.text)
+                logger.error('Request failed, Status Code: ' + str(r.status_code))
+                logger.info(r.text)
 
             values = r.json()
 
@@ -76,7 +80,7 @@ class MeteomaticsAPI:
 
             return self.__to_date(sunrise), self.__to_date(sunset)
         except yaml.YAMLError as exp:
-            print(exp)
+            logger.error(exp)
 
     @staticmethod
     def __to_date(isodate):

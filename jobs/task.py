@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
+import logging
 from enum import Enum
 
 from blinds import blind_state
 from blinds.blind_state import State
 from shelly.shelly import Shelly
+
+
+logger = logging.getLogger(__name__)
 
 
 class Task(Enum):
@@ -65,4 +69,5 @@ class Tilt(BaseTask):
 
     def ready(self):
         state = blind_state.fetch_blindstate(self.shelly)
+        logger.debug(state)
         return state.state() == self.__precondition

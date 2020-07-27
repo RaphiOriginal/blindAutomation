@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import asyncio
+import logging
 from collections import defaultdict
 from concurrent.futures.thread import ThreadPoolExecutor
 from ipaddress import IPv4Network
@@ -13,6 +14,8 @@ from shelly.wall import Wall
 
 scheme = 'http://'
 config = '/home/pi/blindAutomation/shelly/configuration/shelly.yaml'
+
+logger = logging.getLogger(__name__)
 
 
 def check_id(shellys, text):
@@ -45,10 +48,10 @@ def fetch_shelly(session: requests.Session, base_url: str):
         url = '{}/shelly/'.format(base_url)
         r = session.get(url, timeout=1)
         if r.status_code == 200:
-            print('found ' + r.text)
+            logger.info('found ' + r.text)
             return base_url, r.text
     except Exception as e:
-        print(e)
+        logger.info(e)
 
 
 async def collect_shellys(mask: IPv4Network):
@@ -84,7 +87,7 @@ def update_configured_shellys(shellys, pool):
     for shelly in shellys:
         match = list(filter(lambda entry: shelly.id.upper() in entry[1], pool))
         if len(match) != 1:
-            print('multiple or none device found in network for configured Shelly: {}'.format(shelly))
+            logger.info('multiple or none device found in network for configured Shelly: {}'.format(shelly))
             shellys.remove(shelly)
         else:
             shelly.url = match[0][0]

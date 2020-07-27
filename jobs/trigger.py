@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import logging
 from datetime import datetime, time
 
 from dateutil import tz
@@ -9,6 +10,8 @@ from jobs.task import Task
 from shelly.shelly import Shelly
 from shelly.wall import Wall
 from sun.sundata import Sundata
+
+logger = logging.getLogger(__name__)
 
 
 class Trigger:
@@ -122,5 +125,5 @@ def extract_triggers(triggerdata, wall: Wall, sundata: Sundata) -> [Trigger]:
             t = TimeTrigger(runtime, task)
             triggers.append(t)
             continue
-        print('No Trigger for {} existing'.format(trigger))
+        logger.error('No Trigger for {} existing'.format(trigger))
     return triggers
