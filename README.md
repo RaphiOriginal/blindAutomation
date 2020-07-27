@@ -6,7 +6,7 @@ This application is build for [Shelly 2.5](https://shelly.cloud/products/shelly-
 It is necessary to have the shellys calibrated for it runtimes to get it working correctly, otherwise it might just stops in the middle of the window.
 
 ## Configuration settings.yaml
-copy and rename settings.yaml.template to settings.yaml and update the properties:
+copy and rename [settings.yaml.template](https://github.com/RaphiOriginal/blindAutomation/blob/master/settings.yaml.template) to settings.yaml and update the properties:
 * meteomatics: Meteomatics api credentials
   * username: from Meteomatics
   * password: from Meteomatics
