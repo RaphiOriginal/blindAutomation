@@ -16,7 +16,7 @@ from sun.sundata import Sundata
 class MeteomaticsAPI:
 
     def __init__(self):
-        self.settingsFile = 'meteomatics/configuration/meteomatics.yaml'
+        self.settingsFile = '/home/pi/blindAutomation/meteomatics/configuration/meteomatics.yaml'
         self.url = 'http://api.meteomatics.com'
 
         self.settings = None
