@@ -1,0 +1,90 @@
+{
+  "wifi_sta": {
+    "connected": true,
+    "ssid": "yolo",
+    "ip": "0.0.0.0",
+    "rssi": -1
+  },
+  "cloud": {
+    "enabled": true,
+    "connected": true
+  },
+  "mqtt": {
+    "connected": false
+  },
+  "time": "20:15",
+  "unixtime": 1595880927,
+  "serial": 5795,
+  "has_update": false,
+  "mac": "DHW56FWS46FD",
+  "rollers": [
+    {
+      "state": "stop",
+      "power": 0,
+      "is_valid": true,
+      "safety_switch": false,
+      "overtemperature": false,
+      "stop_reason": "normal",
+      "last_direction": "open",
+      "current_pos": 100,
+      "calibrating": false,
+      "positioning": true
+    }
+  ],
+  "meters": [
+    {
+      "power": 0,
+      "is_valid": true,
+      "timestamp": 1595880927,
+      "counters": [
+        0,
+        0,
+        0
+      ],
+      "total": 726
+    },
+    {
+      "power": 0,
+      "is_valid": true,
+      "timestamp": 1595880927,
+      "counters": [
+        0,
+        0,
+        0
+      ],
+      "total": 605
+    }
+  ],
+  "inputs": [
+    {
+      "input": 0,
+      "event": "",
+      "event_cnt": 0
+    },
+    {
+      "input": 0,
+      "event": "",
+      "event_cnt": 0
+    }
+  ],
+  "temperature": 53.26,
+  "overtemperature": false,
+  "tmp": {
+    "tC": 53.26,
+    "tF": 127.87,
+    "is_valid": true
+  },
+  "update": {
+    "status": "idle",
+    "has_update": false,
+    "new_version": "20200601-122849/v1.7.0@d7961837",
+    "old_version": "20200601-122849/v1.7.0@d7961837"
+  },
+  "ram_total": 48872,
+  "ram_free": 36640,
+  "ram_lwm": 30296,
+  "fs_size": 233681,
+  "fs_free": 149847,
+  "voltage": 234.97,
+  "uptime": 264303
+}

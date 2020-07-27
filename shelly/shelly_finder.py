@@ -45,11 +45,11 @@ def prepare_shellys():
 
 def fetch_shelly(session: requests.Session, base_url: str):
     try:
-        url = '{}/shelly/'.format(base_url)
+        url = '{}/status/'.format(base_url)
         r = session.get(url, timeout=1)
         if r.status_code == 200:
             logger.info('found ' + r.text)
-            return base_url, r.text
+            return base_url, r.json()
     except Exception as e:
         logger.info(e)
 
@@ -85,9 +85,13 @@ def collect():
 
 def update_configured_shellys(shellys, pool):
     for shelly in shellys:
-        match = list(filter(lambda entry: shelly.id.upper() in entry[1], pool))
+        match = list(filter(lambda entry: shelly.id.upper() in entry[1].get('mac'), pool))
         if len(match) != 1:
             logger.info('multiple or none device found in network for configured Shelly: {}'.format(shelly))
             shellys.remove(shelly)
         else:
             shelly.url = match[0][0]
+
+        if match[0][1].get('rollers') is None or not match[0][1].get('rollers')[0].get('positioning'):
+            logger.error('Shelly {} not configured as roller or calibrated'.format(shelly))
+            shellys.remove(shelly)
