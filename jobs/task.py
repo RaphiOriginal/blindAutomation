@@ -46,6 +46,9 @@ class BaseTask:
     def do(self):
         return self.shelly.set_roller(self.__position)
 
+    def _target(self):
+        return self.__target
+
 
 class Close(BaseTask):
     def __init__(self, shelly: Shelly):
@@ -70,4 +73,4 @@ class Tilt(BaseTask):
     def ready(self):
         state = blind_state.fetch_blindstate(self.shelly)
         logger.debug(state)
-        return state.state() == self.__precondition
+        return state.state() == self.__precondition or state.state() == self._target()
