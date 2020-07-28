@@ -44,18 +44,40 @@ You have to get access to the meteomatics api and update your logins in the sett
 ## Run 🏃
 I recommend to run this scripts with cronjob. It will collect all task for a full day, and after the day is over, it will finish and needs to be started again.
 Due to the nature of the Meteomatics API i recommend to time your Fetch for your day after midnight utc if possible (e.g. 03:00 for MEZ) but before the first Task should be applied.
-I also recommend to start the script on startup, to keep the blinds going after power loss.
 
 you can edit crontab with e.g. nano:
-`$ nano /etc/crontab`
+`$ crontab -e`
 
 Add cronjobs:
 ```
 0 3     * * *   root    python3 ~/blindAutomation/app.py
-@reboot         root    python3 ~/blindAutomation/app.py &
 ```
 
+It is also recommended to start the script after a reboot to get the magic ongoing e.g. after a power outage.
+To achieve this, we use systemd.
 
+you can start configure your service with:
+`sudo systemctl edit --force --full blindAutomation.service`
+
+and entering following configurations into the file:
+
+```
+[Unit]
+Description=Blind Automation Service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi
+ExecStart=/home/pi/blindAutomation/app.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+WantedBy=network-online.service
+```
 
 
 
