@@ -48,10 +48,10 @@ def fetch_shelly(session: requests.Session, base_url: str):
         url = '{}/status/'.format(base_url)
         r = session.get(url, timeout=1)
         if r.status_code == 200:
-            logger.degug('found on {} with: {}'.format(base_url, r.text))
+            logger.degug('🎉 found on {} with: {}'.format(base_url, r.text))
             return base_url, r.json()
     except Exception as e:
-        logger.error('no shelly found', e)
+        logger.error('no shelly found error: {}'.format(e))
 
 
 async def collect_shellys(mask: IPv4Network):
