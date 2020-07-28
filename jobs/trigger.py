@@ -161,9 +161,14 @@ def build_trigger(triggerdata, type: str, constructor, triggers: [Trigger], **ar
         return False
     if type in triggerdata.keys():
         triggerdict = triggerdata.get(type)
-        task = Task.from_name(triggerdict.get('task'))
         trigger = constructor(trigger=triggerdict, **args)
-        trigger.set_task(task)
+        set_task(trigger, triggerdict)
         triggers.append(trigger)
         return True
     return False
+
+
+def set_task(trigger: Trigger, triggerdict):
+    if 'task' in triggerdict:
+        task = Task.from_name(triggerdict.get('task'))
+        trigger.set_task(task)
