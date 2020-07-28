@@ -15,6 +15,17 @@ logger = logging.getLogger(__name__)
 
 
 class Trigger:
+    def task(self) -> Task:
+        pass
+
+    def set_task(self):
+        pass
+
+    def time(self):
+        pass
+
+
+class TriggerBase(Trigger):
     def __init__(self, task: Task, runtime: datetime):
         self.__task: Task = task
         self.__time: datetime = runtime
@@ -22,14 +33,21 @@ class Trigger:
     def task(self) -> Task:
         return self.__task
 
+    def set_task(self, task: Task):
+        self.__task = task
+
     def time(self) -> datetime:
         return self.__time
+
+    @staticmethod
+    def create(trigger, **args) -> Trigger:
+        raise NotImplementedError()
 
     def __repr__(self):
         return 'Trigger: { runtime: %s, task: %s }' % (self.__time, self.__task)
 
 
-class SunriseTrigger(Trigger):
+class SunriseTrigger(TriggerBase):
     def __init__(self, sundata: Sundata, task: Task = Task.OPEN):
         super().__init__(task, sundata.get_sunrise())
 
@@ -37,11 +55,15 @@ class SunriseTrigger(Trigger):
     def type() -> str:
         return 'SUNRISE'
 
+    @staticmethod
+    def create(trigger, **args) -> Trigger:
+        return SunriseTrigger(args.get('sundata'))
+
     def __repr__(self):
         return 'SunriseTrigger: { runtime: %s, task: %s }' % (self.time(), self.task())
 
 
-class SunsetTrigger(Trigger):
+class SunsetTrigger(TriggerBase):
     def __init__(self, sundata: Sundata, task: Task = Task.CLOSE):
         super().__init__(task, sundata.get_sunset())
 
@@ -49,11 +71,15 @@ class SunsetTrigger(Trigger):
     def type() -> str:
         return 'SUNSET'
 
+    @staticmethod
+    def create(trigger, **args) -> Trigger:
+        return SunsetTrigger(args.get('sundata'))
+
     def __repr__(self):
         return 'SunsetTrigger: { runtime: %s, task: %s }' % (self.time(), self.task())
 
 
-class SunInTrigger(Trigger):
+class SunInTrigger(TriggerBase):
     def __init__(self, sundata: Sundata, azimuth: int, task: Task = Task.TILT):
         super().__init__(task, sundata.find_azimuth(azimuth).time)
 
@@ -61,11 +87,15 @@ class SunInTrigger(Trigger):
     def type() -> str:
         return 'SUNIN'
 
+    @staticmethod
+    def create(trigger, **args) -> Trigger:
+        return SunInTrigger(args.get('sundata'), args.get('azimuth'))
+
     def __repr__(self):
         return 'SunInTrigger: { runtime: %s, task: %s }' % (self.time(), self.task())
 
 
-class SunOutTrigger(Trigger):
+class SunOutTrigger(TriggerBase):
     def __init__(self, sundata: Sundata, azimuth: int, task: Task = Task.OPEN):
         super().__init__(task, sundata.find_azimuth(azimuth).time)
 
@@ -73,12 +103,16 @@ class SunOutTrigger(Trigger):
     def type() -> str:
         return 'SUNOUT'
 
+    @staticmethod
+    def create(trigger, **args) -> Trigger:
+        return SunOutTrigger(args.get('sundata'), args.get('azimuth'))
+
     def __repr__(self):
         return 'SunOutTrigger: { runtime: %s, task: %s }' % (self.time(), self.task())
 
 
-class TimeTrigger(Trigger):
-    def __init__(self, runtime: time, task: Task):
+class TimeTrigger(TriggerBase):
+    def __init__(self, runtime: time, task: Task = Task.CLOSE):
         super().__init__(task, self.__prepare_runtime(runtime))
 
     def __prepare_runtime(self, runtime: time) -> datetime:
@@ -88,6 +122,11 @@ class TimeTrigger(Trigger):
     @staticmethod
     def type() -> str:
         return 'TIME'
+
+    @staticmethod
+    def create(trigger, **args) -> Trigger:
+        runtime = time.fromisoformat(trigger.get('time'))
+        return TimeTrigger(runtime)
 
     def __repr__(self):
         return 'TimeTrigger: { runtime: %s, task: %s }' % (self.time(), self.task())
@@ -102,50 +141,31 @@ def apply_triggers(manager: JobManager, sundata: Sundata, shelly: Shelly):
 def extract_triggers(triggerdata, wall: Wall, sundata: Sundata) -> [Trigger]:
     triggers: [Trigger] = []
     for trigger in triggerdata:
-        if isinstance(trigger, str):
-            if trigger == SunriseTrigger.type():
-                sunrise = SunriseTrigger(sundata)
-                triggers.append(sunrise)
-                continue
-            if trigger == SunsetTrigger.type():
-                sunset = SunsetTrigger(sundata)
-                triggers.append(sunset)
-                continue
-            if trigger == SunInTrigger.type():
-                sunin = SunInTrigger(sundata, wall.in_sun())
-                triggers.append(sunin)
-                continue
-            if trigger == SunOutTrigger.type():
-                sunout = SunOutTrigger(sundata, wall.out_sun())
-                triggers.append(sunout)
-                continue
-            logger.error('No Trigger for {} existing'.format(trigger))
+        if build_trigger(trigger, SunriseTrigger.type(), SunriseTrigger.create, triggers, sundata=sundata):
             continue
-        if SunriseTrigger.type() in trigger.keys():
-            risetrigger = trigger.get(SunriseTrigger.type())
-            task = Task.from_name(risetrigger.get('task'))
-            triggers.append(SunriseTrigger(sundata, task))
+        if build_trigger(trigger, SunsetTrigger.type(), SunsetTrigger.create, triggers, sundata=sundata):
             continue
-        if SunsetTrigger.type() in trigger.keys():
-            settrigger = trigger.get(SunsetTrigger.type())
-            task = Task.from_name(settrigger.get('task'))
-            triggers.append(SunsetTrigger(sundata, task))
+        if build_trigger(trigger, SunInTrigger.type(), SunInTrigger.create, triggers, sundata=sundata, azimuth=wall.in_sun()):
             continue
-        if SunInTrigger.type() in trigger.keys():
-            intrigger = trigger.get(SunInTrigger.type())
-            task = Task.from_name(intrigger.get('task'))
-            triggers.append(SunInTrigger(sundata, wall.in_sun(), task))
+        if build_trigger(trigger, SunOutTrigger.type(), SunOutTrigger.create, triggers, sundata=sundata, azimuth=wall.out_sun()):
             continue
-        if SunOutTrigger.type() in trigger.keys():
-            outtrigger = trigger.get(SunOutTrigger.type())
-            task = Task.from_name(outtrigger.get('task'))
-            triggers.append(SunOutTrigger(sundata, wall.out_sun(), task))
-            continue
-        if TimeTrigger.type() in trigger.keys():
-            timetrigger = trigger.get(TimeTrigger.type())
-            task = Task.from_name(timetrigger.get('task'))
-            runtime = time.fromisoformat(timetrigger.get('time'))
-            triggers.append(TimeTrigger(runtime, task))
+        if build_trigger(trigger, TimeTrigger.type(), TimeTrigger.create, triggers):
             continue
         logger.error('No Trigger for {} existing'.format(trigger))
     return triggers
+
+
+def build_trigger(triggerdata, type: str, constructor, triggers: [Trigger], **args) -> bool:
+    if isinstance(triggerdata, str):
+        if triggerdata == type:
+            triggers.append(constructor(trigger=triggerdata, **args))
+            return True
+        return False
+    if type in triggerdata.keys():
+        triggerdict = triggerdata.get(type)
+        task = Task.from_name(triggerdict.get('task'))
+        trigger = constructor(trigger=triggerdict, **args)
+        trigger.set_task(task)
+        triggers.append(trigger)
+        return True
+    return False
