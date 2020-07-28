@@ -18,7 +18,7 @@ class Trigger:
     def task(self) -> Task:
         pass
 
-    def set_task(self):
+    def set_task(self, task: Task):
         pass
 
     def time(self):
@@ -141,15 +141,13 @@ def apply_triggers(manager: JobManager, sundata: Sundata, shelly: Shelly):
 def extract_triggers(triggerdata, wall: Wall, sundata: Sundata) -> [Trigger]:
     triggers: [Trigger] = []
     for trigger in triggerdata:
-        if build_trigger(trigger, SunriseTrigger.type(), SunriseTrigger.create, triggers, sundata=sundata):
-            continue
-        if build_trigger(trigger, SunsetTrigger.type(), SunsetTrigger.create, triggers, sundata=sundata):
-            continue
-        if build_trigger(trigger, SunInTrigger.type(), SunInTrigger.create, triggers, sundata=sundata, azimuth=wall.in_sun()):
-            continue
-        if build_trigger(trigger, SunOutTrigger.type(), SunOutTrigger.create, triggers, sundata=sundata, azimuth=wall.out_sun()):
-            continue
-        if build_trigger(trigger, TimeTrigger.type(), TimeTrigger.create, triggers):
+        if build_trigger(trigger, SunriseTrigger.type(), SunriseTrigger.create, triggers, sundata=sundata) or \
+                build_trigger(trigger, SunsetTrigger.type(), SunsetTrigger.create, triggers, sundata=sundata) or \
+                build_trigger(trigger, SunInTrigger.type(), SunInTrigger.create, triggers, sundata=sundata,
+                              azimuth=wall.in_sun()) or \
+                build_trigger(trigger, SunOutTrigger.type(), SunOutTrigger.create, triggers, sundata=sundata,
+                              azimuth=wall.out_sun()) or \
+                build_trigger(trigger, TimeTrigger.type(), TimeTrigger.create, triggers):
             continue
         logger.error('No Trigger for {} existing'.format(trigger))
     return triggers

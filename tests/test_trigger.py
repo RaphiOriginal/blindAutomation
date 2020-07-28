@@ -64,6 +64,11 @@ class TriggerTest(unittest.TestCase):
             now = datetime.now(tz.tzlocal())
             self.assertEqual(now.date().isoformat() + 'T16:00:00+02:00', item.time().isoformat())
 
+    def test_no_match(self):
+        triggers = ['YOLO', {'YOLO': {'task': 'OPEN'}}]
+        result = trigger.extract_triggers(triggers, wall(), sundata())
+        self.assertEqual(0, len(result))
+
 
 def wall() -> Wall:
     return Wall('name', 10, 20)
