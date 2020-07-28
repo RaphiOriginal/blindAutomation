@@ -38,8 +38,9 @@ def main():
             trigger.apply_triggers(manager, sun, shelly)
 
         manager.prepare().run()
+        exit(0)
     else:
         logger.info('No configured shellys found')
-
+        exit(1)
 
 main()
