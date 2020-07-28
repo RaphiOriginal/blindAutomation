@@ -11,6 +11,7 @@ class ShellyFinder(unittest.TestCase):
         shellys = [Shelly('test', 'WS46FD', Wall('test', 0, 0), [])]
         shelly_finder.update_configured_shellys(shellys, [('testip', get_json())])
         self.assertEqual(1, len(shellys))
+        self.assertEqual('testip', shellys[0].url)
 
 
 if __name__ == '__main__':

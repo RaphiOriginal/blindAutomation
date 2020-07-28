@@ -48,7 +48,7 @@ def fetch_shelly(session: requests.Session, base_url: str):
         url = '{}/status/'.format(base_url)
         r = session.get(url, timeout=1)
         if r.status_code == 200:
-            logger.info('found ' + r.text)
+            logger.info('found on {} with: {}'.format(base_url, r.text))
             return base_url, r.json()
     except Exception as e:
         logger.info(e)
