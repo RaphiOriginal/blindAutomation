@@ -90,9 +90,10 @@ def update_configured_shellys(shellys, pool):
             logger.info('multiple or none device found in network for configured Shelly: {}'.format(shelly))
             shellys.remove(shelly)
         else:
-            shelly.url = match[0][0]
-
-            if len(match[0]) == 0 or match[0][1].get('rollers') is None or \
+            if len(match[0]) <= 1 or match[0][1].get('rollers') is None or \
                     not match[0][1].get('rollers')[0].get('positioning'):
                 logger.error('Shelly {} not configured as roller or calibrated'.format(shelly))
                 shellys.remove(shelly)
+                pass
+
+            shelly.url = match[0][0]
