@@ -83,7 +83,7 @@ class TimeTrigger(Trigger):
 
     def __prepare_runtime(self, runtime: time) -> datetime:
         now = datetime.now(tz.tzlocal())
-        return now.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second)
+        return now.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second, microsecond=0)
 
     @staticmethod
     def type() -> str:
