@@ -46,7 +46,7 @@ def prepare_shellys():
 def fetch_shelly(session: requests.Session, base_url: str):
     try:
         url = '{}/status'.format(base_url)
-        r = session.get(url, timeout=1)
+        r = session.get(url, timeout=3)
         logger.debug(r)
         if r.status_code == 200 and r.json() is not None:
             logger.info('🎉 found on {} with: {}'.format(base_url, r.text))
