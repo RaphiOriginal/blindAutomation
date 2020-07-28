@@ -50,7 +50,7 @@ you can edit crontab with e.g. nano:
 
 Add cronjobs:
 ```
-0 3     * * *   root    python3 ~/blindAutomation/app.py
+0 3 * * * ~/blindAutomation/app.py
 ```
 
 It is also recommended to start the script after a reboot to get the magic ongoing e.g. after a power outage.
@@ -79,6 +79,16 @@ WantedBy=multi-user.target
 WantedBy=network-online.service
 ```
 
+after that a simple `sudo systemctl enable blindAutomation.service` will start the app after every reboot
 
+## Logging 🖨
+
+if you like to log the app output, you can adding following to your cronjob:
+
+```
+0 3 * * * ~/blindAutomation/app.py >> /output-daily.log 2>&1
+```
+the output of the reboot job (which is only a fallback anyway) will be logged automaticly and can be found with `sudo journalctl -b -u blindAutomation`.
+But those logs will disappear after a reboot
 
 Made with ❤️ in 🇨🇭
