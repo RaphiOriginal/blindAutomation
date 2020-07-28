@@ -48,7 +48,7 @@ class TriggerTest(unittest.TestCase):
         triggers = ['SUNOUT', {'SUNOUT': {'task': 'TILT'}}]
         result = trigger.extract_triggers(triggers, wall(), sundata())
         self.assertEqual(2, len(result))
-        self.assertEqual(Task.CLOSE, result[0].task())
+        self.assertEqual(Task.OPEN, result[0].task())
         self.assertEqual(Task.TILT, result[1].task())
         for item in result:
             self.assertEqual(SunOutTrigger.type(), item.type())
