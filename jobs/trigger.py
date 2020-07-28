@@ -24,11 +24,18 @@ class Trigger:
     def time(self):
         pass
 
+    def offset(self):
+        pass
+
+    def set_offset(self, offset: int):
+        pass
+
 
 class TriggerBase(Trigger):
     def __init__(self, task: Task, runtime: datetime):
         self.__task: Task = task
         self.__time: datetime = runtime
+        self.__offset: int = 0
 
     def task(self) -> Task:
         return self.__task
@@ -39,12 +46,18 @@ class TriggerBase(Trigger):
     def time(self) -> datetime:
         return self.__time
 
+    def offset(self):
+        return self.__offset
+
+    def set_offset(self, offset: int):
+        self.__offset = offset
+
     @staticmethod
     def create(trigger, **args) -> Trigger:
         raise NotImplementedError()
 
     def __repr__(self):
-        return 'Trigger: { runtime: %s, task: %s }' % (self.__time, self.__task)
+        return 'Trigger: { runtime: %s, task: %s, offset: %s }' % (self.__time, self.__task, self.__offset)
 
 
 class SunriseTrigger(TriggerBase):
@@ -60,7 +73,7 @@ class SunriseTrigger(TriggerBase):
         return SunriseTrigger(args.get('sundata'))
 
     def __repr__(self):
-        return 'SunriseTrigger: { runtime: %s, task: %s }' % (self.time(), self.task())
+        return 'SunriseTrigger: { runtime: %s, task: %s, offset: %s }' % (self.time(), self.task(), self.offset())
 
 
 class SunsetTrigger(TriggerBase):
@@ -76,7 +89,7 @@ class SunsetTrigger(TriggerBase):
         return SunsetTrigger(args.get('sundata'))
 
     def __repr__(self):
-        return 'SunsetTrigger: { runtime: %s, task: %s }' % (self.time(), self.task())
+        return 'SunsetTrigger: { runtime: %s, task: %s, offset: %s }' % (self.time(), self.task(), self.offset())
 
 
 class SunInTrigger(TriggerBase):
@@ -92,7 +105,7 @@ class SunInTrigger(TriggerBase):
         return SunInTrigger(args.get('sundata'), args.get('azimuth'))
 
     def __repr__(self):
-        return 'SunInTrigger: { runtime: %s, task: %s }' % (self.time(), self.task())
+        return 'SunInTrigger: { runtime: %s, task: %s, offset: %s }' % (self.time(), self.task(), self.offset())
 
 
 class SunOutTrigger(TriggerBase):
@@ -108,7 +121,7 @@ class SunOutTrigger(TriggerBase):
         return SunOutTrigger(args.get('sundata'), args.get('azimuth'))
 
     def __repr__(self):
-        return 'SunOutTrigger: { runtime: %s, task: %s }' % (self.time(), self.task())
+        return 'SunOutTrigger: { runtime: %s, task: %s, offset: %s }' % (self.time(), self.task(), self.offset())
 
 
 class TimeTrigger(TriggerBase):
@@ -129,7 +142,7 @@ class TimeTrigger(TriggerBase):
         return TimeTrigger(runtime)
 
     def __repr__(self):
-        return 'TimeTrigger: { runtime: %s, task: %s }' % (self.time(), self.task())
+        return 'TimeTrigger: { runtime: %s, task: %s, offset: %s }' % (self.time(), self.task(), self.offset())
 
 
 def apply_triggers(manager: JobManager, sundata: Sundata, shelly: Shelly):
@@ -162,13 +175,24 @@ def build_trigger(triggerdata, type: str, constructor, triggers: [Trigger], **ar
     if type in triggerdata.keys():
         triggerdict = triggerdata.get(type)
         trigger = constructor(trigger=triggerdict, **args)
-        set_task(trigger, triggerdict)
+        set_optionals(trigger, triggerdict)
         triggers.append(trigger)
         return True
     return False
+
+
+def set_optionals(trigger, triggerdict):
+    set_task(trigger, triggerdict)
+    set_offset(trigger, triggerdict)
 
 
 def set_task(trigger: Trigger, triggerdict):
     if 'task' in triggerdict:
         task = Task.from_name(triggerdict.get('task'))
         trigger.set_task(task)
+
+
+def set_offset(trigger: Trigger, triggerdict):
+    if 'offset' in triggerdict:
+        offset = triggerdict.get('offset')
+        trigger.set_offset(offset)
