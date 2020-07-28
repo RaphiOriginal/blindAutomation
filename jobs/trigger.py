@@ -19,10 +19,10 @@ class Trigger:
         self.__task: Task = task
         self.__time: datetime = runtime
 
-    def task(self):
+    def task(self) -> Task:
         return self.__task
 
-    def time(self):
+    def time(self) -> datetime:
         return self.__time
 
     def __repr__(self):
@@ -34,7 +34,7 @@ class SunriseTrigger(Trigger):
         super().__init__(task, sundata.get_sunrise())
 
     @staticmethod
-    def type():
+    def type() -> str:
         return 'SUNRISE'
 
     def __repr__(self):
@@ -46,7 +46,7 @@ class SunsetTrigger(Trigger):
         super().__init__(task, sundata.get_sunset())
 
     @staticmethod
-    def type():
+    def type() -> str:
         return 'SUNSET'
 
     def __repr__(self):
@@ -58,7 +58,7 @@ class SunInTrigger(Trigger):
         super().__init__(task, sundata.find_azimuth(azimuth).time)
 
     @staticmethod
-    def type():
+    def type() -> str:
         return 'SUNIN'
 
     def __repr__(self):
@@ -70,7 +70,7 @@ class SunOutTrigger(Trigger):
         super().__init__(task, sundata.find_azimuth(azimuth).time)
 
     @staticmethod
-    def type():
+    def type() -> str:
         return 'SUNOUT'
 
     def __repr__(self):
@@ -86,7 +86,7 @@ class TimeTrigger(Trigger):
         return now.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second)
 
     @staticmethod
-    def type():
+    def type() -> str:
         return 'TIME'
 
     def __repr__(self):
