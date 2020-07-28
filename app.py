@@ -26,7 +26,7 @@ def prepare_api() -> SunAPI:
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     shellys = shelly_finder.collect()
     if len(shellys) > 0:
         api: SunAPI = prepare_api()

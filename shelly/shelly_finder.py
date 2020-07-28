@@ -47,11 +47,12 @@ def fetch_shelly(session: requests.Session, base_url: str):
     try:
         url = '{}/status'.format(base_url)
         r = session.get(url, timeout=1)
-        if r.status_code == 200:
-            logger.debug('🎉 found on {} with: {}'.format(base_url, r.text))
+        logger.debug(r)
+        if r.status_code == 200 and r.json() is not None:
+            logger.info('🎉 found on {} with: {}'.format(base_url, r.text))
             return base_url, r.json()
     except Exception as e:
-        logger.error('{}: no shelly found error: {}'.format(base_url, e))
+        logger.debug('{}: no shelly found error: {}'.format(base_url, e))
 
 
 async def collect_shellys(mask: IPv4Network):
@@ -67,6 +68,7 @@ async def collect_shellys(mask: IPv4Network):
             ]
             for response in await asyncio.gather(*potentials):
                 if response is not None:
+                    logger.info('response: {}'.format(response))
                     shellys.append(response)
     return shellys
 
@@ -79,7 +81,7 @@ def collect():
     pool = loop.run_until_complete(future)
 
     shellys = prepare_shellys()
-    update_configured_shellys(shellys, pool)
+    shellys = update_configured_shellys(shellys, pool)
     return shellys
 
 
@@ -87,7 +89,7 @@ def update_configured_shellys(shellys, pool):
     for shelly in shellys:
         match = list(filter(lambda entry: shelly.id.upper() in entry[1].get('mac'), pool))
         if len(match) != 1:
-            logger.info('multiple or none device found in network for configured Shelly: {}'.format(shelly))
+            logger.info('{} devices found in network for configured Shelly: {}'.format(len(match), shelly))
             shellys.remove(shelly)
         else:
             if len(match[0]) <= 1 or match[0][1].get('rollers') is None or \
@@ -97,3 +99,5 @@ def update_configured_shellys(shellys, pool):
                 pass
 
             shelly.url = match[0][0]
+    logger.info('Updated Shellys: {}'.format(shellys))
+    return shellys
