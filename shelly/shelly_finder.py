@@ -81,23 +81,23 @@ def collect():
     pool = loop.run_until_complete(future)
 
     shellys = prepare_shellys()
-    shellys = update_configured_shellys(shellys, pool)
-    return shellys
+    updated = update_configured_shellys(shellys, pool)
+    return updated
 
 
-def update_configured_shellys(shellys, pool):
+def update_configured_shellys(shellys: [Shelly], pool) -> [Shelly]:
+    updated_shellys: [Shelly] = []
     for shelly in shellys:
         match = list(filter(lambda entry: shelly.id.upper() in entry[1].get('mac'), pool))
         if len(match) != 1:
             logger.info('{} devices found in network for configured Shelly: {}'.format(len(match), shelly))
-            shellys.remove(shelly)
         else:
             if len(match[0]) <= 1 or match[0][1].get('rollers') is None or \
                     not match[0][1].get('rollers')[0].get('positioning') or match[0][0] is None:
                 logger.error('Shelly {} not configured as roller or calibrated'.format(shelly))
-                shellys.remove(shelly)
-                pass
+                continue
 
             shelly.url = match[0][0]
-    logger.info('Updated Shellys: {}'.format(shellys))
-    return shellys
+            updated_shellys.append(shelly)
+    logger.info('Updated Shellys: {}'.format(updated_shellys))
+    return updated_shellys
