@@ -15,4 +15,4 @@ def work(task):
         if order.status_code != 200:
             logger.error('Call with {} failed with status {} and content: {}'.format(task.do(), order.status_code, order.text))
         else:
-            logger.info('Task {} completed: {}'.format(task.do(), order.text))
+            logger.info('Task {} send: {}'.format(task.do(), order.text))
