@@ -23,6 +23,14 @@ class Shelly:
         self.__check_url()
         return '{}/roller/0?go=to_pos&roller_pos={}'.format(self.url, pos)
 
+    def open(self):
+        self.__check_url()
+        return '{}/roller/0?go=open'.format(self.url)
+
+    def close(self):
+        self.__check_url()
+        return '{}/roller/0?go=close'.format(self.url)
+
     def __check_url(self):
         if self.url is None:
             raise ValueError("URL must be set!")
