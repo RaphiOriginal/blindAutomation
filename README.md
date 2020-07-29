@@ -43,7 +43,7 @@ You have to get access to the meteomatics api and update your logins in the sett
 
 ## Running and Installation 🏃🏗
 #####Balena.io
-After you downloaded the project and prepared your settings file, the easiest way to do it is by deploying it with (balena)[https://www.balena.io/os]
+After you downloaded the project and prepared your settings file, the easiest way to do it is by deploying it with [balena](https://www.balena.io/os)
 Follow getting started and after all the preparation is done and your RaspberryPi 4 is reachable over the network, simpli go to the project root folder in the terminal and use following command:
 ```
 balena push yourDevice.local
