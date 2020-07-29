@@ -41,7 +41,18 @@ copy and rename [settings.yaml.template](https://github.com/RaphiOriginal/blindA
 ## Meteomatics ☀️
 You have to get access to the meteomatics api and update your logins in the settings.yaml
 
-## Run 🏃
+## Running and Installation 🏃🏗
+#####Balena.io
+After you downloaded the project and prepared your settings file, the easiest way to do it is by deploying it with (balena)[https://www.balena.io/os]
+Follow getting started and after all the preparation is done and your RaspberryPi 4 is reachable over the network, simpli go to the project root folder in the terminal and use following command:
+```
+balena push yourDevice.local
+```
+after that, the application fetches all new sundata every 03:00 of your local timezone
+after powerloss, the container will start itself again and we're back on track.
+Further customization are possible in the Dockerfile
+#####Manual Installation
+If you want to install the application without Docker you can install it also manually for the same functionality. Only how you will bring the code on the device is then your own business.
 I recommend to run this scripts with cronjob. It will collect all task for a full day, and after the day is over, it will finish and needs to be started again.
 Due to the nature of the Meteomatics API i recommend to time your Fetch for your day after midnight utc if possible (e.g. 03:00 for MEZ) but before the first Task should be applied.
 
