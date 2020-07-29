@@ -1,0 +1,12 @@
+{
+  "state": "stop",
+  "power": 0,
+  "is_valid": true,
+  "safety_switch": false,
+  "overtemperature": false,
+  "stop_reason": "normal",
+  "last_direction": "close",
+  "current_pos": 0,
+  "calibrating": false,
+  "positioning": true
+}
