@@ -36,7 +36,7 @@ class BaseTask:
         self.__target: State = target
         self.__position: int = position
 
-    def ready(self):
+    def ready(self) -> bool:
         return True
 
     def done(self):
@@ -70,7 +70,7 @@ class Tilt(BaseTask):
         super().__init__(shelly, State.TILT, 2)
         self.__precondition: State = State.CLOSED
 
-    def ready(self):
+    def ready(self) -> bool:
         state = blind_state.fetch_blindstate(self.shelly)
         logger.debug(state)
         return state.state() == self.__precondition or state.state() == self._target()
