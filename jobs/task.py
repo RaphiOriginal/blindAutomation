@@ -31,10 +31,9 @@ class Task(Enum):
 
 
 class BaseTask:
-    def __init__(self, shelly: Shelly, target: State, position: int):
+    def __init__(self, shelly: Shelly, target: State):
         self.shelly: Shelly = shelly
         self.__target: State = target
-        self.__position: int = position
 
     def ready(self) -> bool:
         return True
@@ -44,7 +43,7 @@ class BaseTask:
         return state.state() == self.__target
 
     def do(self):
-        return self.shelly.set_roller(self.__position)
+        pass
 
     def _target(self):
         return self.__target
@@ -52,25 +51,37 @@ class BaseTask:
 
 class Close(BaseTask):
     def __init__(self, shelly: Shelly):
-        super().__init__(shelly, State.CLOSED, 0)
+        super().__init__(shelly, State.CLOSED)
+
+    def do(self):
+        return self.shelly.close()
 
 
 class Open(BaseTask):
     def __init__(self, shelly: Shelly):
-        super().__init__(shelly, State.OPEN, 100)
+        super().__init__(shelly, State.OPEN)
+
+    def do(self):
+        return self.shelly.open()
 
 
 class PreTilt(BaseTask):
     def __init__(self, shelly: Shelly):
-        super().__init__(shelly, State.TILT, 0)
+        super().__init__(shelly, State.TILT)
+
+    def do(self):
+        return self.shelly.close()
 
 
 class Tilt(BaseTask):
     def __init__(self, shelly: Shelly):
-        super().__init__(shelly, State.TILT, 2)
+        super().__init__(shelly, State.TILT)
         self.__precondition: State = State.CLOSED
 
     def ready(self) -> bool:
         state = blind_state.fetch_blindstate(self.shelly)
         logger.debug(state)
         return state.state() == self.__precondition or state.state() == self._target()
+
+    def do(self):
+        return self.shelly.set_roller(2)
