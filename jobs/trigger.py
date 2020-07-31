@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import logging
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 
 from dateutil import tz
 
@@ -44,13 +44,21 @@ class TriggerBase(Trigger):
         self.__task = task
 
     def time(self) -> datetime:
-        return self.__time
+        return self.__apply_offset()
 
     def offset(self):
         return self.__offset
 
     def set_offset(self, offset: int):
         self.__offset = offset
+
+    def __apply_offset(self) -> datetime:
+        delta = timedelta(minutes=abs(self.__offset))
+        if self.__offset > 0:
+            return self.__time + delta
+        if self.__offset < 0:
+            return self.__time - delta
+        return self.__time
 
     @staticmethod
     def create(trigger, **args) -> Trigger:

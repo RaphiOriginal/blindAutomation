@@ -69,6 +69,20 @@ class TriggerTest(unittest.TestCase):
         result = trigger.extract_triggers(triggers, wall(), sundata())
         self.assertEqual(0, len(result))
 
+    def test_offset_plus(self):
+        triggers = [{'SUNOUT': {'offset': 2}}]
+        result = trigger.extract_triggers(triggers, wall(), sundata())
+        self.assertEqual(1, len(result))
+        self.assertEqual(SunOutTrigger.type(), result[0].type())
+        self.assertEqual('2020-07-27T13:10:00+02:00', result[0].time().isoformat())
+
+    def test_offset_plus(self):
+        triggers = [{'SUNOUT': {'offset': -8}}]
+        result = trigger.extract_triggers(triggers, wall(), sundata())
+        self.assertEqual(1, len(result))
+        self.assertEqual(SunOutTrigger.type(), result[0].type())
+        self.assertEqual('2020-07-27T13:00:00+02:00', result[0].time().isoformat())
+
 
 def wall() -> Wall:
     return Wall('name', 10, 20)

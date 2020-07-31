@@ -23,7 +23,8 @@ shellys:
       direction: north
       triggers:
         - SUNRISE
-        - SUNSET
+        - SUNSET:
+            offset: 30
         - SUNIN
         - SUNOUT
   - shelly:
@@ -33,7 +34,8 @@ shellys:
       triggers:
         - SUNRISE:
             task: TILT
-        - SUNSET
+        - SUNSET:
+            offset: -20
         - SUNIN
         - SUNOUT
         - TIME:
