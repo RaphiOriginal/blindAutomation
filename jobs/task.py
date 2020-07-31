@@ -51,7 +51,7 @@ class BaseTask:
 
 class Close(BaseTask):
     def __init__(self, shelly: Shelly):
-        super().__init__(shelly, State.CLOSED)
+        super(Close, self).__init__(shelly, State.CLOSED)
 
     def do(self):
         return self.shelly.close()
@@ -59,7 +59,7 @@ class Close(BaseTask):
 
 class Open(BaseTask):
     def __init__(self, shelly: Shelly):
-        super().__init__(shelly, State.OPEN)
+        super(Open, self).__init__(shelly, State.OPEN)
 
     def do(self):
         return self.shelly.open()
@@ -67,7 +67,7 @@ class Open(BaseTask):
 
 class PreTilt(BaseTask):
     def __init__(self, shelly: Shelly):
-        super().__init__(shelly, State.TILT)
+        super(PreTilt, self).__init__(shelly, State.TILT)
 
     def do(self):
         return self.shelly.close()
@@ -75,7 +75,7 @@ class PreTilt(BaseTask):
 
 class Tilt(BaseTask):
     def __init__(self, shelly: Shelly):
-        super().__init__(shelly, State.TILT)
+        super(Tilt, self).__init__(shelly, State.TILT)
         self.__precondition: State = State.CLOSED
 
     def ready(self) -> bool:
