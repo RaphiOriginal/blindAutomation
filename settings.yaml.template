@@ -9,35 +9,37 @@ api: meteomatics
 networkmask:  192.168.0.0/16
 walls:
   - wall:
-      name: south
-      in: 100
-      out: 200
-  - wall:
-      name: north
-      in: 200
-      out: 300
-shellys:
-  - shelly:
-      name: Shelly1
-      id: 111111
-      direction: north
-      triggers:
-        - SUNRISE
-        - SUNSET:
-            offset: 30
-        - SUNIN
-        - SUNOUT
-  - shelly:
-      name: Shelly2
-      id: 222222
-      direction: south
-      triggers:
-        - SUNRISE:
-            task: TILT
-        - SUNSET:
-            offset: -20
-        - SUNIN
-        - SUNOUT
-        - TIME:
+    name: south
+    in: 100
+    out: 200
+    blinds:
+      - blind:
+        in: 111
+        shelly:
+          name: Shelly1
+          id: 111111
+        triggers:
+          - SUNRISE
+          - SUNSET:
+              offset: 30
+          - SUNIN
+          - SUNOUT
+      - blind:
+        out: 222
+        shelly:
+          name: Shelly2
+          id: 222222
+        triggers:
+          - SUNRISE:
+              task: TILT
+          - SUNSET:
+              offset: -20
+          - SUNIN
+          - SUNOUT
+          - TIME:
             task: TILT
             time: '16:00:00'
+  - wall:
+    name: west
+    in: 200
+    out: 300

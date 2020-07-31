@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
-from shelly.wall import Wall
 
 
 class Shelly:
     url: str = None
 
-    def __init__(self, name: str, id: str, wall: Wall, triggers: []):
+    def __init__(self, name: str, id: str):
         self.name: str = name
         self.id: str = id
-        self.wall: Wall = wall
-        self.triggers: [] = triggers
 
     def get_status(self):
         self.__check_url()
@@ -36,4 +33,4 @@ class Shelly:
             raise ValueError("URL must be set!")
 
     def __repr__(self):
-        return 'Shelly: { name: %s, id: %s, wall: %s, ip: %s}' % (self.name, self.id, self.wall, self.url)
+        return 'Shelly: { name: %s, id: %s, ip: %s}' % (self.name, self.id, self.url)

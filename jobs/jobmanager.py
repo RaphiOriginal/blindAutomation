@@ -43,7 +43,9 @@ class JobManager:
 
             for job in future:
                 job.schedule(self.__schedule)
-            logger.info('{} jobs prepared for {}: {}'.format(len(future), shelly, future))
+            logger.info('{} jobs prepared for {}:'.format(len(future), shelly))
+            for job in future:
+                logger.info(job)
 
         return self
 

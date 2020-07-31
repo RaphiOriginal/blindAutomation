@@ -27,6 +27,7 @@ class APISettings:
 
         return self.__coordinates
 
+
 class NetworkSettings:
     def __init__(self, settingsfile):
         with open(settingsfile, 'r') as stream:

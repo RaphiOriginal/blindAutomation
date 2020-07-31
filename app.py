@@ -27,20 +27,22 @@ def prepare_api() -> SunAPI:
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    shellys = shelly_finder.collect()
-    if len(shellys) > 0:
+    walls = shelly_finder.collect()
+    if len(walls) > 0:
         api: SunAPI = prepare_api()
         sun: Sundata = api.fetch_sundata()
 
         manager = JobManager()
 
-        for shelly in shellys:
-            trigger.apply_triggers(manager, sun, shelly)
+        for wall in walls:
+            for blind in wall.blinds:
+                trigger.apply_triggers(manager, sun, blind)
 
         manager.prepare().run()
         exit(0)
     else:
         logger.info('No configured shellys found')
         exit(1)
+
 
 main()

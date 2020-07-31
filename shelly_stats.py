@@ -6,9 +6,9 @@ from shelly import shelly_finder
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    shellys = shelly_finder.collect()
-    logging.info(len(shellys))
-    logging.info(shellys)
+    walls = shelly_finder.collect()
+    logging.info(len(walls))
+    logging.info(walls)
 
 
 main()

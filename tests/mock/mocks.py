@@ -16,12 +16,12 @@ class SunAPIMock(SunAPI):
         return get_sundata_mock()
 
 
-def get_sundata_mock(time_delta: int = 10):
-    now = datetime.now(tz.tzlocal())
+def get_sundata_mock(time_delta: int = 30):
     delta = timedelta(seconds=time_delta)
+    now = datetime.now(tz.tzlocal())
     multiplier = 1
     positions: [Position] = []
-    sunrise = now
+    sunrise = now + delta
     for dec in range(50, 310):
         stamp = now + delta * multiplier
         azi = Azimuth(stamp, dec)

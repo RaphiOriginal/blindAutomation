@@ -4,11 +4,12 @@ from datetime import datetime, time, timedelta
 
 from dateutil import tz
 
+from blinds.blind import Blind
 from jobs.job import Job
 from jobs.jobmanager import JobManager
 from jobs.task import Task
 from shelly.shelly import Shelly
-from shelly.wall import Wall
+from blinds.wall import Wall
 from sun.sundata import Sundata
 
 logger = logging.getLogger(__name__)
@@ -78,7 +79,7 @@ class SunriseTrigger(TriggerBase):
         return SunriseTrigger(args.get('sundata'))
 
     def __repr__(self):
-        return 'SunriseTrigger: { %s }' % (super.__repr__())
+        return 'SunriseTrigger: { %s }' % (super(SunriseTrigger, self).__repr__())
 
 
 class SunsetTrigger(TriggerBase):
@@ -150,21 +151,21 @@ class TimeTrigger(TriggerBase):
         return 'TimeTrigger: { %s }' % (super(TimeTrigger, self).__repr__())
 
 
-def apply_triggers(manager: JobManager, sundata: Sundata, shelly: Shelly):
-    triggers = extract_triggers(shelly.triggers, shelly.wall, sundata)
+def apply_triggers(manager: JobManager, sundata: Sundata, blind: Blind):
+    triggers = extract_triggers(blind, sundata)
     for trigger in triggers:
-        manager.add(Job(trigger, shelly))
+        manager.add(Job(trigger, blind.shelly))
 
 
-def extract_triggers(triggerdata, wall: Wall, sundata: Sundata) -> [Trigger]:
+def extract_triggers(blind: Blind, sundata: Sundata) -> [Trigger]:
     triggers: [Trigger] = []
-    for trigger in triggerdata:
+    for trigger in blind.triggers:
         if build_trigger(trigger, SunriseTrigger.type(), SunriseTrigger.create, triggers, sundata=sundata) or \
                 build_trigger(trigger, SunsetTrigger.type(), SunsetTrigger.create, triggers, sundata=sundata) or \
                 build_trigger(trigger, SunInTrigger.type(), SunInTrigger.create, triggers, sundata=sundata,
-                              azimuth=wall.in_sun()) or \
+                              azimuth=blind.sun_in) or \
                 build_trigger(trigger, SunOutTrigger.type(), SunOutTrigger.create, triggers, sundata=sundata,
-                              azimuth=wall.out_sun()) or \
+                              azimuth=blind.sun_out) or \
                 build_trigger(trigger, TimeTrigger.type(), TimeTrigger.create, triggers):
             continue
         logger.error('No Trigger for {} existing'.format(trigger))
@@ -172,6 +173,7 @@ def extract_triggers(triggerdata, wall: Wall, sundata: Sundata) -> [Trigger]:
 
 
 def build_trigger(triggerdata, type: str, constructor, triggers: [Trigger], **args) -> bool:
+    logger.debug('parse: {} for {}'.format(triggers, type))
     if isinstance(triggerdata, str):
         if triggerdata == type:
             triggers.append(constructor(trigger=triggerdata, **args))

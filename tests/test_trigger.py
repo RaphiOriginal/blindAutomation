@@ -3,10 +3,10 @@ from datetime import datetime
 
 from dateutil import parser, tz
 
+from blinds.blind import Blind
 from jobs import trigger
 from jobs.task import Task
 from jobs.trigger import SunriseTrigger, SunsetTrigger, SunInTrigger, SunOutTrigger, TimeTrigger
-from shelly.wall import Wall
 from sun.azimuth import Azimuth
 from sun.elevation import Elevation
 from sun.position import Position
@@ -16,7 +16,7 @@ from sun.sundata import Sundata
 class TriggerTest(unittest.TestCase):
     def test_extract_sunrise(self):
         triggers = ['SUNRISE', {'SUNRISE': {'task': 'TILT'}}]
-        result = trigger.extract_triggers(triggers, wall(), sundata())
+        result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(2, len(result))
         self.assertEqual(Task.OPEN, result[0].task())
         self.assertEqual(Task.TILT, result[1].task())
@@ -26,7 +26,7 @@ class TriggerTest(unittest.TestCase):
 
     def test_extract_sunset(self):
         triggers = ['SUNSET', {'SUNSET': {'task': 'TILT'}}]
-        result = trigger.extract_triggers(triggers, wall(), sundata())
+        result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(2, len(result))
         self.assertEqual(Task.CLOSE, result[0].task())
         self.assertEqual(Task.TILT, result[1].task())
@@ -36,7 +36,7 @@ class TriggerTest(unittest.TestCase):
 
     def test_extract_sunin(self):
         triggers = ['SUNIN', {'SUNIN': {'task': 'CLOSE'}}]
-        result = trigger.extract_triggers(triggers, wall(), sundata())
+        result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(2, len(result))
         self.assertEqual(Task.TILT, result[0].task())
         self.assertEqual(Task.CLOSE, result[1].task())
@@ -46,7 +46,7 @@ class TriggerTest(unittest.TestCase):
 
     def test_extract_sunout(self):
         triggers = ['SUNOUT', {'SUNOUT': {'task': 'TILT'}}]
-        result = trigger.extract_triggers(triggers, wall(), sundata())
+        result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(2, len(result))
         self.assertEqual(Task.OPEN, result[0].task())
         self.assertEqual(Task.TILT, result[1].task())
@@ -56,7 +56,7 @@ class TriggerTest(unittest.TestCase):
 
     def test_extract_time(self):
         triggers = [{'TIME': {'task': 'CLOSE', 'time': '16:00:00'}}]
-        result = trigger.extract_triggers(triggers, wall(), sundata())
+        result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(Task.CLOSE, result[0].task())
         for item in result:
@@ -66,26 +66,26 @@ class TriggerTest(unittest.TestCase):
 
     def test_no_match(self):
         triggers = ['YOLO', {'YOLO': {'task': 'OPEN'}}]
-        result = trigger.extract_triggers(triggers, wall(), sundata())
+        result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(0, len(result))
 
     def test_offset_plus(self):
         triggers = [{'SUNOUT': {'offset': 2}}]
-        result = trigger.extract_triggers(triggers, wall(), sundata())
+        result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(SunOutTrigger.type(), result[0].type())
         self.assertEqual('2020-07-27T13:10:00+02:00', result[0].time().isoformat())
 
     def test_offset_plus(self):
         triggers = [{'SUNOUT': {'offset': -8}}]
-        result = trigger.extract_triggers(triggers, wall(), sundata())
+        result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(SunOutTrigger.type(), result[0].type())
         self.assertEqual('2020-07-27T13:00:00+02:00', result[0].time().isoformat())
 
 
-def wall() -> Wall:
-    return Wall('name', 10, 20)
+def blind(triggers: []) -> Blind:
+    return Blind(10, 20, None, triggers)
 
 
 def sundata() -> Sundata:
