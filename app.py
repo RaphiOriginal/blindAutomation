@@ -6,6 +6,7 @@ import yaml
 from yamale import yamale
 
 from api.api import SunAPI
+from blinds import building
 from jobs import trigger
 from jobs.jobmanager import JobManager
 from meteomatics.meteomatics_api import MeteomaticsAPI
@@ -29,7 +30,8 @@ def prepare_api() -> SunAPI:
 def main():
     logging.basicConfig(level=logging.INFO)
     validate_settings()
-    walls = shelly_finder.collect()
+    devices = shelly_finder.collect_devices()
+    walls = building.prepare_house(devices)
     if len(walls) > 0:
         api: SunAPI = prepare_api()
         sun: Sundata = api.fetch_sundata()

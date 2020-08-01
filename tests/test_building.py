@@ -1,19 +1,19 @@
 import json
 import unittest
 
+from blinds import building
 from blinds.blind import Blind
-from shelly import shelly_finder
-from shelly.shelly import Shelly
 from blinds.wall import Wall
+from shelly.shelly import Shelly
 
 
-class ShellyFinder(unittest.TestCase):
+class BuildingTest(unittest.TestCase):
     def test_update(self):
         shelly = Shelly('WS46FD')
         blind = Blind('test', 0, 0, shelly, [])
         wall = Wall('egal', 0, 0)
         wall.blinds = [blind]
-        result = shelly_finder.update_configured_shellys([wall], [('testip', get_json())])
+        result = building.update_configured_shellys([wall], [('testip', get_json())])
         self.assertEqual(1, len(result))
         self.assertEqual(1, len(result[0].blinds))
         self.assertEqual('testip', result[0].blinds[0].shelly.url)

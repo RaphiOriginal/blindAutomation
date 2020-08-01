@@ -3,6 +3,7 @@ import logging
 
 from yamale import yamale
 
+from blinds import building
 from shelly import shelly_finder
 
 
@@ -13,7 +14,8 @@ def main():
     data = yamale.make_data('settings.yaml')
     yamale.validate(schema, data)
 
-    walls = shelly_finder.collect()
+    devices = shelly_finder.collect_devices()
+    walls = building.prepare_house(devices)
     logging.info('{} configured and matched Walls'.format(len(walls)))
     for wall in walls:
         logging.info('On {} {} configured and matched blinds:'.format(wall.name, len(wall.blinds)))
