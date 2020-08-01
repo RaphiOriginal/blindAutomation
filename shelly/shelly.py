@@ -5,7 +5,11 @@ class Shelly:
     url: str = None
 
     def __init__(self, id: str):
-        self.id: str = id
+        self.__id: str = id
+
+    @property
+    def id(self):
+        return self.__id
 
     def get_status(self):
         self.__check_url()
@@ -32,4 +36,4 @@ class Shelly:
             raise ValueError("URL must be set!")
 
     def __repr__(self):
-        return 'Shelly: { id: %s, ip: %s}' % (self.id, self.url)
+        return 'Shelly: { id: %s, ip: %s}' % (self.__id, self.url)
