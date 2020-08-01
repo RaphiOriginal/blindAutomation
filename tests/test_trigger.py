@@ -3,7 +3,7 @@ from datetime import datetime
 
 from dateutil import parser, tz
 
-from blinds.blind import Blind
+from building.blind import Blind
 from jobs import trigger
 from jobs.task import Task
 from jobs.trigger import SunriseTrigger, SunsetTrigger, SunInTrigger, SunOutTrigger, TimeTrigger

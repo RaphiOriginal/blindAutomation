@@ -3,8 +3,8 @@ from enum import Enum
 
 import requests
 
-from blinds.blind import Blind
-from blinds.state import State
+from building.blind import Blind
+from building.state import State
 
 
 class Direction(Enum):

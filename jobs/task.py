@@ -2,10 +2,9 @@
 import logging
 from enum import Enum
 
-from blinds import blind_state
-from blinds.blind import Blind
-from blinds.blind_state import State
-from shelly.shelly import Shelly
+from building import blind_state
+from building.blind import Blind
+from building.blind_state import State
 
 
 logger = logging.getLogger(__name__)

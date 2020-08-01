@@ -2,7 +2,7 @@
 from datetime import datetime, tzinfo
 from sched import scheduler
 
-from blinds.blind import Blind
+from building.blind import Blind
 from jobs.worker import work
 from shelly.shelly import Shelly
 

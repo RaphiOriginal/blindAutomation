@@ -6,7 +6,7 @@ import yaml
 from yamale import yamale
 
 from api.api import SunAPI
-from blinds import building
+from building import building
 from jobs import trigger
 from jobs.jobmanager import JobManager
 from meteomatics.meteomatics_api import MeteomaticsAPI

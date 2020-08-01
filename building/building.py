@@ -2,8 +2,8 @@ import logging
 
 import yaml
 
-from blinds.blind import Blind
-from blinds.wall import Wall
+from building.blind import Blind
+from building.wall import Wall
 from shelly.shelly import Shelly
 
 
@@ -64,22 +64,21 @@ def prepare_walls() -> [Wall]:
     return walls
 
 
-def update_configured_shellys(walls: [Wall], pool) -> [Wall]:
+def update_configured_devices(walls: [Wall], pool) -> [Wall]:
     updated: [Wall] = []
     for wall in walls:
         updated_blinds: [Blind] = []
         for blind in wall.blinds:
-            shelly = blind.shelly
-            match = list(filter(lambda entry: shelly.id.upper() in entry[1].get('mac'), pool))
+            device = blind.device
+            match = device.match(pool)
             if len(match) != 1:
-                logger.info('{} devices found in network for configured Shelly: {}'.format(len(match), shelly))
+                logger.info('{} devices found in network for configured Device: {}'.format(len(match), device))
             else:
-                if len(match[0]) <= 1 or match[0][1].get('rollers') is None or \
-                        not match[0][1].get('rollers')[0].get('positioning') or match[0][0] is None:
-                    logger.error('Shelly {} not configured as roller or calibrated'.format(shelly))
+                if device.validate(match[0]):
+                    logger.error('Device {} not configured as roller or calibrated'.format(device))
                     continue
 
-                shelly.url = match[0][0]
+                device.url = match[0][0]
                 updated_blinds.append(blind)
         wall.blinds = updated_blinds
         if len(wall.blinds) > 0:
@@ -90,4 +89,4 @@ def update_configured_shellys(walls: [Wall], pool) -> [Wall]:
 
 def prepare_house(devices):
     walls = prepare_walls()
-    return update_configured_shellys(walls, devices)
+    return update_configured_devices(walls, devices)

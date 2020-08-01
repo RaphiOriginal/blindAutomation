@@ -4,12 +4,10 @@ from datetime import datetime, time, timedelta
 
 from dateutil import tz
 
-from blinds.blind import Blind
+from building.blind import Blind
 from jobs.job import Job
 from jobs.jobmanager import JobManager
 from jobs.task import Task
-from shelly.shelly import Shelly
-from blinds.wall import Wall
 from sun.sundata import Sundata
 
 logger = logging.getLogger(__name__)

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
+from device.device import Device
 
 
-class Shelly:
-    url: str = None
+class Shelly(Device):
 
     def __init__(self, id: str):
         self.__id: str = id
@@ -15,11 +15,11 @@ class Shelly:
         self.__check_url()
         return '{}/status'.format(self.url)
 
-    def get_roller(self):
+    def stats(self):
         self.__check_url()
         return '{}/roller/0'.format(self.url)
 
-    def set_roller(self, pos):
+    def move(self, pos):
         self.__check_url()
         return '{}/roller/0?go=to_pos&roller_pos={}'.format(self.url, pos)
 
@@ -30,6 +30,13 @@ class Shelly:
     def close(self):
         self.__check_url()
         return '{}/roller/0?go=close'.format(self.url)
+
+    def match(self, pool):
+        return list(filter(lambda entry: self.id.upper() in entry[1].get('mac'), pool))
+
+    def validate(self, match) -> bool:
+        return len(match) <= 1 or match[1].get('rollers') is None or \
+                        not match[1].get('rollers')[0].get('positioning') or match[0] is None
 
     def __check_url(self):
         if self.url is None:

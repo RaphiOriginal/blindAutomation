@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from blinds.blind_state import Direction, BlindState, State
+from building.blind_state import Direction, BlindState, State
 
 
 class BlindStateCase(unittest.TestCase):

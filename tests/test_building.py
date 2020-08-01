@@ -1,9 +1,9 @@
 import json
 import unittest
 
-from blinds import building
-from blinds.blind import Blind
-from blinds.wall import Wall
+from building import building
+from building.blind import Blind
+from building.wall import Wall
 from shelly.shelly import Shelly
 
 
@@ -13,10 +13,10 @@ class BuildingTest(unittest.TestCase):
         blind = Blind('test', 0, 0, shelly, [])
         wall = Wall('egal', 0, 0)
         wall.blinds = [blind]
-        result = building.update_configured_shellys([wall], [('testip', get_json())])
+        result = building.update_configured_devices([wall], [('testip', get_json())])
         self.assertEqual(1, len(result))
         self.assertEqual(1, len(result[0].blinds))
-        self.assertEqual('testip', result[0].blinds[0].shelly.url)
+        self.assertEqual('testip', result[0].blinds[0].device.url)
 
 
 if __name__ == '__main__':

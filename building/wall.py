@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from blinds.blind import Blind
+from building.blind import Blind
 
 
 class Wall:
