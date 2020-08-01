@@ -18,32 +18,32 @@ api: #Which api you want to use (meteomatics is recommended here)
 networkmask: #where to to search for shellys
 walls: #List of walls with blinds of your home
   - wall: #Represents one side of your house with possible multiple blinds
-    name: #where the wall is (can be any name, e.g. 'south' or 'green wall'')
-    in: #When the sun azimuth starts to hit the wall
-    out: #When the sun azimuth stops to hit the wall
-    blinds: #list of blinds you'd like to manage for this wall
-      - blind:
-        name: #Name of blind to identify them more easy
-        in: (optional) Overrides the wall values for this blind
-        out: (optional) Overrides the wall values for this blind
-        device-id: #Shellyid (can be found in the shelly app in settings) usualy last 6 characters of macadress
-        triggers: #List of triggers you'd like to apply for the shelly
-          SUNRISE: #Will open the blinds on sunrise
-            task: #(optional) default is OPEN
-            offset: #(optional) default is 0 can be positiv or negativ
-          SUNSET: #Will close the blinds on sunset
-            task: #(optional) default is CLOSE
-            offset: #(optional) default is 0 can be positiv or negativ
-          SUNIN: #Will tilt the blinds when the azimuth of the sun passes the azimuth defined for the related wall
-            task: #(optional) default is TILT
-            offset: #(optional) default is 0 can be positiv or negativ
-          SUNOUT: #Will open the blinds when the azimuth of the sun passes the azimuth defined for the related wall
-            task: #(optional) default is OPEN
-            offset: #(optional) default is 0 can be positiv or negativ
-          TIME: #Add a Task (OPEN, CLOSE, TILT) you want at a given time, will be run at this time daily
-            task: #(mandatory) Can be OPEN, CLOSE or TILT. Tilt will close the blind completle and then open for around 2%
-            time: #(mandatory) Time when the task should be triggered in the HH:MM:SS format
-            offset: #(optional) default is 0 can be positiv or negativ (even if this would be ridiculous 😏)
+      name: #where the wall is (can be any name, e.g. 'south' or 'green wall'')
+      in: #When the sun azimuth starts to hit the wall
+      out: #When the sun azimuth stops to hit the wall
+      blinds: #list of blinds you'd like to manage for this wall
+        - blind:
+            name: #Name of blind to identify them more easy
+            in: (optional) Overrides the wall values for this blind
+            out: (optional) Overrides the wall values for this blind
+            device-id: #Shellyid (can be found in the shelly app in settings) usualy last 6 characters of macadress
+            triggers: #List of triggers you'd like to apply for the shelly
+              SUNRISE: #Will open the blinds on sunrise
+                task: #(optional) default is OPEN
+                offset: #(optional) default is 0 can be positiv or negativ
+              SUNSET: #Will close the blinds on sunset
+               task: #(optional) default is CLOSE
+                offset: #(optional) default is 0 can be positiv or negativ
+              SUNIN: #Will tilt the blinds when the azimuth of the sun passes the azimuth defined for the related wall
+                task: #(optional) default is TILT
+                offset: #(optional) default is 0 can be positiv or negativ
+              SUNOUT: #Will open the blinds when the azimuth of the sun passes the azimuth defined for the related wall
+                task: #(optional) default is OPEN
+                offset: #(optional) default is 0 can be positiv or negativ
+              TIME: #Add a Task (OPEN, CLOSE, TILT) you want at a given time, will be run at this time daily
+                task: #(mandatory) Can be OPEN, CLOSE or TILT. Tilt will close the blind completle and then open for around 2%
+                time: #(mandatory) Time when the task should be triggered in the HH:MM:SS format
+                offset: #(optional) default is 0 can be positiv or negativ (even if this would be ridiculous 😏)
 ```
 
 ## Meteomatics ☀️
