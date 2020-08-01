@@ -3,6 +3,7 @@ import logging
 from collections import defaultdict
 
 import yaml
+from yamale import yamale
 
 from api.api import SunAPI
 from jobs import trigger
@@ -27,6 +28,7 @@ def prepare_api() -> SunAPI:
 
 def main():
     logging.basicConfig(level=logging.INFO)
+    validate_settings()
     walls = shelly_finder.collect()
     if len(walls) > 0:
         api: SunAPI = prepare_api()
@@ -43,6 +45,12 @@ def main():
     else:
         logger.info('No configured shellys found')
         exit(1)
+
+
+def validate_settings():
+    schema = yamale.make_schema('schema.yaml')
+    data = yamale.make_data('settings.yaml')
+    yamale.validate(schema, data)
 
 
 main()

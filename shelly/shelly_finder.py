@@ -30,11 +30,13 @@ def prepare_walls() -> [Wall]:
     walls: [Wall] = []
     with open(config, 'r') as stream:
         data = yaml.safe_load(stream)
-        for wall in data.get('walls'):
+        for item in data.get('walls'):
+            wall = item.get('wall')
             w = Wall(wall.get('name'), wall.get('in'), wall.get('out'))
             triggers: [] = []
             if 'blinds' in wall:
-                for blind in wall.get('blinds'):
+                for blind_item in wall.get('blinds'):
+                    blind = blind_item.get('blind')
                     in_sun = w.in_sun
                     out_sun = w.out_sun
                     shelly = Shelly(str(blind.get('device-id')))
