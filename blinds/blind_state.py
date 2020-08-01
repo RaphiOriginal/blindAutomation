@@ -3,6 +3,9 @@ from enum import Enum
 
 import requests
 
+from blinds.blind import Blind
+from blinds.state import State
+
 
 class Direction(Enum):
     OPEN = 'open'
@@ -14,13 +17,6 @@ class Direction(Enum):
             if direction.value == name:
                 return direction
         raise ValueError('No matching Enum for {}'.format(name))
-
-
-class State(Enum):
-    OPEN = 1
-    CLOSED = 2
-    TILT = 3
-    UNKNOWN = 4
 
 
 class BlindState:
@@ -45,10 +41,11 @@ class BlindState:
                (self.__position, self.__last_direction, self.state())
 
 
-def fetch_blindstate(shelly):
-    response = requests.get(shelly.get_roller())
+def fetch_blindstate(blind: Blind):
+    response = requests.get(blind.stats())
     if response.status_code == 200:
         data = response.json()
-        return BlindState(data.get('current_pos'), data.get('last_direction'))
+        blind.state = BlindState(data.get('current_pos'), data.get('last_direction'))
+        return blind.state
     raise ConnectionError('Negative answer from shelly {}: {} - {}'
-                          .format(shelly.id, response.status_code, response.text))
+                          .format(blind.id, response.status_code, response.text))

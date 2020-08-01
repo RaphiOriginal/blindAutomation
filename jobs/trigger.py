@@ -154,7 +154,7 @@ class TimeTrigger(TriggerBase):
 def apply_triggers(manager: JobManager, sundata: Sundata, blind: Blind):
     triggers = extract_triggers(blind, sundata)
     for trigger in triggers:
-        manager.add(Job(trigger, blind.shelly))
+        manager.add(Job(trigger, blind))
 
 
 def extract_triggers(blind: Blind, sundata: Sundata) -> [Trigger]:

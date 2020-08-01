@@ -3,6 +3,7 @@ import logging
 from enum import Enum
 
 from blinds import blind_state
+from blinds.blind import Blind
 from blinds.blind_state import State
 from shelly.shelly import Shelly
 
@@ -22,24 +23,24 @@ class Task(Enum):
                 return task
         raise ValueError('No matching Enum for {}'.format(name))
 
-    def get_for(self, shelly: Shelly):
+    def get_for(self, blind: Blind):
         if self == self.OPEN:
-            return [(Open(shelly),)]
+            return [(Open(blind),)]
         if self == self.TILT:
-            return [(PreTilt(shelly),), (Tilt(shelly),)]
-        return [(Close(shelly),)]
+            return [(PreTilt(blind),), (Tilt(blind),)]
+        return [(Close(blind),)]
 
 
 class BaseTask:
-    def __init__(self, shelly: Shelly, target: State):
-        self.shelly: Shelly = shelly
+    def __init__(self, blind: Blind, target: State):
+        self.blind: Blind = blind
         self.__target: State = target
 
     def ready(self) -> bool:
         return True
 
     def done(self):
-        state = blind_state.fetch_blindstate(self.shelly)
+        state = blind_state.fetch_blindstate(self.blind)
         return state.state() == self.__target
 
     def do(self):
@@ -50,38 +51,38 @@ class BaseTask:
 
 
 class Close(BaseTask):
-    def __init__(self, shelly: Shelly):
-        super(Close, self).__init__(shelly, State.CLOSED)
+    def __init__(self, blind: Blind):
+        super(Close, self).__init__(blind, State.CLOSED)
 
     def do(self):
-        return self.shelly.close()
+        return self.blind.close()
 
 
 class Open(BaseTask):
-    def __init__(self, shelly: Shelly):
-        super(Open, self).__init__(shelly, State.OPEN)
+    def __init__(self, blind: Blind):
+        super(Open, self).__init__(blind, State.OPEN)
 
     def do(self):
-        return self.shelly.open()
+        return self.blind.open()
 
 
 class PreTilt(BaseTask):
-    def __init__(self, shelly: Shelly):
-        super(PreTilt, self).__init__(shelly, State.TILT)
+    def __init__(self, blind: Blind):
+        super(PreTilt, self).__init__(blind, State.TILT)
 
     def do(self):
-        return self.shelly.close()
+        return self.blind.close()
 
 
 class Tilt(BaseTask):
-    def __init__(self, shelly: Shelly):
-        super(Tilt, self).__init__(shelly, State.TILT)
+    def __init__(self, blind: Blind):
+        super(Tilt, self).__init__(blind, State.TILT)
         self.__precondition: State = State.CLOSED
 
     def ready(self) -> bool:
-        state = blind_state.fetch_blindstate(self.shelly)
+        state = blind_state.fetch_blindstate(self.blind)
         logger.debug(state)
         return state.state() == self.__precondition or state.state() == self._target()
 
     def do(self):
-        return self.shelly.set_roller(2)
+        return self.blind.move(2)
