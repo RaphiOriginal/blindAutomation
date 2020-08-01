@@ -14,10 +14,9 @@ walls:
     out: 200
     blinds:
       - blind:
+        name: Blind1
         in: 111
-        shelly:
-          name: Shelly1
-          id: 111111
+        device-id: 111111
         triggers:
           - SUNRISE
           - SUNSET:
@@ -25,10 +24,9 @@ walls:
           - SUNIN
           - SUNOUT
       - blind:
+        name: Blind2
         out: 222
-        shelly:
-          name: Shelly2
-          id: 222222
+        device-id: 222222
         triggers:
           - SUNRISE:
               task: TILT

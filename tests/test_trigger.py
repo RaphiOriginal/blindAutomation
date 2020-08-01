@@ -85,7 +85,7 @@ class TriggerTest(unittest.TestCase):
 
 
 def blind(triggers: []) -> Blind:
-    return Blind(10, 20, None, triggers)
+    return Blind('test', 10, 20, None, triggers)
 
 
 def sundata() -> Sundata:

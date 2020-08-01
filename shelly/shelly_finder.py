@@ -37,15 +37,14 @@ def prepare_walls() -> [Wall]:
                 for blind in wall.get('blinds'):
                     in_sun = w.in_sun
                     out_sun = w.out_sun
-                    s = blind.get('shelly')
-                    shelly = Shelly(s.get('name'), str(s.get('id')))
+                    shelly = Shelly(str(blind.get('device-id')))
                     if 'triggers' in blind.keys():
                         triggers = blind.get('triggers')
                     if 'in' in blind.keys():
                         in_sun = blind.get('in')
                     if 'out' in blind.keys():
                         out_sun = blind.get('out')
-                    w.add_blind(Blind(in_sun, out_sun, shelly, triggers))
+                    w.add_blind(Blind(blind.get('name'), in_sun, out_sun, shelly, triggers))
                 walls.append(w)
 
     return walls

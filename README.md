@@ -23,11 +23,10 @@ walls: #List of walls with blinds of your home
     out: #When the sun azimuth stops to hit the wall
     blinds: #list of blinds you'd like to manage for this wall
       - blind:
+        name: #Name of blind to identify them more easy
         in: (optional) Overrides the wall values for this blind
         out: (optional) Overrides the wall values for this blind
-        shelly:
-          name: #How you'd like to name the shelly to recognise it in text outputs
-          id: #Shellyid (can be found in the shelly app in settings) usualy last 6 characters of macadress
+        device-id: #Shellyid (can be found in the shelly app in settings) usualy last 6 characters of macadress
         triggers: #List of triggers you'd like to apply for the shelly
           SUNRISE: #Will open the blinds on sunrise
             task: #(optional) default is OPEN

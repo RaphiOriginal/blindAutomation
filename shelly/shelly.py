@@ -4,8 +4,7 @@
 class Shelly:
     url: str = None
 
-    def __init__(self, name: str, id: str):
-        self.name: str = name
+    def __init__(self, id: str):
         self.id: str = id
 
     def get_status(self):
@@ -33,4 +32,4 @@ class Shelly:
             raise ValueError("URL must be set!")
 
     def __repr__(self):
-        return 'Shelly: { name: %s, id: %s, ip: %s}' % (self.name, self.id, self.url)
+        return 'Shelly: { id: %s, ip: %s}' % (self.id, self.url)

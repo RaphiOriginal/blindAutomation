@@ -9,8 +9,8 @@ from blinds.wall import Wall
 
 class ShellyFinder(unittest.TestCase):
     def test_update(self):
-        shelly = Shelly('test', 'WS46FD')
-        blind = Blind(0, 0, shelly, [])
+        shelly = Shelly('WS46FD')
+        blind = Blind('test', 0, 0, shelly, [])
         wall = Wall('egal', 0, 0)
         wall.blinds = [blind]
         result = shelly_finder.update_configured_shellys([wall], [('testip', get_json())])
