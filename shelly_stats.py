@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 import logging
 
-from yamale import yamale
-
 from building import building
+from settings import settings
 from shelly import shelly_finder
 
 
@@ -13,9 +12,7 @@ def main():
         level=logging.DEBUG,
         datefmt='%Y-%m-%d %H:%M:%S')
 
-    schema = yamale.make_schema('schema.yaml')
-    data = yamale.make_data('settings.yaml')
-    yamale.validate(schema, data)
+    settings.load_settings()
 
     devices = shelly_finder.collect_devices()
     walls = building.prepare_house(devices)

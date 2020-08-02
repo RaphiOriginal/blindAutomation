@@ -23,7 +23,6 @@ logger = logging.getLogger(__name__)
 class MeteomaticsAPI(SunAPI):
 
     def __init__(self):
-        self.settingsFile = 'settings.yaml'
         self.url = 'http://api.meteomatics.com'
 
         self.settings = None
@@ -120,7 +119,7 @@ class MeteomaticsAPI(SunAPI):
 
     def __get_settings(self):
         if self.settings is None:
-            self.settings = APISettings(self.settingsFile)
+            self.settings = APISettings()
         return self.settings
 
     def __get_auth(self):

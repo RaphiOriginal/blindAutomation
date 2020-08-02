@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 import yaml
+from yamale import yamale
 
+import settings
 from settings.auth import Auth
 from settings.coordinates import Coordinates
+
+root = None
 
 
 class APISettings:
     __auth = None
     __coordinates = None
 
-    def __init__(self, settingsfile):
-        with open(settingsfile, 'r') as stream:
-            self.__root = yaml.safe_load(stream).get('meteomatics')
+    def __init__(self):
+        if settings.settings.root is not None:
+            self.__root = settings.settings.root.get('meteomatics')
 
     def get_auth(self):
         if self.__auth is None:
@@ -29,7 +33,14 @@ class APISettings:
 
 
 class NetworkSettings:
-    def __init__(self, settingsfile):
-        with open(settingsfile, 'r') as stream:
-            root = yaml.safe_load(stream)
-            self.mask = root.get('networkmask')
+    def __init__(self):
+        if settings.settings.root is not None:
+            self.mask = settings.settings.root.get('networkmask')
+
+
+def load_settings():
+    schema = yamale.make_schema('schema.yaml')
+    data = yamale.make_data('settings.yaml')
+    yamale.validate(schema, data)
+    with open('settings.yaml', 'r') as stream:
+        settings.settings.root = yaml.safe_load(stream)

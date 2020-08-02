@@ -10,7 +10,6 @@ from settings.settings import NetworkSettings
 from shelly.shelly import Shelly
 
 scheme = 'http://'
-config = 'settings.yaml'
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +52,7 @@ async def collect_shellys(mask: IPv4Network):
 
 
 def collect_devices():
-    settings = NetworkSettings(config)
+    settings = NetworkSettings()
     mask = IPv4Network(settings.mask)
     loop = asyncio.get_event_loop()
     future = asyncio.ensure_future(collect_shellys(mask))

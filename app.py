@@ -2,14 +2,12 @@
 import logging
 from collections import defaultdict
 
-import yaml
-from yamale import yamale
-
 from api.api import SunAPI
 from building import building
 from jobs import trigger
 from jobs.jobmanager import JobManager
 from meteomatics.meteomatics_api import MeteomaticsAPI
+from settings import settings
 from shelly import shelly_finder
 from sun.sundata import Sundata
 from tests.mock.mocks import SunAPIMock, SunAPIResponseMock
@@ -22,9 +20,7 @@ def prepare_api() -> SunAPI:
     apis['meteomatics'] = MeteomaticsAPI()
     apis['mock'] = SunAPIMock()
     apis['responseMock'] = SunAPIResponseMock()
-    with open('settings.yaml', 'r') as stream:
-        settings = yaml.safe_load(stream)
-        return apis[settings.get('api')]
+    return apis[settings.root.get('api')]
 
 
 def main():
@@ -32,7 +28,7 @@ def main():
         format='%(asctime)s %(levelname)-8s %(message)s',
         level=logging.INFO,
         datefmt='%Y-%m-%d %H:%M:%S')
-    validate_settings()
+    settings.load_settings()
     devices = shelly_finder.collect_devices()
     walls = building.prepare_house(devices)
     if len(walls) > 0:
@@ -50,12 +46,6 @@ def main():
     else:
         logger.info('No configured shellys found')
         exit(1)
-
-
-def validate_settings():
-    schema = yamale.make_schema('schema.yaml')
-    data = yamale.make_data('settings.yaml')
-    yamale.validate(schema, data)
 
 
 main()
