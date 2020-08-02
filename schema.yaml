@@ -1,0 +1,57 @@
+meteomatics: include('meteomatics')
+api: str()
+networkmask: str()
+walls: list(include('wallobj'), min=1)
+---
+meteomatics:
+  auth: include('auth')
+  coordinates: include('coordinates')
+
+auth:
+  username: str()
+  password: str()
+
+coordinates:
+  lat: num()
+  long: num()
+
+wallobj:
+  wall: include('wall')
+
+wall:
+  name: str()
+  in: int()
+  out: int()
+  blinds: list(include('blindobj'), required=False)
+
+blindobj:
+  blind: include('blind')
+
+blind:
+  name: str()
+  device-id: str()
+  device-typ: any('SHELLY')
+  in: int(required=False)
+  out: int(required=False)
+  triggers: list(any('SUNRISE', 'SUNSET', 'SUNIN', 'SUNOUT'), any(include('SUNRISE'), include('SUNSET'), include('SUNIN'), include('SUNOUT')))
+
+TIME:
+  task: str()
+  time: str()
+  offset: int(required=False)
+
+SUNRISE:
+  task: str(required=False)
+  offset: int(required=False)
+
+SUNSET:
+  task: str(required=False)
+  offset: int(required=False)
+
+SUNIN:
+  task: str(required=False)
+  offset: int(required=False)
+
+SUNOUT:
+  task: str(required=False)
+  offset: int(required=False)
