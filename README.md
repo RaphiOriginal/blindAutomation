@@ -27,6 +27,7 @@ walls: #List of walls with blinds of your home
             in: (optional) Overrides the wall values for this blind
             out: (optional) Overrides the wall values for this blind
             device-id: #Shellyid (can be found in the shelly app in settings) usualy last 6 characters of macadress
+            device-typ: SHELLY #Fix set to Shelly since no other controllers supported yet
             triggers: #List of triggers you'd like to apply for the shelly
               SUNRISE: #Will open the blinds on sunrise
                 task: #(optional) default is OPEN
