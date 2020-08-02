@@ -8,7 +8,10 @@ from shelly import shelly_finder
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(
+        format='%(asctime)s %(levelname)-8s %(message)s',
+        level=logging.DEBUG,
+        datefmt='%Y-%m-%d %H:%M:%S')
 
     schema = yamale.make_schema('schema.yaml')
     data = yamale.make_data('settings.yaml')

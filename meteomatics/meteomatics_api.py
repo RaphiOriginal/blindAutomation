@@ -76,7 +76,7 @@ class MeteomaticsAPI(SunAPI):
             e = elevation.get(date)
             sun_positions.append(Position(date, a, e))
         sundata = Sundata(sunrise, sunset, sun_positions)
-        logger.info('Fetched {}'.format(sundata))
+        logger.debug('Fetched {}'.format(sundata))
         return sundata
 
     def __fetch_sunrise_and_sunset(self, auth):
