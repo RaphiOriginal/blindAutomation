@@ -1,3 +1,6 @@
+from enum import Enum
+
+
 class Device:
     url: str = None
 
@@ -22,3 +25,7 @@ class Device:
 
     def validate(self, match):
         return True
+
+
+class Typ(Enum):
+    SHELLY = 1

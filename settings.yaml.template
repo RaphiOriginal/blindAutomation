@@ -17,6 +17,7 @@ walls:
             name: Blind1
             in: 111
             device-id: '111111'
+            device-typ: SHELLY
             triggers:
               - SUNRISE
               - SUNSET:
@@ -27,6 +28,7 @@ walls:
             name: Blind2
             out: 222
             device-id: '222222'
+            device-typ: SHELLY
             triggers:
               - SUNRISE:
                   task: TILT

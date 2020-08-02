@@ -4,6 +4,7 @@ import yaml
 
 from building.blind import Blind
 from building.wall import Wall
+from device import device, device_matcher
 from shelly.shelly import Shelly
 
 
@@ -25,14 +26,14 @@ def prepare_walls() -> [Wall]:
                     blind = blind_item.get('blind')
                     in_sun = w.in_sun
                     out_sun = w.out_sun
-                    shelly = Shelly(str(blind.get('device-id')))
+                    controller = device_matcher.create(blind.get('device-id'), blind.get('device-typ'))
                     if 'triggers' in blind.keys():
                         triggers = blind.get('triggers')
                     if 'in' in blind.keys():
                         in_sun = blind.get('in')
                     if 'out' in blind.keys():
                         out_sun = blind.get('out')
-                    w.add_blind(Blind(blind.get('name'), in_sun, out_sun, shelly, triggers))
+                    w.add_blind(Blind(blind.get('name'), in_sun, out_sun, controller, triggers))
                 walls.append(w)
 
     return walls
