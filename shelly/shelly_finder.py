@@ -36,7 +36,7 @@ def fetch_shelly(session: requests.Session, base_url: str):
 
 async def collect_shellys(mask: IPv4Network):
     shellys: [Shelly] = []
-    with ThreadPoolExecutor(max_workers=100) as executor:
+    with ThreadPoolExecutor(max_workers=253) as executor:
         with requests.Session() as session:
             loop = asyncio.get_event_loop()
             potentials = [
