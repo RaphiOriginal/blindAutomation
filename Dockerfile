@@ -2,8 +2,6 @@ FROM balenalib/raspberrypi4-64-debian-python:3.7
 
 WORKDIR /usr/src/app
 
-ENV INITSYSTEM on
-
 RUN apt-get update && apt-get install -yq --no-install-recommends \
 	cron \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
