@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import logging
 from collections import defaultdict
+from datetime import datetime, timedelta
+
+from dateutil.tz import tz
 
 from api.api import SunAPI
 from building import building
@@ -33,15 +36,19 @@ def main():
     walls = building.prepare_house(devices)
     if len(walls) > 0:
         api: SunAPI = prepare_api()
-        sun: Sundata = api.fetch_sundata()
+        now = datetime.now(tz.tzlocal())
+        while True:
+            sun: Sundata = api.fetch_sundata(now)
+            now = now + timedelta(days=1)
 
-        manager = JobManager()
+            manager = JobManager()
 
-        for wall in walls:
-            for blind in wall.blinds:
-                trigger.apply_triggers(manager, sun, blind)
+            for wall in walls:
+                for blind in wall.blinds:
+                    trigger.apply_triggers(manager, sun, blind)
 
-        manager.prepare().run()
+            if manager.prepare().run():
+                break
         exit(0)
     else:
         logger.info('No configured shellys found')

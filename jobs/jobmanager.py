@@ -29,6 +29,7 @@ class JobManager:
     def __init__(self):
         self.__schedule = sched.scheduler(now, delay)
         self.__jobs = defaultdict(list)
+        self.__workload = 0
 
     def add(self, job: Job):
         self.__jobs[job.get_id()].append(job)
@@ -41,13 +42,14 @@ class JobManager:
 
             future = list(filter(lambda job: job.get_time() > datetime.now(tz.tzlocal()), jobs))
 
-            for job in future:
-                job.schedule(self.__schedule)
             logger.info('{} jobs prepared for {}:'.format(len(future), shelly))
             for job in future:
+                job.schedule(self.__schedule)
                 logger.info(job)
 
         return self
 
-    def run(self):
-        self.__schedule.run()
+    def run(self) -> bool:
+        if not self.__schedule.empty():
+            self.__schedule.run()
+        return not self.__schedule.empty()

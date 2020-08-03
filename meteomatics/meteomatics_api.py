@@ -27,14 +27,14 @@ class MeteomaticsAPI(SunAPI):
 
         self.settings = None
 
-    def fetch_sundata(self):
+    def fetch_sundata(self, date: datetime):
         """Returns Sundata object containing array of azimuth per minute between sunrise and sunset, sunrise and
         sunset """
         auth = self.__get_auth()
         user = auth.user
         password = auth.password
 
-        (sunrise, sunset) = self.__fetch_sunrise_and_sunset(auth)
+        (sunrise, sunset) = self.__fetch_sunrise_and_sunset(date, auth)
 
         builder = MeteomaticsURLBuilder(self.url)
         url = builder.set_time_range(sunrise, sunset).add_field(Field.AZIMUTH).add_field(Field.ELEVATION) \
@@ -78,17 +78,15 @@ class MeteomaticsAPI(SunAPI):
         logger.debug('Fetched {}'.format(sundata))
         return sundata
 
-    def __fetch_sunrise_and_sunset(self, auth):
+    def __fetch_sunrise_and_sunset(self, date: datetime, auth):
         try:
             user = auth.user
             password = auth.password
 
             builder = MeteomaticsURLBuilder(self.url)
 
-            # Hacky solution to avoid old data between 24:00 and 02:00
-            now = datetime.now(tz.tzlocal()) + timedelta(hours=2)
-            logger.info('Fetching sunrise and sunset for {}'.format(now))
-            url = builder.set_time(now).add_field(Field.SUNRISE).add_field(Field.SUNSET) \
+            logger.info('Fetching sunrise and sunset for {}'.format(date))
+            url = builder.set_time(date).add_field(Field.SUNRISE).add_field(Field.SUNSET) \
                 .set_location(self.__get_coordinates()).build()
 
             r = requests.get(url, auth=(user, password))
