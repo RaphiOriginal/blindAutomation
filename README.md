@@ -57,9 +57,7 @@ Follow getting started and after all the preparation is done and your RaspberryP
 ```
 balena push yourDevice.local
 ```
-after that, the application fetches all new sundata every 03:00 of your local timezone
-after powerloss, the container will start itself again and we're back on track.
-Further customization are possible in the Dockerfile
+the app will fetch sundata for the actual date and if this results in no tasks, it will do it for the following date. after the work is done, it will exit and the container will restart it self and we fetch again tasks for the next day 💪
 ##### Manual Installation
 If you want to install the application without Docker you can install it also manually for the same functionality. Only how you will bring the code on the device is then your own business.
 I recommend to run this scripts with cronjob. It will collect all task for a full day, and after the day is over, it will finish and needs to be started again.
