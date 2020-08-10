@@ -31,13 +31,6 @@ class Shelly(Device):
         self.__check_url()
         return '{}/roller/0?go=close'.format(self.url)
 
-    def match(self, pool):
-        return list(filter(lambda entry: self.id.upper() in entry[1].get('mac'), pool))
-
-    def validate(self, match) -> bool:
-        return len(match) <= 1 or match[1].get('rollers') is None or \
-                        not match[1].get('rollers')[0].get('positioning') or match[0] is None
-
     def __check_url(self):
         if self.url is None:
             raise ValueError("URL must be set!")

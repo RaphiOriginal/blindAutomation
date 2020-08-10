@@ -1,6 +1,5 @@
 meteomatics: include('meteomatics')
 api: str()
-networkmask: str()
 walls: list(include('wallobj'), min=1)
 ---
 meteomatics:

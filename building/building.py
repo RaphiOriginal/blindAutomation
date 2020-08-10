@@ -2,7 +2,7 @@ import logging
 
 from building.blind import Blind
 from building.wall import Wall
-from device import device_matcher
+from device import device_matcher, device_finder
 from settings import settings
 
 logger = logging.getLogger(__name__)
@@ -33,31 +33,7 @@ def prepare_walls() -> [Wall]:
     return walls
 
 
-def update_configured_devices(walls: [Wall], pool) -> [Wall]:
-    updated: [Wall] = []
-    for wall in walls:
-        updated_blinds: [Blind] = []
-        for blind in wall.blinds:
-            device = blind.device
-            match = device.match(pool)
-            if len(match) != 1:
-                logger.info('{} devices found in network for configured Device: {}'.format(len(match), device))
-            else:
-                if device.validate(match[0]):
-                    logger.error('Device {} not configured as roller or calibrated'.format(device))
-                    continue
-
-                device.url = match[0][0]
-                updated_blinds.append(blind)
-        wall.blinds = updated_blinds
-        if len(wall.blinds) > 0:
-            updated.append(wall)
-    logger.info('{} updated walls:'.format(len(updated)))
-    for wall in walls:
-        logger.info(wall)
-    return updated
-
-
-def prepare_house(devices):
+def prepare_house():
     walls = prepare_walls()
-    return update_configured_devices(walls, devices)
+    device_finder.find_devices(walls)
+    return walls

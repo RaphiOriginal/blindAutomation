@@ -2,3 +2,4 @@ requests~=2.24.0
 python-dateutil~=2.8.1
 PyYAML~=5.3.1
 yamale~=3.0.1
+zeroconf~=0.28.0

@@ -20,12 +20,6 @@ class Device:
     def id(self):
         pass
 
-    def match(self, pool):
-        pass
-
-    def validate(self, match):
-        return True
-
 
 class Typ(Enum):
     SHELLY = 1

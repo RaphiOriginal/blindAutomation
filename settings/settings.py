@@ -32,12 +32,6 @@ class APISettings:
         return self.__coordinates
 
 
-class NetworkSettings:
-    def __init__(self):
-        if settings.settings.root is not None:
-            self.mask = settings.settings.root.get('networkmask')
-
-
 def load_settings():
     schema = yamale.make_schema('schema.yaml')
     data = yamale.make_data('settings.yaml')
