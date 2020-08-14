@@ -5,7 +5,12 @@ meteomatics:
   coordinates:
     lat: 0.0
     long: 0.0
-api: meteomatics
+pvlib:
+  coordinates:
+    lat: 6.9
+    long: 6.9
+    alt: 420
+api: pvlib
 walls:
   - wall:
       name: south

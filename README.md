@@ -14,7 +14,12 @@ meteomatics: #Meteomatics api credentials
   coordinates: #coordinates of wall (i recommend to pick a corner of two walls) I did mine with the help of [SunCalc](https://www.suncalc.org/#/46.0162,8.4421,3/2020.07.27/19:54/1/1)
     lat: #Latitude
     long: #Longitude
-api: #Which api you want to use (meteomatics is recommended here)
+pvlib:
+  coordinates:
+    lat: #Latitude
+    long: #Longitude
+    alt: #Altitude
+api: #Which api you want to use (pvlib is recommended here)
 walls: #List of walls with blinds of your home
   - wall: #Represents one side of your house with possible multiple blinds
       name: #where the wall is (can be any name, e.g. 'south' or 'green wall'')
@@ -47,7 +52,7 @@ walls: #List of walls with blinds of your home
 ```
 
 ## Meteomatics ☀️
-You have to get access to the meteomatics api and update your logins in the settings.yaml
+If you don't want to use pvlib, you have to get access to the meteomatics api and update your logins in the settings.yaml
 
 ## Running and Installation 🏃🏗
 ##### Balena.io
@@ -57,55 +62,7 @@ Follow getting started and after all the preparation is done and your RaspberryP
 balena push yourDevice.local
 ```
 the app will fetch sundata for the actual date and if this results in no tasks, it will do it for the following date. after the work is done, it will exit and the container will restart it self and we fetch again tasks for the next day 💪
-##### Manual Installation
-If you want to install the application without Docker you can install it also manually for the same functionality. Only how you will bring the code on the device is then your own business.
-I recommend to run this scripts with cronjob. It will collect all task for a full day, and after the day is over, it will finish and needs to be started again.
-Due to the nature of the Meteomatics API i recommend to time your Fetch for your day after midnight utc if possible (e.g. 03:00 for MEZ) but before the first Task should be applied.
+I recommend to use balena cloud for better device management even outside of your local network.
 
-you can edit crontab with e.g. nano:
-`$ crontab -e`
-
-Add cronjobs:
-```
-0 3 * * * ~/blindAutomation/app.py
-```
-
-It is also recommended to start the script after a reboot to get the magic ongoing e.g. after a power outage.
-To achieve this, we use systemd.
-
-you can start configure your service with:
-`sudo systemctl edit --force --full blindAutomation.service`
-
-and entering following configurations into the file:
-
-```
-[Unit]
-Description=Blind Automation Service
-Wants=network-online.target
-After=network-online.target
-
-[Service]
-Type=simple
-User=pi
-WorkingDirectory=/home/pi
-ExecStart=/home/pi/blindAutomation/app.py
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-WantedBy=network-online.service
-```
-
-after that a simple `sudo systemctl enable blindAutomation.service` will start the app after every reboot
-
-## Logging 🖨
-
-if you like to log the app output, you can adding following to your cronjob:
-
-```
-0 3 * * * ~/blindAutomation/app.py >> /output-daily.log 2>&1
-```
-the output of the reboot job (which is only a fallback anyway) will be logged automaticly and can be found with `sudo journalctl -b -u blindAutomation`.
-But those logs will disappear after a reboot
 
 Made with ❤️ in 🇨🇭
