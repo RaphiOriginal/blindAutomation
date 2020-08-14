@@ -36,8 +36,8 @@ walls:
               - SUNIN
               - SUNOUT
               - TIME:
-                task: TILT
-                time: '16:00:00'
+                  task: TILT
+                  time: '16:00:00'
   - wall:
       name: west
       in: 200
