@@ -1,9 +1,13 @@
-meteomatics: include('meteomatics')
+meteomatics: include('meteomatics', required=False)
+pvlib: include('pvlib', required=False)
 api: str()
 walls: list(include('wallobj'), min=1)
 ---
 meteomatics:
   auth: include('auth')
+  coordinates: include('coordinates')
+
+pvlib:
   coordinates: include('coordinates')
 
 auth:
@@ -13,6 +17,7 @@ auth:
 coordinates:
   lat: num()
   long: num()
+  alt: int(required=False)
 
 wallobj:
   wall: include('wall')

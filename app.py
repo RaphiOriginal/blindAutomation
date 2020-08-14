@@ -10,6 +10,7 @@ from building import building
 from jobs import trigger
 from jobs.jobmanager import JobManager
 from meteomatics.meteomatics_api import MeteomaticsAPI
+from pvlibrary.pvlib_api import PVLibAPI
 from settings import settings
 from sun.sundata import Sundata
 from tests.mock.mocks import SunAPIMock, SunAPIResponseMock
@@ -20,6 +21,7 @@ logger = logging.getLogger(__name__)
 def prepare_api() -> SunAPI:
     apis = defaultdict(SunAPI)
     apis['meteomatics'] = MeteomaticsAPI()
+    apis['pvlib'] = PVLibAPI()
     apis['mock'] = SunAPIMock()
     apis['responseMock'] = SunAPIResponseMock()
     return apis[settings.root.get('api')]

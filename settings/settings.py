@@ -9,7 +9,7 @@ from settings.coordinates import Coordinates
 root = None
 
 
-class APISettings:
+class MeteomaticsSettings:
     __auth = None
     __coordinates = None
 
@@ -19,17 +19,41 @@ class APISettings:
 
     def get_auth(self):
         if self.__auth is None:
-            auth = self.__root.get('auth')
-            self.__auth = Auth(auth.get('username'), auth.get('password'))
+            self.__auth = get_auth(self.__root)
 
         return self.__auth
 
     def get_coordinates(self):
         if self.__coordinates is None:
-            coordinates = self.__root.get('coordinates')
-            self.__coordinates = Coordinates(coordinates.get('lat'), coordinates.get('long'))
+            self.__coordinates = get_coordinates(self.__root)
 
         return self.__coordinates
+
+
+class PvLibSettings:
+    __coordinates = None
+
+    def __init__(self):
+        if settings.settings.root is not None:
+            self.__root = settings.settings.root.get('pvlib')
+
+    def get_coordinates(self):
+        if self.__coordinates is None:
+            self.__coordinates = get_coordinates(self.__root)
+
+        return self.__coordinates
+
+
+def get_auth(api_root) -> Auth:
+    auth = api_root.get('auth')
+    return Auth(auth.get('username'), auth.get('password'))
+
+
+def get_coordinates(api_root) -> Coordinates:
+    coordinates = api_root.get('coordinates')
+    if 'alt' in coordinates.keys():
+        return Coordinates(coordinates.get('lat'), coordinates.get('long'), coordinates.get('alt'))
+    return Coordinates(coordinates.get('lat'), coordinates.get('long'))
 
 
 def load_settings():

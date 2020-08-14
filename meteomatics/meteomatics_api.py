@@ -11,7 +11,7 @@ from api.api import SunAPI
 from meteomatics.field import Field
 from meteomatics.interval import Interval
 from meteomatics.meteomatics_url_builder import MeteomaticsURLBuilder
-from settings.settings import APISettings
+from settings.settings import MeteomaticsSettings
 from sun.azimuth import Azimuth
 from sun.elevation import Elevation
 from sun.position import Position
@@ -117,7 +117,7 @@ class MeteomaticsAPI(SunAPI):
 
     def __get_settings(self):
         if self.settings is None:
-            self.settings = APISettings()
+            self.settings = MeteomaticsSettings()
         return self.settings
 
     def __get_auth(self):
