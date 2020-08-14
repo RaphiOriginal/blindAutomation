@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 from dateutil.tz import tz
 
+import global_date
 from api.api import SunAPI
 from building import building
 from jobs import trigger
@@ -36,10 +37,9 @@ def main():
     walls = building.prepare_house()
     if len(walls) > 0:
         api: SunAPI = prepare_api()
-        now = datetime.now(tz.tzlocal())
         while True:
-            sun: Sundata = api.fetch_sundata(now)
-            now = now + timedelta(days=1)
+            sun: Sundata = api.fetch_sundata(global_date.date)
+            global_date.date = global_date.date + timedelta(days=1)
 
             manager = JobManager()
 

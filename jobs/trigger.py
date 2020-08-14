@@ -4,6 +4,7 @@ from datetime import datetime, time, timedelta
 
 from dateutil import tz
 
+import global_date
 from building.blind import Blind
 from jobs.job import Job
 from jobs.jobmanager import JobManager
@@ -133,8 +134,7 @@ class TimeTrigger(TriggerBase):
         super(TimeTrigger, self).__init__(task, self.__prepare_runtime(runtime))
 
     def __prepare_runtime(self, runtime: time) -> datetime:
-        now = datetime.now(tz.tzlocal())
-        return now.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second, microsecond=0)
+        return global_date.date.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second, microsecond=0)
 
     @staticmethod
     def type() -> str:
