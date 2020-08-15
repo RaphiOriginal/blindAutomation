@@ -12,13 +12,12 @@ from sun.sundata import Sundata
 
 
 class SunAPIMock(SunAPI):
-    def fetch_sundata(self):
-        return get_sundata_mock()
+    def fetch_sundata(self, date):
+        return get_sundata_mock(date)
 
 
-def get_sundata_mock(time_delta: int = 30):
+def get_sundata_mock(now, time_delta: int = 30):
     delta = timedelta(seconds=time_delta)
-    now = datetime.now(tz.tzlocal())
     multiplier = 1
     positions: [Position] = []
     sunrise = now + delta
