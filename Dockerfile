@@ -8,4 +8,4 @@ COPY . .
 RUN /usr/local/bin/python3.7 -m pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ./app.py > output-daily.log 2>&1
+CMD ./app.py
