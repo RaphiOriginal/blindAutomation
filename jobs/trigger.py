@@ -134,7 +134,7 @@ class TimeTrigger(TriggerBase):
         super(TimeTrigger, self).__init__(task, self.__prepare_runtime(runtime))
 
     def __prepare_runtime(self, runtime: time) -> datetime:
-        return global_date.date.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second, microsecond=0)
+        return global_date.date.date.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second, microsecond=0)
 
     @staticmethod
     def type() -> str:
@@ -224,6 +224,7 @@ class PositionTrigger(TriggerBase):
 
 def apply_triggers(manager: JobManager, sundata: Sundata, blind: Blind):
     triggers = extract_triggers(blind, sundata)
+    logger.debug('Triggers for {}: {}'.format(blind.name, triggers))
     for trigger in triggers:
         manager.add(Job(trigger, blind))
 

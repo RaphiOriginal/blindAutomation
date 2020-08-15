@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import logging
 from collections import defaultdict
-from datetime import timedelta
 
 import global_date
 from api.api import SunAPI
@@ -36,8 +35,7 @@ def main():
     if len(walls) > 0:
         api: SunAPI = prepare_api()
         while True:
-            sun: Sundata = api.fetch_sundata(global_date.date)
-            global_date.date = global_date.date + timedelta(days=1)
+            sun: Sundata = api.fetch_sundata(global_date.date.next())
 
             manager = JobManager()
 
