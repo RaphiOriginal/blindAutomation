@@ -40,40 +40,40 @@ blind:
   triggers: list(any('SUNRISE', 'SUNSET', 'SUNIN', 'SUNOUT'), any(include('SUNRISE'), include('SUNSET'), include('SUNIN'), include('SUNOUT'), include('AZIMUTH'), include('ELEVATION'), include('POSITION')))
 
 TIME:
-  task: str()
+  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'))
   time: str()
   offset: int(required=False)
 
 SUNRISE:
-  task: str(required=False)
+  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
   offset: int(required=False)
 
 SUNSET:
-  task: str(required=False)
+  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
   offset: int(required=False)
 
 SUNIN:
-  task: str(required=False)
+  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
   offset: int(required=False)
 
 SUNOUT:
-  task: str(required=False)
+  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
   offset: int(required=False)
 
 AZIMUTH:
   azimuth: int()
-  task: str(required=False)
+  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
   offset: int(required=False)
 
 ELEVATION:
   elevation: int()
   direction: str(any('RISE', 'SET'))
-  task: str(required=False)
+  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
   offset: int(required=False)
 
 POSITION:
   azimuth: int()
   elevation: int()
   direction: str(any('RISE', 'SET'))
-  task: str(required=False)
+  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
   offset: int(required=False)

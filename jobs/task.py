@@ -14,6 +14,7 @@ class Task(Enum):
     CLOSE = 'CLOSE'
     OPEN = 'OPEN'
     TILT = 'TILT'
+    HALF = 'HALF'
 
     @staticmethod
     def from_name(name: str):
@@ -74,9 +75,10 @@ class PreTilt(BaseTask):
 
 
 class Tilt(BaseTask):
-    def __init__(self, blind: Blind):
+    def __init__(self, blind: Blind, move: int = 2):
         super(Tilt, self).__init__(blind, State.TILT)
         self.__precondition: State = State.CLOSED
+        self.__move: int = move
 
     def ready(self) -> bool:
         state = blind_state.fetch_blindstate(self.blind)
@@ -84,4 +86,9 @@ class Tilt(BaseTask):
         return state.state() == self.__precondition or state.state() == self._target()
 
     def do(self):
-        return self.blind.move(2)
+        return self.blind.move(self.__move)
+
+
+class Half(Tilt):
+    def __init__(self, blind: Blind):
+        super(Half, self).__init__(blind, move=1)
