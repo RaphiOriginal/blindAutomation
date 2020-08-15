@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 import logging
 from collections import defaultdict
-from datetime import datetime, timedelta
-
-from dateutil.tz import tz
+from datetime import timedelta
 
 import global_date
 from api.api import SunAPI
