@@ -49,6 +49,21 @@ walls: #List of walls with blinds of your home
                 task: #(mandatory) Can be OPEN, CLOSE or TILT. Tilt will close the blind completle and then open for around 2%
                 time: #(mandatory) Time when the task should be triggered in the HH:MM:SS format
                 offset: #(optional) default is 0 can be positiv or negativ (even if this would be ridiculous 😏)
+              AZIMUTH:
+                azimuth: #(mandatory) defines azimuth to be passed to trigger task
+                task: #(optional) default is CLOSE
+                offset: #(optional) default is 0 can be positiv or negativ
+              ELEVATION:
+                elevation: #(mandatory) defines elevation to be passed to trigger task
+                direction: #(mandatory) choose between (RISE and SET) to define elevation when sun rises or when sun sets
+                task: #(optional) default is CLOSE
+                offset: #(optional) default is 0 can be positiv or negativ
+              POSITION: #will be triggered when azimuth and elevation has been passed (will take the later event)
+                azimuth: #(mandatory) defines elevation to be passed to trigger task
+                elevation: #(mandatory) defines elevation to be passed to trigger task
+                direction: #(mandatory) choose between (RISE and SET) to define elevation when sun rises or when sun sets
+                task: #(optional) default is CLOSE
+                offset: #(optional) default is 0 can be positiv or negativ
 ```
 
 ## Meteomatics ☀️

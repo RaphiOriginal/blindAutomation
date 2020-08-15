@@ -6,7 +6,8 @@ from dateutil import parser, tz
 from building.blind import Blind
 from jobs import trigger
 from jobs.task import Task
-from jobs.trigger import SunriseTrigger, SunsetTrigger, SunInTrigger, SunOutTrigger, TimeTrigger
+from jobs.trigger import SunriseTrigger, SunsetTrigger, SunInTrigger, SunOutTrigger, TimeTrigger, AzimuthTrigger, \
+    ElevationTrigger, PositionTrigger
 from sun.azimuth import Azimuth
 from sun.elevation import Elevation
 from sun.position import Position
@@ -76,12 +77,40 @@ class TriggerTest(unittest.TestCase):
         self.assertEqual(SunOutTrigger.type(), result[0].type())
         self.assertEqual('2020-07-27T13:10:00+02:00', result[0].time().isoformat())
 
-    def test_offset_plus(self):
+    def test_offset_minus(self):
         triggers = [{'SUNOUT': {'offset': -8}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(SunOutTrigger.type(), result[0].type())
         self.assertEqual('2020-07-27T13:00:00+02:00', result[0].time().isoformat())
+
+    def test_azimuth(self):
+        triggers = [{'AZIMUTH': {'azimuth': 123}}]
+        result = trigger.extract_triggers(blind(triggers), sundata())
+        self.assertEqual(1, len(result))
+        self.assertEqual(AzimuthTrigger.type(), result[0].type())
+        self.assertEqual('2020-07-27T21:08:00+02:00', result[0].time().isoformat())
+
+    def test_elevation_rise(self):
+        triggers = [{'ELEVATION': {'elevation': 19, 'direction': 'RISE'}}]
+        result = trigger.extract_triggers(blind(triggers), sundata())
+        self.assertEqual(1, len(result))
+        self.assertEqual(ElevationTrigger.type(), result[0].type())
+        self.assertEqual('2020-07-27T13:08:00+02:00', result[0].time().isoformat())
+
+    def test_elevation_set(self):
+        triggers = [{'ELEVATION': {'elevation': 19, 'direction': 'SET'}}]
+        result = trigger.extract_triggers(blind(triggers), sundata())
+        self.assertEqual(1, len(result))
+        self.assertEqual(ElevationTrigger.type(), result[0].type())
+        self.assertEqual('2020-07-27T21:08:00+02:00', result[0].time().isoformat())
+
+    def test_position(self):
+        triggers = [{'POSITION': {'azimuth': 123, 'elevation': 19, 'direction': 'RISE'}}]
+        result = trigger.extract_triggers(blind(triggers), sundata())
+        self.assertEqual(1, len(result))
+        self.assertEqual(PositionTrigger.type(), result[0].type())
+        self.assertEqual('2020-07-27T21:08:00+02:00', result[0].time().isoformat())
 
 
 def blind(triggers: []) -> Blind:
@@ -95,7 +124,11 @@ def sundata() -> Sundata:
     azimuth = Azimuth(date, 15)
     elevation = Elevation(date, 5)
     position = Position(date, azimuth, elevation)
-    return Sundata(sunrise, sunset, [position])
+    date2 = parser.parse('2020-07-27T19:08:00Z').astimezone(tz.tzlocal())
+    azimuth2 = Azimuth(date2, 69)
+    elevation2 = Elevation(date2, 5)
+    position2 = Position(date2, azimuth2, elevation2)
+    return Sundata(sunrise, sunset, [position, position2])
 
 
 if __name__ == '__main__':

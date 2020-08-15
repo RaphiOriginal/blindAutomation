@@ -37,7 +37,7 @@ blind:
   device-typ: any('SHELLY')
   in: int(required=False)
   out: int(required=False)
-  triggers: list(any('SUNRISE', 'SUNSET', 'SUNIN', 'SUNOUT'), any(include('SUNRISE'), include('SUNSET'), include('SUNIN'), include('SUNOUT')))
+  triggers: list(any('SUNRISE', 'SUNSET', 'SUNIN', 'SUNOUT'), any(include('SUNRISE'), include('SUNSET'), include('SUNIN'), include('SUNOUT'), include('AZIMUTH'), include('ELEVATION'), include('POSITION')))
 
 TIME:
   task: str()
@@ -57,5 +57,23 @@ SUNIN:
   offset: int(required=False)
 
 SUNOUT:
+  task: str(required=False)
+  offset: int(required=False)
+
+AZIMUTH:
+  azimuth: int()
+  task: str(required=False)
+  offset: int(required=False)
+
+ELEVATION:
+  elevation: int()
+  direction: str(any('RISE', 'SET'))
+  task: str(required=False)
+  offset: int(required=False)
+
+POSITION:
+  azimuth: int()
+  elevation: int()
+  direction: str(any('RISE', 'SET'))
   task: str(required=False)
   offset: int(required=False)

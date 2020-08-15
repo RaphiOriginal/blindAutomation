@@ -149,6 +149,79 @@ class TimeTrigger(TriggerBase):
         return 'TimeTrigger: { %s }' % (super(TimeTrigger, self).__repr__())
 
 
+class AzimuthTrigger(TriggerBase):
+    def __init__(self, sundata: Sundata, azimuth: int, task: Task = Task.CLOSE):
+        super(AzimuthTrigger, self).__init__(task, sundata.find_azimuth(azimuth).time)
+
+    @staticmethod
+    def type() -> str:
+        return 'AZIMUTH'
+
+    @staticmethod
+    def create(trigger, **args) -> Trigger:
+        azimuth = trigger.get('azimuth')
+        return AzimuthTrigger(args.get('sundata'), azimuth)
+
+    def __repr__(self):
+        return 'AzimuthTrigger: { %s }' % (super(AzimuthTrigger, self).__repr__())
+
+
+class ElevationTrigger(TriggerBase):
+    def __init__(self, sundata: Sundata, elevation: int, direction: str, task: Task = Task.CLOSE):
+        super(ElevationTrigger, self).__init__(task, self.__pick(sundata, elevation, direction))
+
+    @staticmethod
+    def type() -> str:
+        return 'ELEVATION'
+
+    @staticmethod
+    def create(trigger, **args) -> Trigger:
+        elevation = trigger.get('elevation')
+        direction = trigger.get('direction')
+        return ElevationTrigger(args.get('sundata'), elevation, direction)
+
+    @staticmethod
+    def __pick(sundata: Sundata, elevation: int, direction: str) -> datetime:
+        rising, setting = sundata.find_elevation(elevation)
+        if direction == 'RISE':
+            return rising.time
+        return setting.time
+
+    def __repr__(self):
+        return 'ElevationTrigger: { %s }' % (super(ElevationTrigger, self).__repr__())
+
+
+class PositionTrigger(TriggerBase):
+    def __init__(self, sundata: Sundata, azimuth: int, elevation: int, direction: str, task: Task = Task.CLOSE):
+        super(PositionTrigger, self).__init__(task, self.__pick(sundata, azimuth, elevation, direction))
+
+    @staticmethod
+    def type() -> str:
+        return 'POSITION'
+
+    @staticmethod
+    def create(trigger, **args) -> Trigger:
+        azimuth = trigger.get('azimuth')
+        elevation = trigger.get('elevation')
+        direction = trigger.get('direction')
+        return PositionTrigger(args.get('sundata'), azimuth, elevation, direction)
+
+    @staticmethod
+    def __pick(sundata: Sundata, azimuth: int, elevation: int, direction: str) -> datetime:
+        azi = sundata.find_azimuth(azimuth)
+        rising, setting = sundata.find_elevation(elevation)
+        ele = setting
+        if direction == 'RISE':
+            ele = rising
+
+        if azi.time > ele.time:
+            return azi.time
+        return ele.time
+
+    def __repr__(self):
+        return 'ElevationTrigger: { %s }' % (super(PositionTrigger, self).__repr__())
+
+
 def apply_triggers(manager: JobManager, sundata: Sundata, blind: Blind):
     triggers = extract_triggers(blind, sundata)
     for trigger in triggers:
@@ -164,7 +237,10 @@ def extract_triggers(blind: Blind, sundata: Sundata) -> [Trigger]:
                               azimuth=blind.sun_in) or \
                 build_trigger(trigger, SunOutTrigger.type(), SunOutTrigger.create, triggers, sundata=sundata,
                               azimuth=blind.sun_out) or \
-                build_trigger(trigger, TimeTrigger.type(), TimeTrigger.create, triggers):
+                build_trigger(trigger, TimeTrigger.type(), TimeTrigger.create, triggers) or \
+                build_trigger(trigger, AzimuthTrigger.type(), AzimuthTrigger.create, triggers, sundata=sundata) or \
+                build_trigger(trigger, ElevationTrigger.type(), ElevationTrigger.create, triggers, sundata=sundata) or \
+                build_trigger(trigger, PositionTrigger.type(), PositionTrigger.create, triggers, sundata=sundata):
             continue
         logger.error('No Trigger for {} existing'.format(trigger))
     return triggers
