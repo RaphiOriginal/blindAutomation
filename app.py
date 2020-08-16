@@ -11,7 +11,7 @@ from meteomatics.meteomatics_api import MeteomaticsAPI
 from pvlibrary.pvlib_api import PVLibAPI
 from settings import settings
 from sun.sundata import Sundata
-from tests.mock.mocks import SunAPIMock, SunAPIResponseMock
+from test.mock.mocks import SunAPIMock, SunAPIResponseMock
 
 logger = logging.getLogger(__name__)
 
