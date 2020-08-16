@@ -43,5 +43,5 @@ class SunAPIResponseMock(SunAPI):
 
 
 def get_json():
-    with open('test/mock/sundata.json', 'r') as stream:
+    with open('tests/mock/sundata.json', 'r') as stream:
         return json.loads(stream.read())
