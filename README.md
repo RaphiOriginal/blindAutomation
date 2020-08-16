@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/RaphiOriginal/blindAutomation.svg?branch=master)](https://travis-ci.org/RaphiOriginal/blindAutomation)
+
 # blindAutomation 🚀
 Scripts to control blinds depending on the sun azimuth
 
