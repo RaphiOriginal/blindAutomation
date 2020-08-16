@@ -20,6 +20,7 @@ pvlib:
     long: #Longitude
     alt: #Altitude
 api: #Which api you want to use (pvlib is recommended here)
+timezone: #A time zone name (IANA)
 walls: #List of walls with blinds of your home
   - wall: #Represents one side of your house with possible multiple blinds
       name: #where the wall is (can be any name, e.g. 'south' or 'green wall'')
