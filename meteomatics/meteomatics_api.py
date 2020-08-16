@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 import logging
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import yaml
 import requests
-from dateutil import parser, tz
+from dateutil import parser
 
+import global_date
 from api.api import SunAPI
 from meteomatics.field import Field
 from meteomatics.interval import Interval
@@ -107,7 +108,7 @@ class MeteomaticsAPI(SunAPI):
     @staticmethod
     def __to_date(isodate):
         date = parser.parse(isodate)
-        return date.astimezone(tz.tzlocal())
+        return date.astimezone(global_date.zone)
 
     def __convert_to_azimuth(self, date: str, degree: float):
         return Azimuth(self.__to_date(date), degree)

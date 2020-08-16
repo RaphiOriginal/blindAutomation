@@ -11,6 +11,7 @@ pvlib:
     long: 6.9
     alt: 420
 api: pvlib
+timezone: 'Europe/Zurich'
 walls:
   - wall:
       name: south

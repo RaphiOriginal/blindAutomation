@@ -1,6 +1,7 @@
 meteomatics: include('meteomatics', required=False)
 pvlib: include('pvlib', required=False)
 api: str()
+timezone: str()
 walls: list(include('wallobj'), min=1)
 ---
 meteomatics:

@@ -1,8 +1,9 @@
 import unittest
 from datetime import datetime
 
-from dateutil import parser, tz
+from dateutil import parser
 
+import global_date
 from building.blind import Blind
 from jobs import trigger
 from jobs.task import Task
@@ -56,13 +57,14 @@ class TriggerTest(unittest.TestCase):
             self.assertEqual('2020-07-27T13:08:00+02:00', item.time().isoformat())
 
     def test_extract_time(self):
+        global_date.date.next()
         triggers = [{'TIME': {'task': 'CLOSE', 'time': '16:00:00'}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(Task.CLOSE, result[0].task())
         for item in result:
             self.assertEqual(TimeTrigger.type(), item.type())
-            now = datetime.now(tz.tzlocal())
+            now = datetime.now(global_date.zone)
             self.assertEqual(now.date().isoformat() + 'T16:00:00+02:00', item.time().isoformat())
 
     def test_no_match(self):
@@ -118,13 +120,13 @@ def blind(triggers: []) -> Blind:
 
 
 def sundata() -> Sundata:
-    sunrise = parser.parse('2020-07-27T03:59:00Z').astimezone(tz.tzlocal())
-    sunset = parser.parse('2020-07-27T19:08:00Z').astimezone(tz.tzlocal())
-    date = parser.parse('2020-07-27T11:08:00Z').astimezone(tz.tzlocal())
+    sunrise = parser.parse('2020-07-27T03:59:00Z').astimezone(global_date.zone)
+    sunset = parser.parse('2020-07-27T19:08:00Z').astimezone(global_date.zone)
+    date = parser.parse('2020-07-27T11:08:00Z').astimezone(global_date.zone)
     azimuth = Azimuth(date, 15)
     elevation = Elevation(date, 5)
     position = Position(date, azimuth, elevation)
-    date2 = parser.parse('2020-07-27T19:08:00Z').astimezone(tz.tzlocal())
+    date2 = parser.parse('2020-07-27T19:08:00Z').astimezone(global_date.zone)
     azimuth2 = Azimuth(date2, 69)
     elevation2 = Elevation(date2, 5)
     position2 = Position(date2, azimuth2, elevation2)

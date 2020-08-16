@@ -1,26 +1,31 @@
 import datetime
+from time import timezone
 
 from dateutil.tz import tz
 
+from settings import settings
+
 
 class GlobalDate:
-    __date: datetime = None
+    def __init__(self, zone):
+        self.__date: datetime = None
+        self.__zone = zone
 
-    @staticmethod
-    def build_date() -> datetime:
-        now = datetime.datetime.now(tz.tzlocal())
+    def __build_date(self) -> datetime:
+        now = datetime.datetime.now(self.__zone)
         return now.replace(hour=0, minute=0, second=0, microsecond=0)
 
     def next(self) -> datetime:
         if self.__date is None:
-            self.__date = self.build_date()
+            self.__date = self.__build_date()
             return self.__date
         self.__date = self.__date + datetime.timedelta(days=1)
         return self.__date
 
     @property
-    def date(self):
+    def current(self):
         return self.__date
 
 
-date: GlobalDate = GlobalDate()
+zone: timezone = tz.gettz(settings.timezone)
+date: GlobalDate = GlobalDate(zone)

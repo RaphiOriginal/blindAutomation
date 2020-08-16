@@ -5,20 +5,19 @@ import time
 from collections import defaultdict
 from datetime import datetime, timedelta
 
-from dateutil import tz
-
+import global_date
 from jobs.job import Job
 
 logger = logging.getLogger(__name__)
 
 
 def now():
-    return datetime.now(tz.tzlocal())
+    return datetime.now(global_date.zone)
 
 
 def delay(delta):
     if isinstance(delta, timedelta):
-        until = datetime.now(tz.tzlocal()) + delta
+        until = datetime.now(global_date.zone) + delta
         logger.info('Wait until {}'.format(until.isoformat()))
         time.sleep(delta.total_seconds())
     if isinstance(delta, int):
@@ -40,7 +39,7 @@ class JobManager:
         for shelly, jobs in self.__jobs.items():
             jobs.sort(key=lambda job: job.get_time())
 
-            future = list(filter(lambda job: job.get_time() > datetime.now(tz.tzlocal()), jobs))
+            future = list(filter(lambda job: job.get_time() > datetime.now(global_date.zone), jobs))
 
             logger.info('{} jobs prepared for {}:'.format(len(future), shelly))
             for job in future:

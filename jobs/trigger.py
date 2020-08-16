@@ -2,8 +2,6 @@
 import logging
 from datetime import datetime, time, timedelta
 
-from dateutil import tz
-
 import global_date
 from building.blind import Blind
 from jobs.job import Job
@@ -133,8 +131,9 @@ class TimeTrigger(TriggerBase):
     def __init__(self, runtime: time, task: Task = Task.CLOSE):
         super(TimeTrigger, self).__init__(task, self.__prepare_runtime(runtime))
 
-    def __prepare_runtime(self, runtime: time) -> datetime:
-        return global_date.date.date.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second, microsecond=0)
+    @staticmethod
+    def __prepare_runtime(runtime: time) -> datetime:
+        return global_date.date.current.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second, microsecond=0)
 
     @staticmethod
     def type() -> str:

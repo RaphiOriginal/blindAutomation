@@ -7,6 +7,7 @@ from settings.auth import Auth
 from settings.coordinates import Coordinates
 
 root = None
+timezone: str = 'Europe/Zurich'
 
 
 class MeteomaticsSettings:
@@ -62,3 +63,4 @@ def load_settings():
     yamale.validate(schema, data)
     with open('settings.yaml', 'r') as stream:
         settings.settings.root = yaml.safe_load(stream)
+        settings.settings.timezone = settings.settings.root.get('timezone')

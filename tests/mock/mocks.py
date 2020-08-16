@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 from dateutil import tz, parser
 
+import global_date
 from api.api import SunAPI
 from meteomatics.meteomatics_api import MeteomaticsAPI
 from sun.azimuth import Azimuth
@@ -37,8 +38,8 @@ class SunAPIResponseMock(SunAPI):
     def fetch_sundata(self):
         api = MeteomaticsAPI()
         return api.process_sundata(get_json(),
-                                   parser.parse('2020-07-27T03:59:00Z').astimezone(tz.tzlocal()),
-                                   parser.parse('2020-07-27T19:08:00Z').astimezone(tz.tzlocal()))
+                                   parser.parse('2020-07-27T03:59:00Z').astimezone(global_date.zone),
+                                   parser.parse('2020-07-27T19:08:00Z').astimezone(global_date.zone))
 
 
 def get_json():
