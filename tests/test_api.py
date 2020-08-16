@@ -21,5 +21,5 @@ if __name__ == '__main__':
 
 
 def get_json():
-    with open('mock/sundata.json', 'r') as stream:
+    with open('tests/mock/sundata.json', 'r') as stream:
         return json.loads(stream.read())

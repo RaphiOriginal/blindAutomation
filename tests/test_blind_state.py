@@ -41,5 +41,5 @@ if __name__ == '__main__':
 
 
 def get_json():
-    with open('mock/roller.json', 'r') as stream:
+    with open('tests/mock/roller.json', 'r') as stream:
         return json.loads(stream.read())
