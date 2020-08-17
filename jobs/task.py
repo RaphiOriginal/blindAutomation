@@ -28,6 +28,8 @@ class Task(Enum):
             return [(Open(blind),)]
         if self == self.TILT:
             return [(PreTilt(blind),), (Tilt(blind),)]
+        if self == self.HALF:
+            return [(PreTilt(blind),), (Half(blind),)]
         return [(Close(blind),)]
 
 
