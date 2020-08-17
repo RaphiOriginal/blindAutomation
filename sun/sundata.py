@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from sun.azimuth import Azimuth
 from sun.elevation import Elevation
@@ -11,6 +11,7 @@ class Sundata:
         self.__sunrise: datetime = sunrise
         self.__sunset: datetime = sunset
         self.__positions: [Position] = positions
+        self.__positions.sort(key=lambda p: p.time)
 
     def find_azimuth(self, degree: float) -> Azimuth:
         best = None
@@ -24,25 +25,29 @@ class Sundata:
         return best
 
     def find_elevation(self, degree: float) -> (Elevation, Elevation):
-        best = None
-        second = None
+        rising = None
+        setting = None
+        previous = None
         for pos in self.__positions:
-            if best is None:
-                best = pos.elevation()
+            if rising is None:
+                rising = pos.elevation()
+                previous = rising
                 continue
-            if abs(degree - best.degree) >= abs(degree - pos.elevation().degree):
-                if second is None or self.__check_distance(best, second):
-                    second = best
-                best = pos.elevation()
+            if setting is None and pos.elevation().degree <= previous.degree:
+                setting = previous
+            if setting is None:
+                rising = self.__check_distance(degree, pos, rising)
+            else:
+                setting = self.__check_distance(degree, pos, setting)
+            previous = pos.elevation()
 
-        if best.time > second.time:
-            return second, best
-        return best, second
+        return rising, setting
 
-    def __check_distance(self, left, right) -> bool:
-        to_check: timedelta = left.time - right.time
-        seconds = abs(to_check.seconds)
-        return seconds > 60
+    @staticmethod
+    def __check_distance(degree, pos, search) -> Elevation:
+        if abs(degree - search.degree) >= abs(degree - pos.elevation().degree):
+            return pos.elevation()
+        return search
 
     def get_positions(self):
         return self.__positions

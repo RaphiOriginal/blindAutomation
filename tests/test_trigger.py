@@ -91,7 +91,7 @@ class TriggerTest(unittest.TestCase):
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(AzimuthTrigger.type(), result[0].type())
-        self.assertEqual('2020-07-27T21:08:00+02:00', result[0].time().isoformat())
+        self.assertEqual('2020-07-27T17:08:00+02:00', result[0].time().isoformat())
 
     def test_elevation_rise(self):
         triggers = [{'ELEVATION': {'elevation': 19, 'direction': 'RISE'}}]
@@ -112,7 +112,7 @@ class TriggerTest(unittest.TestCase):
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(PositionTrigger.type(), result[0].type())
-        self.assertEqual('2020-07-27T21:08:00+02:00', result[0].time().isoformat())
+        self.assertEqual('2020-07-27T17:08:00+02:00', result[0].time().isoformat())
 
 
 def blind(triggers: []) -> Blind:
@@ -124,13 +124,17 @@ def sundata() -> Sundata:
     sunset = parser.parse('2020-07-27T19:08:00Z').astimezone(global_date.zone)
     date = parser.parse('2020-07-27T11:08:00Z').astimezone(global_date.zone)
     azimuth = Azimuth(date, 15)
-    elevation = Elevation(date, 5)
+    elevation = Elevation(date, 15)
     position = Position(date, azimuth, elevation)
-    date2 = parser.parse('2020-07-27T19:08:00Z').astimezone(global_date.zone)
+    date2 = parser.parse('2020-07-27T15:08:00Z').astimezone(global_date.zone)
     azimuth2 = Azimuth(date2, 69)
-    elevation2 = Elevation(date2, 5)
+    elevation2 = Elevation(date2, 23.1)
     position2 = Position(date2, azimuth2, elevation2)
-    return Sundata(sunrise, sunset, [position, position2])
+    date3 = parser.parse('2020-07-27T19:08:00Z').astimezone(global_date.zone)
+    azimuth3 = Azimuth(date3, 189)
+    elevation3 = Elevation(date3, 15)
+    position3 = Position(date3, azimuth3, elevation3)
+    return Sundata(sunrise, sunset, [position, position2, position3])
 
 
 if __name__ == '__main__':
