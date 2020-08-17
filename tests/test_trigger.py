@@ -44,7 +44,7 @@ class TriggerTest(unittest.TestCase):
         self.assertEqual(Task.CLOSE, result[1].task())
         for item in result:
             self.assertEqual(SunInTrigger.type(), item.type())
-            self.assertEqual('2020-07-27T13:08:00+02:00', item.time().isoformat())
+            self.assertEqual('2020-07-27T05:59:00+02:00', item.time().isoformat())
 
     def test_extract_sunout(self):
         triggers = ['SUNOUT', {'SUNOUT': {'task': 'TILT'}}]
@@ -54,7 +54,7 @@ class TriggerTest(unittest.TestCase):
         self.assertEqual(Task.TILT, result[1].task())
         for item in result:
             self.assertEqual(SunOutTrigger.type(), item.type())
-            self.assertEqual('2020-07-27T13:08:00+02:00', item.time().isoformat())
+            self.assertEqual('2020-07-27T05:59:00+02:00', item.time().isoformat())
 
     def test_extract_time(self):
         global_date.date.next()
@@ -77,14 +77,14 @@ class TriggerTest(unittest.TestCase):
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(SunOutTrigger.type(), result[0].type())
-        self.assertEqual('2020-07-27T13:10:00+02:00', result[0].time().isoformat())
+        self.assertEqual('2020-07-27T06:01:00+02:00', result[0].time().isoformat())
 
     def test_offset_minus(self):
         triggers = [{'SUNOUT': {'offset': -8}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(SunOutTrigger.type(), result[0].type())
-        self.assertEqual('2020-07-27T13:00:00+02:00', result[0].time().isoformat())
+        self.assertEqual('2020-07-27T05:51:00+02:00', result[0].time().isoformat())
 
     def test_azimuth(self):
         triggers = [{'AZIMUTH': {'azimuth': 123}}]
@@ -98,7 +98,7 @@ class TriggerTest(unittest.TestCase):
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(ElevationTrigger.type(), result[0].type())
-        self.assertEqual('2020-07-27T13:08:00+02:00', result[0].time().isoformat())
+        self.assertEqual('2020-07-27T05:59:00+02:00', result[0].time().isoformat())
 
     def test_elevation_set(self):
         triggers = [{'ELEVATION': {'elevation': 19, 'direction': 'SET'}}]
@@ -114,6 +114,34 @@ class TriggerTest(unittest.TestCase):
         self.assertEqual(PositionTrigger.type(), result[0].type())
         self.assertEqual('2020-07-27T17:08:00+02:00', result[0].time().isoformat())
 
+    def test_order(self):
+        triggers = [{'TIME': {'time': '23:59:59'}}, {'TIME': {'time': '00:00:01'}}, 'SUNOUT', 'SUNIN', 'SUNSET', 'SUNRISE']
+        result = trigger.extract_triggers(blind(triggers), sundata())
+        self.assertEqual(6, len(result))
+        self.assertEqual(TimeTrigger.type(), result[4].type())
+        now = datetime.now(global_date.zone)
+        self.assertEqual(now.date().isoformat() + 'T00:00:01+02:00', result[4].time().isoformat())
+        self.assertEqual(SunriseTrigger.type(), result[0].type())
+        self.assertEqual(SunInTrigger.type(), result[1].type())
+        self.assertEqual(SunOutTrigger.type(), result[2].type())
+        self.assertEqual(SunsetTrigger.type(), result[3].type())
+        self.assertEqual(TimeTrigger.type(), result[5].type())
+        self.assertEqual(now.date().isoformat() + 'T23:59:59+02:00', result[5].time().isoformat())
+
+    def test_sort(self):
+        data = sundata()
+        triggers = [
+            SunOutTrigger(data, 15),
+            SunInTrigger(data, 15),
+            SunsetTrigger(data),
+            SunriseTrigger(data)
+        ]
+        trigger.sort(triggers)
+        self.assertEqual(SunriseTrigger.type(), triggers[0].type())
+        self.assertEqual(SunInTrigger.type(), triggers[1].type())
+        self.assertEqual(SunOutTrigger.type(), triggers[2].type())
+        self.assertEqual(SunsetTrigger.type(), triggers[3].type())
+
 
 def blind(triggers: []) -> Blind:
     return Blind('test', 10, 20, None, triggers)
@@ -122,7 +150,7 @@ def blind(triggers: []) -> Blind:
 def sundata() -> Sundata:
     sunrise = parser.parse('2020-07-27T03:59:00Z').astimezone(global_date.zone)
     sunset = parser.parse('2020-07-27T19:08:00Z').astimezone(global_date.zone)
-    date = parser.parse('2020-07-27T11:08:00Z').astimezone(global_date.zone)
+    date = parser.parse('2020-07-27T03:59:00Z').astimezone(global_date.zone)
     azimuth = Azimuth(date, 15)
     elevation = Elevation(date, 15)
     position = Position(date, azimuth, elevation)

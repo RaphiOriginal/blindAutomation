@@ -59,6 +59,10 @@ class TriggerBase(Trigger):
     def create(trigger, **args) -> Trigger:
         raise NotImplementedError()
 
+    @staticmethod
+    def order() -> int:
+        return 1
+
     def __repr__(self):
         return 'runtime: %s, task: %s, offset: %s' % (self._time, self._task, self._offset)
 
@@ -91,6 +95,10 @@ class SunsetTrigger(TriggerBase):
     def create(trigger, **args) -> Trigger:
         return SunsetTrigger(args.get('sundata'))
 
+    @staticmethod
+    def order() -> int:
+        return 5
+
     def __repr__(self):
         return 'SunsetTrigger: { %s }' % (super(SunsetTrigger, self).__repr__())
 
@@ -106,6 +114,10 @@ class SunInTrigger(TriggerBase):
     @staticmethod
     def create(trigger, **args) -> Trigger:
         return SunInTrigger(args.get('sundata'), args.get('azimuth'))
+
+    @staticmethod
+    def order() -> int:
+        return 2
 
     def __repr__(self):
         return 'SunInTrigger: { %s }' % (super(SunInTrigger, self).__repr__())
@@ -123,6 +135,10 @@ class SunOutTrigger(TriggerBase):
     def create(trigger, **args) -> Trigger:
         return SunOutTrigger(args.get('sundata'), args.get('azimuth'))
 
+    @staticmethod
+    def order() -> int:
+        return 3
+
     def __repr__(self):
         return 'SunOutTrigger: { %s }' % (super(SunOutTrigger, self).__repr__())
 
@@ -133,7 +149,8 @@ class TimeTrigger(TriggerBase):
 
     @staticmethod
     def __prepare_runtime(runtime: time) -> datetime:
-        return global_date.date.current.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second, microsecond=0)
+        return global_date.date.current.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second,
+                                                microsecond=0)
 
     @staticmethod
     def type() -> str:
@@ -185,6 +202,10 @@ class ElevationTrigger(TriggerBase):
         if direction == 'RISE':
             return rising.time
         return setting.time
+
+    @staticmethod
+    def order() -> int:
+        return 4
 
     def __repr__(self):
         return 'ElevationTrigger: { %s }' % (super(ElevationTrigger, self).__repr__())
@@ -243,7 +264,14 @@ def extract_triggers(blind: Blind, sundata: Sundata) -> [Trigger]:
                 build_trigger(trigger, PositionTrigger.type(), PositionTrigger.create, triggers, sundata=sundata):
             continue
         logger.error('No Trigger for {} existing'.format(trigger))
+
+    sort(triggers)
     return triggers
+
+
+def sort(triggers):
+    triggers.sort(key=lambda t: t.order())
+    triggers.sort(key=lambda t: t.time())
 
 
 def build_trigger(triggerdata, type: str, constructor, triggers: [Trigger], **args) -> bool:
