@@ -48,6 +48,9 @@ class TestTask(BaseTask):
         self.counter_ready += 1
         return self.counter_ready > self.retry
 
+    def __repr__(self):
+        return 'TestTask'
+
 
 if __name__ == '__main__':
     unittest.main()
