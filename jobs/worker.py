@@ -11,3 +11,5 @@ def work(task):
     if not task.done():
         if task.do():
             logger.info('Successfully done {}'.format(task))
+    else:
+        logger.info('Task {} already done'.format(task))
