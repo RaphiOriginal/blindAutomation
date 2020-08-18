@@ -2,10 +2,24 @@ import logging
 
 from building.blind import Blind
 from building.wall import Wall
-from device import device_matcher, device_finder
+from device import device_matcher, device_manager
+from device.device import Device
 from settings import settings
 
 logger = logging.getLogger(__name__)
+
+
+class Building:
+    def __init__(self, walls):
+        self.__walls: [Wall] = walls
+
+    @property
+    def walls(self) -> [Wall]:
+        return self.__walls
+
+    @property
+    def devices(self) -> [Device]:
+        return [device for wall in self.walls for device in wall.devices]
 
 
 def prepare_walls() -> [Wall]:
@@ -33,7 +47,11 @@ def prepare_walls() -> [Wall]:
     return walls
 
 
-def prepare_house():
+def prepare() -> Building:
     walls = prepare_walls()
-    device_finder.find_devices(walls)
-    return walls
+    device_manager.find_devices(walls)
+    return prepare.Building(walls)
+
+
+prepare.Building = Building
+del Building

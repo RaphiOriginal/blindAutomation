@@ -13,12 +13,14 @@ def main():
 
     settings.load_settings()
 
-    walls = building.prepare_house()
-    logging.info('{} configured and matched Walls'.format(len(walls)))
-    for wall in walls:
+    home = building.prepare()
+    logging.info('{} configured and matched Walls'.format(len(home.walls)))
+    for wall in home.walls:
         logging.info('On {} {} configured and matched blinds:'.format(wall.name, len(wall.blinds)))
-        for blind in wall.blinds:
-            logging.info(blind.device)
+        logging.info(wall.devices)
 
+    logging.info("All Devices:")
+    for device in home.devices:
+        logging.info(device)
 
 main()

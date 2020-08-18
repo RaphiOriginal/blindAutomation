@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from building.blind import Blind
+from device.device import Device
 
 
 class Wall:
@@ -11,6 +12,10 @@ class Wall:
 
     def add_blind(self, blind: Blind):
         self.blinds.append(blind)
+
+    @property
+    def devices(self) -> [Device]:
+        return list(map(lambda blind: blind.device, self.blinds))
 
     def __repr__(self):
         return 'Wall: { name: %s, in_sun: %s, out_sun: %s , blinds: %s }' % \

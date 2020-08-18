@@ -31,15 +31,15 @@ def main():
         level=logging.INFO,
         datefmt='%Y-%m-%d %H:%M:%S')
     settings.load_settings()
-    walls = building.prepare_house()
-    if len(walls) > 0:
+    home = building.prepare()
+    if len(home.walls) > 0:
         api: SunAPI = prepare_api()
         while True:
             sun: Sundata = api.fetch_sundata(global_date.date.next())
 
             manager = JobManager()
 
-            for wall in walls:
+            for wall in home.walls:
                 for blind in wall.blinds:
                     trigger.apply_triggers(manager, sun, blind)
 
