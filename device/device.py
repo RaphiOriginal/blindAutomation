@@ -26,9 +26,11 @@ class Device:
         pass
 
     def activate(self):
+        logger.info('Activating: {}'.format(self))
         self.__active = True
 
     def deactivate(self):
+        logger.info('Deactivating: {}'.format(self))
         self.__active = False
 
     @property
