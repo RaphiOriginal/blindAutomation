@@ -23,10 +23,10 @@ class DeviceListener:
         for blind in self.blinds:
             if blind.id.upper() in name:
                 blind.device.url = 'http://' + '.'.join(str(c) for c in info.addresses[0])
+                blind.activate()
 
 
-def find_devices(walls):
-    blinds = [blind for wall in walls for blind in wall.blinds]
+def find_devices(blinds):
     zeroconf = Zeroconf()
     listener = DeviceListener(blinds)
     ServiceBrowser(zeroconf, "_http._tcp.local.", listener)

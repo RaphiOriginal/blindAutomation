@@ -10,6 +10,7 @@ class Blind:
         self.device: Device = device
         self.triggers: [] = triggers
         self.state: State = State.UNKNOWN
+        self.__active: bool = False
 
     def open(self) -> str:
         return self.device.open()
@@ -22,6 +23,16 @@ class Blind:
 
     def stats(self) -> str:
         return self.device.stats()
+
+    def activate(self):
+        self.__active = True
+
+    def deactivate(self):
+        self.__active = False
+
+    @property
+    def active(self) -> bool:
+        return self.__active
 
     @property
     def id(self):
