@@ -20,7 +20,8 @@ def main():
     logging.info('{} configured and matched Walls'.format(len(home.walls)))
     for wall in home.walls:
         logging.info('On {} {} configured and matched blinds:'.format(wall.name, len(wall.blinds)))
-        logging.info(wall.devices)
+        for blind in wall.blinds:
+            logging.info('{} in position: {}'.format(blind, blind.stats()))
 
     logging.info("All Devices:")
     for device in home.devices:
