@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import logging
+from time import sleep
 
 import urllib3
 
@@ -17,6 +18,7 @@ def main():
     settings.load_settings()
 
     home = building.prepare()
+    sleep(3)
     logging.info('{} configured and matched Walls'.format(len(home.walls)))
     for wall in home.walls:
         logging.info('On {} {} configured and matched blinds:'.format(wall.name, len(wall.blinds)))

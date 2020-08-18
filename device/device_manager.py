@@ -13,9 +13,12 @@ class DeviceListener:
     def __init__(self, devices):
         self.devices: [Device] = devices
 
-    @staticmethod
-    def remove_service(zeroconf, type, name):
-        logger.debug("Service %s removed" % (name,))
+    def remove_service(self, zeroconf, type, name):
+        info = zeroconf.get_service_info(type, name)
+        logger.debug("Service %s removed, service info: %s" % (name, info))
+        for device in self.devices:
+            if device.id.upper() in name:
+                device.deactivate()
 
     def add_service(self, zeroconf, type, name):
         info = zeroconf.get_service_info(type, name)
@@ -25,10 +28,23 @@ class DeviceListener:
                 device.url = 'http://' + '.'.join(str(c) for c in info.addresses[0])
                 device.activate()
 
+    def update_service(self, zeroconf, type, name):
+        info = zeroconf.get_service_info(type, name)
+        logger.debug("Service %s updated, service info: %s" % (name, info))
+        for device in self.devices:
+            if device.id.upper() in name:
+                device.url = 'http://' + '.'.join(str(c) for c in info.addresses[0])
+                device.activate()
+
+
 
 def find_devices(devices):
+    logger.setLevel(logging.INFO)
     zeroconf = Zeroconf()
     listener = DeviceListener(devices)
-    ServiceBrowser(zeroconf, "_http._tcp.local.", listener)
-    time.sleep(3)
-    zeroconf.close()
+    try:
+        while True:
+            ServiceBrowser(zeroconf, "_http._tcp.local.", listener)
+            time.sleep(3)
+    finally:
+        zeroconf.close()

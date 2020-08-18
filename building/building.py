@@ -1,4 +1,5 @@
 import logging
+import threading
 
 from building.blind import Blind
 from building.wall import Wall
@@ -50,7 +51,8 @@ def prepare_walls() -> [Wall]:
 def prepare() -> Building:
     walls = prepare_walls()
     home = prepare.Building(walls)
-    device_manager.find_devices(home.devices)
+    manager = threading.Thread(target=device_manager.find_devices, args=(home.devices,), daemon=True)
+    manager.start()
     return home
 
 
