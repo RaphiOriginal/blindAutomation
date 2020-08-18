@@ -3,8 +3,9 @@ import threading
 
 from building.blind import Blind
 from building.wall import Wall
-from device import device_matcher, device_manager
+from device import device_matcher
 from device.device import Device
+from device.device_manager import DeviceManager
 from settings import settings
 
 logger = logging.getLogger(__name__)
@@ -51,7 +52,7 @@ def prepare_walls() -> [Wall]:
 def prepare() -> Building:
     walls = prepare_walls()
     home = prepare.Building(walls)
-    manager = threading.Thread(target=device_manager.find_devices, args=(home.devices,), daemon=True)
+    manager = threading.Thread(target=DeviceManager(home.devices).run, daemon=True)
     manager.start()
     return home
 

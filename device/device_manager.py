@@ -8,7 +8,7 @@ from device.device import Device
 logger = logging.getLogger(__name__)
 
 
-class DeviceListener:
+class DeviceHandler:
 
     def __init__(self, devices):
         self.devices: [Device] = devices
@@ -37,14 +37,21 @@ class DeviceListener:
                 device.activate()
 
 
+class DeviceManager:
+    def __init__(self, devices: [Device]):
+        self.__devices: [Device] = devices
+        self.__running = False
 
-def find_devices(devices):
-    logger.setLevel(logging.INFO)
-    zeroconf = Zeroconf()
-    listener = DeviceListener(devices)
-    try:
-        while True:
-            ServiceBrowser(zeroconf, "_http._tcp.local.", listener)
-            time.sleep(3)
-    finally:
-        zeroconf.close()
+    def run(self):
+        self.__running = True
+        zeroconf = Zeroconf()
+        handler = DeviceHandler(self.__devices)
+        ServiceBrowser(zeroconf, "_http._tcp.local.", handler)
+        try:
+            while self.__running:
+                time.sleep(0.01)
+        finally:
+            zeroconf.close()
+
+    def stop(self):
+        self.__running = False

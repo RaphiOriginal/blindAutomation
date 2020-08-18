@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
 import logging
-from time import sleep
 
 import urllib3
 
 from building import building
+from device.device import Device
 from settings import settings
+
+
+def searching(devices: [Device]) -> bool:
+    for device in devices:
+        if device.url is None:
+            return True
+    return False
+
 
 
 def main():
@@ -18,7 +26,10 @@ def main():
     settings.load_settings()
 
     home = building.prepare()
-    sleep(3)
+    search = True
+    while search:
+        search = searching(home.devices)
+
     logging.info('{} configured and matched Walls'.format(len(home.walls)))
     for wall in home.walls:
         logging.info('On {} {} configured and matched blinds:'.format(wall.name, len(wall.blinds)))
@@ -28,5 +39,6 @@ def main():
     logging.info("All Devices:")
     for device in home.devices:
         logging.info('{} in position {}'.format(device, device.stats()))
+
 
 main()
