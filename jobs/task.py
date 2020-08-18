@@ -42,14 +42,17 @@ class BaseTask:
         return True
 
     def done(self):
-        state = blind_state.fetch_blindstate(self.blind)
-        return state.state() == self.__target
+        state = self.blind.stats()
+        return state == self.__target
 
     def do(self):
         pass
 
     def _target(self):
         return self.__target
+
+    def __repr__(self):
+        return 'Task: {%s, %s, %s}' % (self.blind.name, self.blind.device, self.__target)
 
 
 class Close(BaseTask):

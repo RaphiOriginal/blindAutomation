@@ -245,9 +245,8 @@ class PositionTrigger(TriggerBase):
 def apply_triggers(manager: JobManager, sundata: Sundata, blind: Blind):
     triggers = extract_triggers(blind, sundata)
     logger.debug('Triggers for {}: {}'.format(blind.name, triggers))
-    if blind.active:
-        for trigger in triggers:
-            manager.add(Job(trigger, blind))
+    for trigger in triggers:
+        manager.add(Job(trigger, blind))
 
 
 def extract_triggers(blind: Blind, sundata: Sundata) -> [Trigger]:

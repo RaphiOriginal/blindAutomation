@@ -10,7 +10,7 @@ class WorkerTest(unittest.TestCase):
         worker.work(task)
         self.assertEqual(1, task.counter_done)
         self.assertEqual(4, task.counter_ready)
-        self.assertEqual(2, task.counter_do)
+        self.assertEqual(1, task.counter_do)
 
     def test_work_done(self):
         task = TestTask(True)
@@ -24,7 +24,7 @@ class WorkerTest(unittest.TestCase):
         worker.work(task)
         self.assertEqual(1, task.counter_done)
         self.assertEqual(1, task.counter_ready)
-        self.assertEqual(2, task.counter_do)
+        self.assertEqual(1, task.counter_do)
 
 
 class TestTask(BaseTask):

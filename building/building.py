@@ -21,10 +21,6 @@ class Building:
     def devices(self) -> [Device]:
         return [device for wall in self.walls for device in wall.devices]
 
-    @property
-    def blinds(self) -> [Blind]:
-        return [blind for wall in self.walls for blind in wall.blinds]
-
 
 def prepare_walls() -> [Wall]:
     walls: [Wall] = []
@@ -54,7 +50,7 @@ def prepare_walls() -> [Wall]:
 def prepare() -> Building:
     walls = prepare_walls()
     home = prepare.Building(walls)
-    device_manager.find_devices(home.blinds)
+    device_manager.find_devices(home.devices)
     return home
 
 

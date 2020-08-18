@@ -3,7 +3,6 @@ from enum import Enum
 
 import requests
 
-from building.blind import Blind
 from building.state import State
 
 
@@ -44,11 +43,10 @@ class BlindState:
                (self.__position, self.__last_direction, self.state())
 
 
-def fetch_blindstate(blind: Blind):
-    response = requests.get(blind.stats())
+def fetch_blindstate(url):
+    response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
-        blind.state = BlindState(data.get('current_pos'), data.get('last_direction'))
-        return blind.state
-    raise ConnectionError('Negative answer from shelly {}: {} - {}'
-                          .format(blind.id, response.status_code, response.text))
+        return BlindState(data.get('current_pos'), data.get('last_direction'))
+    raise ConnectionError('Negative answer from deviceurl {}: {} - {}'
+                          .format(url, response.status_code, response.text))

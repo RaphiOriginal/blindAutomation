@@ -3,15 +3,15 @@ import time
 
 from zeroconf import ServiceBrowser, Zeroconf
 
-from building.blind import Blind
+from device.device import Device
 
 logger = logging.getLogger(__name__)
 
 
 class DeviceListener:
 
-    def __init__(self, blinds):
-        self.blinds: [Blind] = blinds
+    def __init__(self, devices):
+        self.devices: [Device] = devices
 
     @staticmethod
     def remove_service(zeroconf, type, name):
@@ -20,15 +20,15 @@ class DeviceListener:
     def add_service(self, zeroconf, type, name):
         info = zeroconf.get_service_info(type, name)
         logger.debug("Service %s added, service info: %s" % (name, info))
-        for blind in self.blinds:
-            if blind.id.upper() in name:
-                blind.device.url = 'http://' + '.'.join(str(c) for c in info.addresses[0])
-                blind.activate()
+        for device in self.devices:
+            if device.id.upper() in name:
+                device.url = 'http://' + '.'.join(str(c) for c in info.addresses[0])
+                device.activate()
 
 
-def find_devices(blinds):
+def find_devices(devices):
     zeroconf = Zeroconf()
-    listener = DeviceListener(blinds)
+    listener = DeviceListener(devices)
     ServiceBrowser(zeroconf, "_http._tcp.local.", listener)
     time.sleep(3)
     zeroconf.close()

@@ -10,29 +10,19 @@ class Blind:
         self.device: Device = device
         self.triggers: [] = triggers
         self.state: State = State.UNKNOWN
-        self.__active: bool = False
 
-    def open(self) -> str:
+    def open(self) -> bool:
         return self.device.open()
 
-    def close(self) -> str:
+    def close(self) -> bool:
         return self.device.close()
 
-    def move(self, pos: int) -> str:
+    def move(self, pos: int) -> bool:
         return self.device.move(pos)
 
-    def stats(self) -> str:
-        return self.device.stats()
-
-    def activate(self):
-        self.__active = True
-
-    def deactivate(self):
-        self.__active = False
-
-    @property
-    def active(self) -> bool:
-        return self.__active
+    def stats(self) -> State:
+        self.state = self.device.stats()
+        return self.state
 
     @property
     def id(self):

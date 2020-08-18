@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 import logging
 
+import urllib3
+
 from building import building
 from settings import settings
 
 
 def main():
     logging.basicConfig(
-        format='%(asctime)s %(levelname)-8s %(message)s',
+        format='%(asctime)s %(levelname)-8s %(name)-8s %(message)s',
         level=logging.DEBUG,
         datefmt='%Y-%m-%d %H:%M:%S')
+    logging.getLogger(urllib3.__name__).setLevel(logging.WARNING)
 
     settings.load_settings()
 
@@ -21,6 +24,6 @@ def main():
 
     logging.info("All Devices:")
     for device in home.devices:
-        logging.info(device)
+        logging.info('{} in position {}'.format(device, device.stats()))
 
 main()
