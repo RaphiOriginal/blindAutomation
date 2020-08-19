@@ -45,6 +45,10 @@ class Blind:
     def id(self):
         return self.device.id
 
+    @property
+    def degree(self) -> int:
+        return self.__degree
+
     def __repr__(self):
         return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, triggers: %s, state: %s }' % \
                (self.name, self.sun_in, self.sun_out, self.device, self.triggers, self.state)

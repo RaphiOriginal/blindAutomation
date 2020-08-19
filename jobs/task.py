@@ -2,10 +2,8 @@
 import logging
 from enum import Enum
 
-from building import blind_state
 from building.blind import Blind
 from building.blind_state import State
-
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +87,9 @@ class Tilt(BaseTask):
         state = self.blind.stats()
         logger.debug(state)
         return state == self.__precondition or state == self._target()
+
+    def done(self) -> bool:
+        return self.blind.degree == self.__degree
 
     def do(self):
         return self.blind.tilt(self.__degree)

@@ -30,11 +30,8 @@ class BlindState:
         if self.__last_direction == Direction.CLOSE and self.__position == 0:
             return State.CLOSED
 
-        if self.__last_direction == Direction.OPEN and 2 <= self.__position <= 5:
+        if 1 < self.__position < 5:
             return State.TILT
-
-        if self.__last_direction == Direction.OPEN and self.__position == 1:
-            return State.HALF
 
         return State.OPEN
 
