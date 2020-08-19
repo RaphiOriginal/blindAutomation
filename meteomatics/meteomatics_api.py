@@ -3,12 +3,12 @@ import logging
 from collections import defaultdict
 from datetime import datetime
 
-import yaml
 import requests
+import yaml
 from dateutil import parser
 
 import global_date
-from api.api import SunAPI
+from api.api import ObservableSunAPI
 from meteomatics.field import Field
 from meteomatics.interval import Interval
 from meteomatics.meteomatics_url_builder import MeteomaticsURLBuilder
@@ -21,9 +21,10 @@ from sun.sundata import Sundata
 logger = logging.getLogger(__name__)
 
 
-class MeteomaticsAPI(SunAPI):
+class MeteomaticsAPI(ObservableSunAPI):
 
     def __init__(self):
+        super(MeteomaticsAPI, self).__init__()
         self.url = 'http://api.meteomatics.com'
 
         self.settings = None
@@ -75,9 +76,10 @@ class MeteomaticsAPI(SunAPI):
             a = azimuth.get(date)
             e = elevation.get(date)
             sun_positions.append(Position(date, a, e))
-        sundata = Sundata(sunrise, sunset, sun_positions)
-        logger.debug('Fetched {}'.format(sundata))
-        return sundata
+        self.sundata = Sundata(sunrise, sunset, sun_positions)
+        logger.debug('Fetched {}'.format(self.sundata))
+        self.notify()
+        return self.sundata
 
     def __fetch_sunrise_and_sunset(self, date: datetime, auth):
         try:

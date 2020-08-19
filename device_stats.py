@@ -15,7 +15,6 @@ def searching(devices: [Device]) -> bool:
     return False
 
 
-
 def main():
     logging.basicConfig(
         format='%(asctime)s %(levelname)-8s %(name)-8s %(message)s',

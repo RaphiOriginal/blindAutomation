@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
-from datetime import datetime, tzinfo
 from sched import scheduler
 
-from building.blind import Blind
+from building.blind_interface import BlindInterface
 from jobs.worker import work
-from shelly.shelly import Shelly
 
 
 class Job:
-    def __init__(self, trigger, blind: Blind):
+    def __init__(self, trigger, blind: BlindInterface):
         self.__trigger = trigger
-        self.__blind: Blind = blind
+        self.__blind: BlindInterface = blind
 
     def schedule(self, schedule: scheduler):
         """Schedules the Job at the given timestamp"""

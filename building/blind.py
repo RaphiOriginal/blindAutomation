@@ -1,14 +1,18 @@
+from api.api import ObservableSunAPI
+from building.blind_interface import BlindInterface
 from building.state import State
 from device.device import Device
+from jobs import trigger
+from jobs.jobmanager import manager
 
 
-class Blind:
+class Blind(BlindInterface):
     def __init__(self, name: str, sun_in: float, sun_out: float, device: Device, triggers: []):
-        self.name: str = name
-        self.sun_in: float = sun_in
-        self.sun_out: float = sun_out
+        self._name: str = name
+        self._sun_in: float = sun_in
+        self._sun_out: float = sun_out
         self.device: Device = device
-        self.triggers: [] = triggers
+        self._triggers: [] = triggers
         self.state: State = State.UNKNOWN
         self.__degree: int = -1
         self.__duration: float = 1.2
@@ -48,6 +52,25 @@ class Blind:
     @property
     def degree(self) -> int:
         return self.__degree
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def sun_in(self) -> float:
+        return self._sun_in
+
+    @property
+    def sun_out(self) -> float:
+        return self._sun_out
+
+    @property
+    def triggers(self) -> []:
+        return self._triggers
+
+    def update(self, api: ObservableSunAPI):
+        trigger.apply_triggers(manager, api.sundata, self)
 
     def __repr__(self):
         return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, triggers: %s, state: %s }' % \

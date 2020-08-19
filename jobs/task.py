@@ -2,7 +2,7 @@
 import logging
 from abc import ABC, abstractmethod
 
-from building.blind import Blind
+from building.blind_interface import BlindInterface
 from building.blind_state import State
 
 logger = logging.getLogger(__name__)
@@ -34,7 +34,7 @@ class Task(ABC):
         pass
 
     @abstractmethod
-    def get(self, blind: Blind) -> [__name__]:
+    def get(self, blind: BlindInterface) -> [__name__]:
         """
         Combines blinds with task necessary before calling do()
         :param blind: Blind which the task belongs to
@@ -67,8 +67,8 @@ def create_task(task, type: str, constructor, tasks: [Task]) -> bool:
 
 
 class BaseTask(Task):
-    def __init__(self, blind: Blind, target: State):
-        self.blind: Blind = blind
+    def __init__(self, blind: BlindInterface, target: State):
+        self.blind: BlindInterface = blind
         self.__target: State = target
 
     def ready(self) -> bool:
@@ -81,7 +81,7 @@ class BaseTask(Task):
     def do(self):
         pass
 
-    def get(self, blind: Blind) -> [Task]:
+    def get(self, blind: BlindInterface) -> [Task]:
         self.blind = blind
         return []
 
@@ -93,7 +93,7 @@ class BaseTask(Task):
         return 'BASE'
 
     @staticmethod
-    def create(blind: Blind, **args) -> Task:
+    def create(blind: BlindInterface, **args) -> Task:
         raise NotImplementedError()
 
     def __repr__(self):
@@ -101,13 +101,13 @@ class BaseTask(Task):
 
 
 class Close(BaseTask):
-    def __init__(self, blind: Blind = None):
+    def __init__(self, blind: BlindInterface = None):
         super(Close, self).__init__(blind, State.CLOSED)
 
     def do(self) -> bool:
         return self.blind.close()
 
-    def get(self, blind: Blind) -> [Task]:
+    def get(self, blind: BlindInterface) -> [Task]:
         self.blind = blind
         return [(self,)]
 
@@ -121,13 +121,13 @@ class Close(BaseTask):
 
 
 class Open(BaseTask):
-    def __init__(self, blind: Blind = None):
+    def __init__(self, blind: BlindInterface = None):
         super(Open, self).__init__(blind, State.OPEN)
 
     def do(self):
         return self.blind.open()
 
-    def get(self, blind: Blind) -> [Task]:
+    def get(self, blind: BlindInterface) -> [Task]:
         self.blind = blind
         return [(self,)]
 
@@ -141,7 +141,7 @@ class Open(BaseTask):
 
 
 class PreTilt(BaseTask):
-    def __init__(self, blind: Blind):
+    def __init__(self, blind: BlindInterface):
         super(PreTilt, self).__init__(blind, State.TILT)
 
     def do(self):
@@ -153,7 +153,7 @@ class PreTilt(BaseTask):
 
 
 class Tilt(BaseTask):
-    def __init__(self, blind: Blind = None, degree: int = 0):
+    def __init__(self, blind: BlindInterface = None, degree: int = 0):
         super(Tilt, self).__init__(blind, State.TILT)
         self.__precondition: State = State.CLOSED
         self.__degree: int = degree
@@ -169,7 +169,7 @@ class Tilt(BaseTask):
     def do(self):
         return self.blind.tilt(self.__degree)
 
-    def get(self, blind: Blind) -> [Task]:
+    def get(self, blind: BlindInterface) -> [Task]:
         self.blind = blind
         return [(PreTilt(self.blind),), (self,)]
 

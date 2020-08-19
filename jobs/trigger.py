@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime, time, timedelta
 
 import global_date
-from building.blind import Blind
+from building.blind_interface import BlindInterface
 from jobs.job import Job
 from jobs.jobmanager import JobManager
 from jobs import task
@@ -261,14 +261,14 @@ class PositionTrigger(TriggerBase):
         return 'ElevationTrigger: { %s }' % (super(PositionTrigger, self).__repr__())
 
 
-def apply_triggers(manager: JobManager, sundata: Sundata, blind: Blind):
+def apply_triggers(manager: JobManager, sundata: Sundata, blind: BlindInterface):
     triggers = extract_triggers(blind, sundata)
     logger.debug('Triggers for {}: {}'.format(blind.name, triggers))
     for trigger in triggers:
         manager.add(Job(trigger, blind))
 
 
-def extract_triggers(blind: Blind, sundata: Sundata) -> [Trigger]:
+def extract_triggers(blind: BlindInterface, sundata: Sundata) -> [Trigger]:
     triggers: [Trigger] = []
     for trigger in blind.triggers:
         if build_trigger(trigger, SunriseTrigger.type(), SunriseTrigger.create, triggers, sundata=sundata) or \

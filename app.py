@@ -3,10 +3,9 @@ import logging
 from collections import defaultdict
 
 import global_date
-from api.api import SunAPI
+from api.api import SunAPI, ObservableSunAPI
 from building import building
-from jobs import trigger
-from jobs.jobmanager import JobManager
+from jobs.jobmanager import JobManager, manager
 from meteomatics.meteomatics_api import MeteomaticsAPI
 from pvlibrary.pvlib_api import PVLibAPI
 from settings import settings
@@ -16,8 +15,8 @@ from tests.mock.mocks import SunAPIMock, SunAPIResponseMock
 logger = logging.getLogger(__name__)
 
 
-def prepare_api() -> SunAPI:
-    apis = defaultdict(SunAPI)
+def prepare_api() -> ObservableSunAPI:
+    apis = defaultdict(ObservableSunAPI)
     apis['meteomatics'] = MeteomaticsAPI()
     apis['pvlib'] = PVLibAPI()
     apis['mock'] = SunAPIMock()
@@ -32,18 +31,12 @@ def main():
         datefmt='%Y-%m-%d %H:%M:%S')
     settings.load_settings()
     home = building.prepare()
-    api: SunAPI = prepare_api()
+    api: ObservableSunAPI = prepare_api()
+    for blind in home.blinds:
+        api.attach(blind)
     while True:
-        sun: Sundata = api.fetch_sundata(global_date.date.next())
-
-        manager = JobManager()
-
-        for blind in home.blinds:
-            trigger.apply_triggers(manager, sun, blind)
-
-        if manager.prepare().run():
-            break
-    exit(0)
+        api.fetch_sundata(global_date.date.next())
+        manager.prepare().run()
 
 
 main()

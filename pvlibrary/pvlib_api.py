@@ -5,7 +5,7 @@ from datetime import datetime
 import pandas
 import pvlib
 
-from api.api import SunAPI
+from api.api import ObservableSunAPI
 from settings.settings import PvLibSettings
 from sun.azimuth import Azimuth
 from sun.elevation import Elevation
@@ -15,8 +15,9 @@ from sun.sundata import Sundata
 logger = logging.getLogger(__name__)
 
 
-class PVLibAPI(SunAPI):
+class PVLibAPI(ObservableSunAPI):
     def __init__(self):
+        super(PVLibAPI, self).__init__()
         config = PvLibSettings()
         coordinates = config.get_coordinates()
         self.__location = pvlib.location.Location(coordinates.lat, coordinates.long, tz='Europe/Zurich',
@@ -51,9 +52,10 @@ class PVLibAPI(SunAPI):
             e = elevation.get(date)
             sun_positions.append(Position(date, a, e))
 
-        sundata = Sundata(self.__to_date(sunrise), self.__to_date(sunset), sun_positions)
-        logger.debug('Created {}'.format(sundata))
-        return sundata
+        self.sundata = Sundata(self.__to_date(sunrise), self.__to_date(sunset), sun_positions)
+        logger.debug('Created {}'.format(self.sundata))
+        self.notify()
+        return self.sundata
 
     def __calculate_sunrise_sunset(self, date):
         result = self.__location.get_sun_rise_set_transit(pandas.DatetimeIndex([date]))

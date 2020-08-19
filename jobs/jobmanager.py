@@ -52,3 +52,6 @@ class JobManager:
         if not self.__schedule.empty():
             self.__schedule.run()
         return not self.__schedule.empty()
+
+
+manager = JobManager()
