@@ -43,7 +43,10 @@ def prepare_walls() -> [Wall]:
                     in_sun = blind.get('in')
                 if 'out' in blind.keys():
                     out_sun = blind.get('out')
-                w.add_blind(Blind(blind.get('name'), in_sun, out_sun, controller, triggers))
+                b = Blind(blind.get('name'), in_sun, out_sun, controller, triggers)
+                if 'tilt_time' in blind.keys():
+                    b.override_tilt_duration(blind.get('tilt_time'))
+                w.add_blind(b)
             walls.append(w)
 
     return walls

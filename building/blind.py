@@ -38,6 +38,9 @@ class Blind:
         self.state = self.device.stats()
         return self.state
 
+    def override_tilt_duration(self, duration):
+        self.__duration = duration
+
     @property
     def id(self):
         return self.device.id
