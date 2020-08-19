@@ -3,8 +3,8 @@
 # blindAutomation 🚀
 Scripts to control blinds depending on the sun azimuth
 
-This python code is meant to run on a raspberrypi. It searches for [Shellys](https://shelly.cloud) in the configured Networkmask and maps them with the configured Shellyids (see settings.yaml.template).
-This application is build for [Shelly 2.5](https://shelly.cloud/products/shelly-25-smart-home-automation-relay/) in roller mode to controll your blinds. It collects the Sundata from [Meteomatics](https://www.meteomatics.com/)
+This python code is meant to run on a raspberrypi. It searches for [Shellys](https://shelly.cloud) in the local Network and maps them with the configured Shellyids (see settings.yaml.template).
+This application is build for [Shelly 2.5](https://shelly.cloud/products/shelly-25-smart-home-automation-relay/) in roller mode to controll your blinds. It calculates the Sundata with [pvlib](https://pvlib-python.readthedocs.io/en/stable/)
 It is necessary to have the shellys calibrated for it runtimes to get it working correctly, otherwise it might just stops in the middle of the window.
 
 ## Configuration settings.yaml 🎛
