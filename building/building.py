@@ -20,6 +20,10 @@ class Building:
         return self.__walls
 
     @property
+    def blinds(self) -> [Blind]:
+        return [blind for wall in self.walls for blind in wall.blinds]
+
+    @property
     def devices(self) -> [Device]:
         return [device for wall in self.walls for device in wall.devices]
 

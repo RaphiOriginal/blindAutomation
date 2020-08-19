@@ -32,23 +32,18 @@ def main():
         datefmt='%Y-%m-%d %H:%M:%S')
     settings.load_settings()
     home = building.prepare()
-    if len(home.walls) > 0:
-        api: SunAPI = prepare_api()
-        while True:
-            sun: Sundata = api.fetch_sundata(global_date.date.next())
+    api: SunAPI = prepare_api()
+    while True:
+        sun: Sundata = api.fetch_sundata(global_date.date.next())
 
-            manager = JobManager()
+        manager = JobManager()
 
-            for wall in home.walls:
-                for blind in wall.blinds:
-                    trigger.apply_triggers(manager, sun, blind)
+        for blind in home.blinds:
+            trigger.apply_triggers(manager, sun, blind)
 
-            if manager.prepare().run():
-                break
-        exit(0)
-    else:
-        logger.info('No configured shellys found')
-        exit(1)
+        if manager.prepare().run():
+            break
+    exit(0)
 
 
 main()
