@@ -1,10 +1,3 @@
-meteomatics:
-  auth:
-    username: username
-    password: password
-  coordinates:
-    lat: 0.0
-    long: 0.0
 pvlib:
   coordinates:
     lat: 6.9

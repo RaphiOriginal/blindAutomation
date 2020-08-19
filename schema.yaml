@@ -1,80 +1,82 @@
-meteomatics: include('meteomatics', required=False)
-pvlib: include('pvlib', required=False)
+pvlib: include('pvlib')
 api: str()
 timezone: str()
-walls: list(include('wallobj'), min=1)
+walls: list(include('wall'), min=1)
 ---
-meteomatics:
-  auth: include('auth')
-  coordinates: include('coordinates')
-
 pvlib:
   coordinates: include('coordinates')
-
-auth:
-  username: str()
-  password: str()
 
 coordinates:
   lat: num()
   long: num()
-  alt: int(required=False)
-
-wallobj:
-  wall: include('wall')
+  alt: int()
 
 wall:
-  name: str()
-  in: int()
-  out: int()
-  blinds: list(include('blindobj'), required=False)
-
-blindobj:
-  blind: include('blind')
+  wall:
+    name: str()
+    in: int()
+    out: int()
+    blinds: list(include('blind'), required=False)
 
 blind:
-  name: str()
-  device-id: str()
-  device-typ: any('SHELLY')
-  in: int(required=False)
-  out: int(required=False)
-  triggers: list(any('SUNRISE', 'SUNSET', 'SUNIN', 'SUNOUT'), any(include('SUNRISE'), include('SUNSET'), include('SUNIN'), include('SUNOUT'), include('AZIMUTH'), include('ELEVATION'), include('POSITION')))
+  blind:
+    name: str()
+    device-id: str()
+    device-typ: enum('SHELLY')
+    in: int(required=False)
+    out: int(required=False)
+    tilt_time: num(required=False)
+    triggers: list(include('Trigger'), required=False)
+
+Trigger: any(include('TriggerStr'), include('TriggerObj'))
+
+TriggerStr: enum('SUNRISE', 'SUNSET', 'SUNIN', 'SUNOUT')
+
+TriggerObj: any(include('TIME'), include('SUNRISE'), include('SUNSET'), include('SUNIN'), include('SUNOUT'), include('AZIMUTH'), include('ELEVATION'), include('POSITION'))
 
 TIME:
-  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'))
-  time: str()
-  offset: int(required=False)
+  TIME:
+    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'))
+    time: str()
+    offset: int(required=False)
 
 SUNRISE:
-  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
-  offset: int(required=False)
+  SUNRISE:
+    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
+    offset: int(required=False)
 
 SUNSET:
-  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
-  offset: int(required=False)
+  SUNSET:
+    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
+    offset: int(required=False)
 
 SUNIN:
-  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
-  offset: int(required=False)
+  SUNIN:
+    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
+    offset: int(required=False)
 
 SUNOUT:
-  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
-  offset: int(required=False)
+  SUNOUT:
+    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
+    offset: int(required=False)
 
 AZIMUTH:
-  azimuth: int()
-  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
-  offset: int(required=False)
+  AZIMUTH:
+    azimuth: int()
+    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
+    offset: int(required=False)
 
 ELEVATION:
-  elevation: int()
-  direction: str(any('RISE', 'SET'))
-  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
-  offset: int(required=False)
+  ELEVATION:
+    elevation: int()
+    direction: str(any('RISE', 'SET'))
+    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
+    offset: int(required=False)
 
 POSITION:
-  azimuth: int()
-  elevation: int()
-  direction: str(any('RISE', 'SET'))
-  task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
-  offset: int(required=False)
+  POSITION:
+    azimuth: int()
+    elevation: int()
+    direction: str(any('RISE', 'SET'))
+    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'))
+    offset: int(required=False)
