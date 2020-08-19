@@ -1,10 +1,10 @@
 import json
 from datetime import datetime, timedelta
 
-from dateutil import tz, parser
+from dateutil import parser
 
 import global_date
-from api.api import SunAPI
+from api.api import ObservableSunAPI
 from meteomatics.meteomatics_api import MeteomaticsAPI
 from sun.azimuth import Azimuth
 from sun.elevation import Elevation
@@ -12,7 +12,7 @@ from sun.position import Position
 from sun.sundata import Sundata
 
 
-class SunAPIMock(SunAPI):
+class SunAPIMock(ObservableSunAPI):
     def fetch_sundata(self, date):
         return get_sundata_mock(date)
 
@@ -36,7 +36,7 @@ def get_sundata_mock(now, time_delta: int = 30):
     return data
 
 
-class SunAPIResponseMock(SunAPI):
+class SunAPIResponseMock(ObservableSunAPI):
     def fetch_sundata(self):
         api = MeteomaticsAPI()
         return api.process_sundata(get_json(),

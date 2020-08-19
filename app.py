@@ -3,13 +3,12 @@ import logging
 from collections import defaultdict
 
 import global_date
-from api.api import SunAPI, ObservableSunAPI
+from api.api import ObservableSunAPI
 from building import building
-from jobs.jobmanager import JobManager, manager
+from jobs.jobmanager import manager
 from meteomatics.meteomatics_api import MeteomaticsAPI
 from pvlibrary.pvlib_api import PVLibAPI
 from settings import settings
-from sun.sundata import Sundata
 from tests.mock.mocks import SunAPIMock, SunAPIResponseMock
 
 logger = logging.getLogger(__name__)
