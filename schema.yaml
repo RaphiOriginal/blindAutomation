@@ -81,4 +81,7 @@ POSITION:
     task: include('task')
     offset: int(required=False)
 
-task: enum('OPEN', 'CLOSE', 'TILT', 'HALF')
+task: any(enum('OPEN', 'CLOSE', 'TILT', 'HALF'), include('TILT'))
+
+TILT:
+  TILT: int()

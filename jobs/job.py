@@ -14,7 +14,7 @@ class Job:
 
     def schedule(self, schedule: scheduler):
         """Schedules the Job at the given timestamp"""
-        tasks = self.__trigger.task().get_for(self.__blind)
+        tasks = self.__trigger.task().get(self.__blind)
         prio = 1
         for task in tasks:
             schedule.enterabs(self.__trigger.time(), prio, work, argument=task)

@@ -6,6 +6,7 @@ import global_date
 from building.blind import Blind
 from jobs.job import Job
 from jobs.jobmanager import JobManager
+from jobs import task
 from jobs.task import Task
 from sun.sundata import Sundata
 
@@ -68,7 +69,7 @@ class TriggerBase(Trigger):
 
 
 class SunriseTrigger(TriggerBase):
-    def __init__(self, sundata: Sundata, task: Task = Task.OPEN):
+    def __init__(self, sundata: Sundata, task: Task = task.OPEN):
         super(SunriseTrigger, self).__init__(task, sundata.get_sunrise())
 
     @staticmethod
@@ -84,7 +85,7 @@ class SunriseTrigger(TriggerBase):
 
 
 class SunsetTrigger(TriggerBase):
-    def __init__(self, sundata: Sundata, task: Task = Task.CLOSE):
+    def __init__(self, sundata: Sundata, task: Task = task.CLOSE):
         super(SunsetTrigger, self).__init__(task, sundata.get_sunset())
 
     @staticmethod
@@ -104,7 +105,7 @@ class SunsetTrigger(TriggerBase):
 
 
 class SunInTrigger(TriggerBase):
-    def __init__(self, sundata: Sundata, azimuth: int, task: Task = Task.TILT):
+    def __init__(self, sundata: Sundata, azimuth: int, task: Task = task.TILT):
         super(SunInTrigger, self).__init__(task, sundata.find_azimuth(azimuth).time)
 
     @staticmethod
@@ -124,7 +125,7 @@ class SunInTrigger(TriggerBase):
 
 
 class SunOutTrigger(TriggerBase):
-    def __init__(self, sundata: Sundata, azimuth: int, task: Task = Task.OPEN):
+    def __init__(self, sundata: Sundata, azimuth: int, task: Task = task.OPEN):
         super(SunOutTrigger, self).__init__(task, sundata.find_azimuth(azimuth).time)
 
     @staticmethod
@@ -144,7 +145,7 @@ class SunOutTrigger(TriggerBase):
 
 
 class TimeTrigger(TriggerBase):
-    def __init__(self, runtime: time, task: Task = Task.CLOSE):
+    def __init__(self, runtime: time, task: Task = task.CLOSE):
         super(TimeTrigger, self).__init__(task, self.__prepare_runtime(runtime))
 
     @staticmethod
@@ -166,7 +167,7 @@ class TimeTrigger(TriggerBase):
 
 
 class AzimuthTrigger(TriggerBase):
-    def __init__(self, sundata: Sundata, azimuth: int, task: Task = Task.CLOSE):
+    def __init__(self, sundata: Sundata, azimuth: int, task: Task = task.CLOSE):
         super(AzimuthTrigger, self).__init__(task, sundata.find_azimuth(azimuth).time)
 
     @staticmethod
@@ -183,7 +184,7 @@ class AzimuthTrigger(TriggerBase):
 
 
 class ElevationTrigger(TriggerBase):
-    def __init__(self, sundata: Sundata, elevation: int, direction: str, task: Task = Task.CLOSE):
+    def __init__(self, sundata: Sundata, elevation: int, direction: str, task: Task = task.CLOSE):
         super(ElevationTrigger, self).__init__(task, self.__pick(sundata, elevation, direction))
 
     @staticmethod
@@ -212,7 +213,7 @@ class ElevationTrigger(TriggerBase):
 
 
 class PositionTrigger(TriggerBase):
-    def __init__(self, sundata: Sundata, azimuth: int, elevation: int, direction: str, task: Task = Task.CLOSE):
+    def __init__(self, sundata: Sundata, azimuth: int, elevation: int, direction: str, task: Task = task.CLOSE):
         super(PositionTrigger, self).__init__(task, self.__pick(sundata, azimuth, elevation, direction))
 
     @staticmethod
@@ -297,8 +298,9 @@ def set_optionals(trigger, triggerdict):
 
 def set_task(trigger: Trigger, triggerdict):
     if 'task' in triggerdict:
-        task = Task.from_name(triggerdict.get('task'))
-        trigger.set_task(task)
+        t = task.create(triggerdict.get('task'))
+        if t:
+            trigger.set_task(t)
 
 
 def set_offset(trigger: Trigger, triggerdict):

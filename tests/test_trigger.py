@@ -5,8 +5,8 @@ from dateutil import parser
 
 import global_date
 from building.blind import Blind
-from jobs import trigger
-from jobs.task import Task
+from jobs import trigger, task
+from jobs.task import Tilt, Close, Open
 from jobs.trigger import SunriseTrigger, SunsetTrigger, SunInTrigger, SunOutTrigger, TimeTrigger, AzimuthTrigger, \
     ElevationTrigger, PositionTrigger
 from sun.azimuth import Azimuth
@@ -20,8 +20,8 @@ class TriggerTest(unittest.TestCase):
         triggers = ['SUNRISE', {'SUNRISE': {'task': 'TILT'}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(2, len(result))
-        self.assertEqual(Task.OPEN, result[0].task())
-        self.assertEqual(Task.TILT, result[1].task())
+        self.assertEqual(Open.type(), result[0].task().type())
+        self.assertEqual(Tilt.type(), result[1].task().type())
         for item in result:
             self.assertEqual(SunriseTrigger.type(), item.type())
             self.assertEqual('2020-07-27T05:59:00+02:00', item.time().isoformat())
@@ -30,8 +30,8 @@ class TriggerTest(unittest.TestCase):
         triggers = ['SUNSET', {'SUNSET': {'task': 'TILT'}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(2, len(result))
-        self.assertEqual(Task.CLOSE, result[0].task())
-        self.assertEqual(Task.TILT, result[1].task())
+        self.assertEqual(Close.type(), result[0].task().type())
+        self.assertEqual(Tilt.type(), result[1].task().type())
         for item in result:
             self.assertEqual(SunsetTrigger.type(), item.type())
             self.assertEqual('2020-07-27T21:08:00+02:00', item.time().isoformat())
@@ -40,8 +40,8 @@ class TriggerTest(unittest.TestCase):
         triggers = ['SUNIN', {'SUNIN': {'task': 'CLOSE'}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(2, len(result))
-        self.assertEqual(Task.TILT, result[0].task())
-        self.assertEqual(Task.CLOSE, result[1].task())
+        self.assertEqual(Tilt.type(), result[0].task().type())
+        self.assertEqual(Close.type(), result[1].task().type())
         for item in result:
             self.assertEqual(SunInTrigger.type(), item.type())
             self.assertEqual('2020-07-27T05:59:00+02:00', item.time().isoformat())
@@ -50,8 +50,8 @@ class TriggerTest(unittest.TestCase):
         triggers = ['SUNOUT', {'SUNOUT': {'task': 'TILT'}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(2, len(result))
-        self.assertEqual(Task.OPEN, result[0].task())
-        self.assertEqual(Task.TILT, result[1].task())
+        self.assertEqual(Open.type(), result[0].task().type())
+        self.assertEqual(Tilt.type(), result[1].task().type())
         for item in result:
             self.assertEqual(SunOutTrigger.type(), item.type())
             self.assertEqual('2020-07-27T05:59:00+02:00', item.time().isoformat())
@@ -61,7 +61,7 @@ class TriggerTest(unittest.TestCase):
         triggers = [{'TIME': {'task': 'CLOSE', 'time': '16:00:00'}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
-        self.assertEqual(Task.CLOSE, result[0].task())
+        self.assertEqual(Close.type(), result[0].task().type())
         for item in result:
             self.assertEqual(TimeTrigger.type(), item.type())
             now = datetime.now(global_date.zone)

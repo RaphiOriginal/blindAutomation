@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import logging
-from enum import Enum
 
 from building.blind import Blind
 from building.blind_state import State
@@ -8,30 +7,44 @@ from building.blind_state import State
 logger = logging.getLogger(__name__)
 
 
-class Task(Enum):
-    CLOSE = 'CLOSE'
-    OPEN = 'OPEN'
-    TILT = 'TILT'
-    HALF = 'HALF'
+class Task:
+    def ready(self) -> bool:
+        pass
 
-    @staticmethod
-    def from_name(name: str):
-        for _, task in Task.__members__.items():
-            if task.value == name:
-                return task
-        raise ValueError('No matching Enum for {}'.format(name))
+    def done(self):
+        pass
 
-    def get_for(self, blind: Blind):
-        if self == self.OPEN:
-            return [(Open(blind),)]
-        if self == self.TILT:
-            return [(PreTilt(blind),), (Tilt(blind),)]
-        if self == self.HALF:
-            return [(PreTilt(blind),), (Half(blind),)]
-        return [(Close(blind),)]
+    def do(self):
+        pass
+
+    def get(self, blind: Blind) -> [__name__]:
+        pass
 
 
-class BaseTask:
+def create(task) -> Task:
+    tasks: [Task] = []
+    if create_task(task, Open.type(), Open.create, tasks) or \
+            create_task(task, Close.type(), Close.create, tasks) or \
+            create_task(task, Tilt.type(), Tilt.create, tasks):
+        return tasks[0]
+    logger.error('No Task for {} existing'.format(task))
+    return None
+
+
+def create_task(task, type: str, constructor, tasks: [Task]) -> bool:
+    if isinstance(task, str):
+        if task == type:
+            tasks.append(constructor())
+            return True
+        return False
+    if type in task.keys():
+        degree = task.get(type)
+        tasks.append(constructor(degree=degree))
+        return True
+    return False
+
+
+class BaseTask(Task):
     def __init__(self, blind: Blind, target: State):
         self.blind: Blind = blind
         self.__target: State = target
@@ -46,27 +59,63 @@ class BaseTask:
     def do(self):
         pass
 
+    def get(self, blind: Blind) -> [Task]:
+        self.blind = blind
+        return []
+
     def _target(self):
         return self.__target
 
+    @staticmethod
+    def type() -> str:
+        return 'BASE'
+
+    @staticmethod
+    def create(blind: Blind, **args) -> Task:
+        raise NotImplementedError()
+
     def __repr__(self):
-        return 'Task: {%s, %s, %s}' % (self.blind.name, self.blind.device, self.__target)
+        return 'Task.%s' % self.type()
 
 
 class Close(BaseTask):
-    def __init__(self, blind: Blind):
+    def __init__(self, blind: Blind = None):
         super(Close, self).__init__(blind, State.CLOSED)
 
     def do(self):
         return self.blind.close()
 
+    def get(self, blind: Blind) -> [Task]:
+        self.blind = blind
+        return [(self,)]
+
+    @staticmethod
+    def type() -> str:
+        return 'CLOSE'
+
+    @staticmethod
+    def create(**args) -> BaseTask:
+        return Close()
+
 
 class Open(BaseTask):
-    def __init__(self, blind: Blind):
+    def __init__(self, blind: Blind = None):
         super(Open, self).__init__(blind, State.OPEN)
 
     def do(self):
         return self.blind.open()
+
+    def get(self, blind: Blind) -> [Task]:
+        self.blind = blind
+        return [(self,)]
+
+    @staticmethod
+    def type() -> str:
+        return 'OPEN'
+
+    @staticmethod
+    def create(**args) -> BaseTask:
+        return Open()
 
 
 class PreTilt(BaseTask):
@@ -76,9 +125,13 @@ class PreTilt(BaseTask):
     def do(self):
         return self.blind.close()
 
+    @staticmethod
+    def type() -> str:
+        return 'PREPARE'
+
 
 class Tilt(BaseTask):
-    def __init__(self, blind: Blind, degree: int = 0):
+    def __init__(self, blind: Blind = None, degree: int = 0):
         super(Tilt, self).__init__(blind, State.TILT)
         self.__precondition: State = State.CLOSED
         self.__degree: int = degree
@@ -94,7 +147,24 @@ class Tilt(BaseTask):
     def do(self):
         return self.blind.tilt(self.__degree)
 
+    def get(self, blind: Blind) -> [Task]:
+        self.blind = blind
+        return [(PreTilt(self.blind),), (self,)]
 
-class Half(Tilt):
-    def __init__(self, blind: Blind):
-        super(Half, self).__init__(blind, degree=45)
+    @staticmethod
+    def type() -> str:
+        return 'TILT'
+
+    @staticmethod
+    def create(**args) -> BaseTask:
+        if 'degree' in args:
+            return Tilt(degree=args.get('degree'))
+        return Tilt()
+
+    def __repr__(self):
+        return 'Task.TILT(%s)' % self.__degree
+
+
+OPEN = Open()
+CLOSE = Close()
+TILT = Tilt()

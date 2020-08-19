@@ -29,7 +29,8 @@ walls:
             device-typ: SHELLY
             triggers:
               - SUNRISE:
-                  task: TILT
+                  task:
+                    TILT: 45
               - SUNSET:
                   offset: -20
               - SUNIN
