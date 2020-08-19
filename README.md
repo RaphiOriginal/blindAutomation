@@ -10,12 +10,6 @@ It is necessary to have the shellys calibrated for it runtimes to get it working
 ## Configuration settings.yaml 🎛
 copy and rename [settings.yaml.template](https://github.com/RaphiOriginal/blindAutomation/blob/master/settings.yaml.template) to settings.yaml and update the properties:
 ```
-meteomatics: #Meteomatics api credentials
-  username: #from Meteomatics
-  password: #from Meteomatics
-  coordinates: #coordinates of wall (i recommend to pick a corner of two walls) I did mine with the help of [SunCalc](https://www.suncalc.org/#/46.0162,8.4421,3/2020.07.27/19:54/1/1)
-    lat: #Latitude
-    long: #Longitude
 pvlib:
   coordinates:
     lat: #Latitude
@@ -31,10 +25,11 @@ walls: #List of walls with blinds of your home
       blinds: #list of blinds you'd like to manage for this wall
         - blind:
             name: #Name of blind to identify them more easy
-            in: (optional) Overrides the wall values for this blind
-            out: (optional) Overrides the wall values for this blind
+            in: #(optional) Overrides the wall values for this blind
+            out: #(optional) Overrides the wall values for this blind
             device-id: #Shellyid (can be found in the shelly app in settings) usualy last 6 characters of macadress
             device-typ: SHELLY #Fix set to Shelly since no other controllers supported yet
+            tilt_time: #(optional) overrides the defaulttime the blind needs to fully tilt
             triggers: #List of triggers you'd like to apply for the shelly
               SUNRISE: #Will open the blinds on sunrise
                 task: #(optional) default is OPEN
@@ -68,9 +63,6 @@ walls: #List of walls with blinds of your home
                 task: #(optional) default is CLOSE
                 offset: #(optional) default is 0 can be positiv or negativ
 ```
-
-## Meteomatics ☀️
-If you don't want to use pvlib, you have to get access to the meteomatics api and update your logins in the settings.yaml
 
 ## Running and Installation 🏃🏗
 ##### Balena.io
