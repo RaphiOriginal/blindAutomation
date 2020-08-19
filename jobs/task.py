@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import logging
+from abc import ABC, abstractmethod
 
 from building.blind import Blind
 from building.blind_state import State
@@ -7,17 +8,38 @@ from building.blind_state import State
 logger = logging.getLogger(__name__)
 
 
-class Task:
+class Task(ABC):
+    @abstractmethod
     def ready(self) -> bool:
+        """
+        Check if possible preconditions are met
+        :return: true if precondition is met
+        """
         pass
 
-    def done(self):
+    @abstractmethod
+    def done(self) -> bool:
+        """
+        Check if desired target is already achieved
+        :return: true if target position is already met
+        """
         pass
 
-    def do(self):
+    @abstractmethod
+    def do(self) -> bool:
+        """
+        Triggers configured command
+        :return: true if command has been successful
+        """
         pass
 
+    @abstractmethod
     def get(self, blind: Blind) -> [__name__]:
+        """
+        Combines blinds with task necessary before calling do()
+        :param blind: Blind which the task belongs to
+        :return: [Task] List of Tasks to be applied in sequence
+        """
         pass
 
 
@@ -52,7 +74,7 @@ class BaseTask(Task):
     def ready(self) -> bool:
         return True
 
-    def done(self):
+    def done(self) -> bool:
         state = self.blind.stats()
         return state == self.__target
 
@@ -82,7 +104,7 @@ class Close(BaseTask):
     def __init__(self, blind: Blind = None):
         super(Close, self).__init__(blind, State.CLOSED)
 
-    def do(self):
+    def do(self) -> bool:
         return self.blind.close()
 
     def get(self, blind: Blind) -> [Task]:

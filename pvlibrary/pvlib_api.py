@@ -59,5 +59,6 @@ class PVLibAPI(SunAPI):
         result = self.__location.get_sun_rise_set_transit(pandas.DatetimeIndex([date]))
         return result.sunrise[0], result.sunset[0]
 
-    def __to_date(self, date) -> datetime:
+    @staticmethod
+    def __to_date(date) -> datetime:
         return datetime.fromisoformat(date.isoformat())

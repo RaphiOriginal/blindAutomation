@@ -10,7 +10,7 @@ class Shelly(Device):
         self.__id: str = id
 
     @property
-    def id(self):
+    def id(self) -> str:
         return self.__id
 
     def get_status(self):

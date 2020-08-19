@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import logging
+from abc import ABC, abstractmethod
 from datetime import datetime, time, timedelta
 
 import global_date
@@ -13,20 +14,37 @@ from sun.sundata import Sundata
 logger = logging.getLogger(__name__)
 
 
-class Trigger:
+class Trigger(ABC):
+    @abstractmethod
     def task(self) -> Task:
+        """
+        Returns configured Task
+        :return: Task
+        """
         pass
 
+    @abstractmethod
     def set_task(self, task: Task):
+        """
+        Sets Task for the trigger
+        :param task: Task
+        """
         pass
 
+    @abstractmethod
     def time(self):
+        """
+        Returns time where the Task needs to be triggered. Time will be caluclated with defined time and offset
+        :return: datetime of configured time + offset
+        """
         pass
 
-    def offset(self):
-        pass
-
+    @abstractmethod
     def set_offset(self, offset: int):
+        """
+        Sets offset in minutes which will be used to calculate trigger time
+        :param offset:
+        """
         pass
 
 
