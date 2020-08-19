@@ -1,13 +1,14 @@
 import unittest
 
-from yamale import yamale
+from yamale import YamaleTestCase
 
 
-class SettingsTest(unittest.TestCase):
+class SettingsTest(YamaleTestCase):
+    schema = 'schema.yaml'
+    yaml = 'settings.yaml.template'
+
     def test_settings_valid(self):
-        schema = yamale.make_schema('schema.yaml')
-        data = yamale.make_data('settings.yaml.template')
-        yamale.validate(schema, data)
+        self.assertTrue(self.validate())
 
 
 if __name__ == '__main__':
