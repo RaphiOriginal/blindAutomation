@@ -36,41 +36,41 @@ TriggerObj: any(include('TIME'), include('SUNRISE'), include('SUNSET'), include(
 
 TIME:
   TIME:
-    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'))
+    task: include('task')
     time: str()
     offset: int(required=False)
 
 SUNRISE:
   SUNRISE:
-    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
+    task: include('task', required=False)
     offset: int(required=False)
 
 SUNSET:
   SUNSET:
-    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
+    task: include('task', required=False)
     offset: int(required=False)
 
 SUNIN:
   SUNIN:
-    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
+    task: include('task', required=False)
     offset: int(required=False)
 
 SUNOUT:
   SUNOUT:
-    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
+    task: include('task', required=False)
     offset: int(required=False)
 
 AZIMUTH:
   AZIMUTH:
     azimuth: int()
-    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
+    task: include('task', required=False)
     offset: int(required=False)
 
 ELEVATION:
   ELEVATION:
     elevation: int()
     direction: str(any('RISE', 'SET'))
-    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'), required=False)
+    task: include('task', required=False)
     offset: int(required=False)
 
 POSITION:
@@ -78,5 +78,7 @@ POSITION:
     azimuth: int()
     elevation: int()
     direction: str(any('RISE', 'SET'))
-    task: str(any('OPEN', 'CLOSE', 'TILT', 'HALF'))
+    task: include('task')
     offset: int(required=False)
+
+task: enum('OPEN', 'CLOSE', 'TILT', 'HALF')
