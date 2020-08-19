@@ -22,6 +22,9 @@ class Device:
     def move(self, pos: int) -> bool:
         pass
 
+    def tilt(self, direction: str, time: float) -> bool:
+        pass
+
     def stats(self) -> State:
         pass
 

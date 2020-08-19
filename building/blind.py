@@ -10,15 +10,29 @@ class Blind:
         self.device: Device = device
         self.triggers: [] = triggers
         self.state: State = State.UNKNOWN
+        self.__degree: int = -1
+        self.__duration: float = 1.2
 
     def open(self) -> bool:
+        self.__degree = 0
         return self.device.open()
 
     def close(self) -> bool:
+        self.__degree = 90
         return self.device.close()
 
     def move(self, pos: int) -> bool:
         return self.device.move(pos)
+
+    def tilt(self, degree: int) -> bool:
+        target = min(max(degree, 0), 90)
+        offset = target - self.__degree
+        duration = abs(self.__duration / 90 * offset)
+        self.__degree = target
+        if offset > 0:
+            return self.device.tilt('close', duration)
+        else:
+            return self.device.tilt('open', duration)
 
     def stats(self) -> State:
         self.state = self.device.stats()

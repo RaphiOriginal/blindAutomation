@@ -19,8 +19,11 @@ class Shelly(Device):
     def stats(self) -> State:
         return self._fetch_stats('{}/roller/0'.format(self.url))
 
-    def move(self, pos) -> bool:
+    def move(self, pos: int) -> bool:
         return self._send('{}/roller/0?go=to_pos&roller_pos={}'.format(self.url, pos))
+
+    def tilt(self, direction: str, time: float) -> bool:
+        return self._send('{}/roller/0?go={}&duration={}'.format(self.url, direction, time))
 
     def open(self) -> bool:
         return self._send('{}/roller/0?go=open'.format(self.url))

@@ -80,20 +80,20 @@ class PreTilt(BaseTask):
 
 
 class Tilt(BaseTask):
-    def __init__(self, blind: Blind, move: int = 2):
+    def __init__(self, blind: Blind, degree: int = 0):
         super(Tilt, self).__init__(blind, State.TILT)
         self.__precondition: State = State.CLOSED
-        self.__move: int = move
+        self.__degree: int = degree
 
     def ready(self) -> bool:
-        state = blind_state.fetch_blindstate(self.blind)
+        state = self.blind.stats()
         logger.debug(state)
-        return state.state() == self.__precondition or state.state() == self._target()
+        return state == self.__precondition or state == self._target()
 
     def do(self):
-        return self.blind.move(self.__move)
+        return self.blind.tilt(self.__degree)
 
 
 class Half(Tilt):
     def __init__(self, blind: Blind):
-        super(Half, self).__init__(blind, move=1)
+        super(Half, self).__init__(blind, degree=45)
