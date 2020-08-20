@@ -75,8 +75,7 @@ class BaseTask(Task):
         return True
 
     def done(self) -> bool:
-        state = self.blind.stats()
-        return state == self.__target
+        return False
 
     def do(self):
         pass
@@ -162,9 +161,6 @@ class Tilt(BaseTask):
         state = self.blind.stats()
         logger.debug(state)
         return state == self.__precondition or state == self._target()
-
-    def done(self) -> bool:
-        return self.blind.degree == self.__degree
 
     def do(self):
         return self.blind.tilt(self.__degree)
