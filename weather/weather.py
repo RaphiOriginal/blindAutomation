@@ -52,6 +52,18 @@ class Storm(Weather):
     def type() -> WeatherType:
         return WeatherType.STORM
 
+    class StormEnum(Enum):
+        LIGHT_RAIN = 200
+        RAIN = 201
+        HEAVY_RAIN = 202
+        LIGHT = 210
+        NORMAL = 211
+        HEAVY = 212
+        RAGGED = 221
+        LIGHT_DRIZZLE = 230
+        DRIZZLE = 231
+        HEAVY_DRIZZLE = 232
+
 
 class Drizzle(Weather):
     @staticmethod
@@ -61,6 +73,17 @@ class Drizzle(Weather):
     @staticmethod
     def type() -> WeatherType:
         return WeatherType.DRIZZLE
+
+    class DrizzleEnum(Enum):
+        LIGHT = 300
+        NORMAL = 301
+        HEAVY = 302
+        LIGHT_RAIN = 310
+        RAIN = 311
+        HEAVY_RAIN = 312
+        SHOWER_RAIN = 313
+        HEAVY_SHOWER_RAIN = 314
+        SHOWER = 321
 
 
 class Rain(Weather):
@@ -72,6 +95,18 @@ class Rain(Weather):
     def type() -> WeatherType:
         return WeatherType.RAIN
 
+    class RainEnum(Enum):
+        LIGHT = 500
+        MODERATE = 501
+        HEAVY = 502
+        VERY_HEAVY = 503
+        EXTREME = 504
+        FREEZING = 511
+        LIGHT_SHOWER = 520
+        SHOWER = 521
+        HEAVY_SHOWER = 522
+        RAGGED_SHOWER = 531
+
 
 class Snow(Weather):
     @staticmethod
@@ -81,6 +116,19 @@ class Snow(Weather):
     @staticmethod
     def type() -> WeatherType:
         return WeatherType.SNOW
+
+    class SnowEnum(Enum):
+        LIGHT = 600
+        NORMAL = 601
+        HEAVY = 602
+        SLEET = 611
+        LIGHT_SHOWER_SLEET = 612
+        SHOWER_SLEET = 613
+        LIGHT_RAIN = 615
+        RAIN = 616
+        LIGHT_SHOWER = 620
+        SHOWER = 621
+        HEAVY_SHOWER = 622
 
 
 class Atmosphere(Weather):
@@ -92,6 +140,18 @@ class Atmosphere(Weather):
     def type() -> WeatherType:
         return WeatherType.ATMOSPHERE
 
+    class AtmosphereEnum(Enum):
+        MIST = 701
+        SMOKE = 711
+        HAZE = 721
+        WHIRLS = 731
+        FOG = 741
+        SAND = 751
+        DUST = 761
+        ASH = 762
+        SQUALL = 771
+        TORNADO = 781
+
 
 class Clear(Weather):
     @staticmethod
@@ -102,6 +162,9 @@ class Clear(Weather):
     def type() -> WeatherType:
         return WeatherType.CLEAR
 
+    class ClearEnum(Enum):
+        CLEAR = 800
+
 
 class Clouds(Weather):
     @staticmethod
@@ -111,6 +174,12 @@ class Clouds(Weather):
     @staticmethod
     def type() -> WeatherType:
         return WeatherType.CLOUDS
+
+    class CloudsEnum(Enum):
+        FEW = 801  # 11-25%
+        SCATTERED = 802  # 25-50%
+        BROKEN = 803  # 51-84%
+        OVERCAST = 804  # 85-100%
 
 
 weathers = \
