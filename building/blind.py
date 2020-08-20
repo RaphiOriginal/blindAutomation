@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from api.api import ObservableSunAPI
 from building.blind_interface import BlindInterface
 from building.state import State
