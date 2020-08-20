@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from enum import Enum
+from typing import Union
 
 import requests
 
@@ -19,7 +20,7 @@ class Direction(Enum):
 
 
 class BlindState:
-    def __init__(self, position: int, direction):
+    def __init__(self, position: int, direction: Union[str, Direction]):
         self.__position: int = position
         if isinstance(direction, Direction):
             self.__last_direction: Direction = direction
