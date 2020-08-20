@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import logging
+import os
 
 import urllib3
 
@@ -38,6 +39,8 @@ def main():
     logging.info("All Devices:")
     for device in home.devices:
         logging.info('{} in position {}'.format(device, device.stats()))
+
+    logging.info(os.getenv('OPEN_WEATHER_API_KEY'))
 
 
 main()
