@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from building.blind_state import fetch_blindstate, BlindState
 from building.state import State
 from device.device import Device
 
