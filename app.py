@@ -8,7 +8,7 @@ from building import building
 from jobs.jobmanager import manager
 from pvlibrary.pvlib_api import PVLibAPI
 from settings import settings
-from tests.mock.mocks import SunAPIMock, SunAPIResponseMock
+from tests.mock.mocks import SunAPIMock
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,6 @@ def prepare_api() -> ObservableSunAPI:
     apis = defaultdict(ObservableSunAPI)
     apis['pvlib'] = PVLibAPI()
     apis['mock'] = SunAPIMock()
-    apis['responseMock'] = SunAPIResponseMock()
     return apis[settings.root.get('api')]
 
 
