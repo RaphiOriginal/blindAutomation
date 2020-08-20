@@ -6,7 +6,7 @@ import pandas
 import pvlib
 
 from api.api import ObservableSunAPI
-from settings.settings import PvLibSettings
+from settings import settings
 from sun.azimuth import Azimuth
 from sun.elevation import Elevation
 from sun.position import Position
@@ -18,8 +18,7 @@ logger = logging.getLogger(__name__)
 class PVLibAPI(ObservableSunAPI):
     def __init__(self):
         super(PVLibAPI, self).__init__()
-        config = PvLibSettings()
-        coordinates = config.get_coordinates()
+        coordinates = settings.coordinates
         self.__location = pvlib.location.Location(coordinates.lat, coordinates.long, tz='Europe/Zurich',
                                                   altitude=coordinates.alt)
 

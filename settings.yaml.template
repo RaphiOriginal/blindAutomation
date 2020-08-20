@@ -1,8 +1,7 @@
-pvlib:
-  coordinates:
-    lat: 6.9
-    long: 6.9
-    alt: 420
+coordinates:
+  lat: 6.9
+  long: 6.9
+  alt: 420
 api: pvlib
 timezone: 'Europe/Zurich'
 walls:

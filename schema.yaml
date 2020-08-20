@@ -1,10 +1,8 @@
-pvlib: include('pvlib')
+coordinates: include('coordinates')
 api: str()
 timezone: str()
 walls: list(include('wall'), min=1)
 ---
-pvlib:
-  coordinates: include('coordinates')
 
 coordinates:
   lat: num()
