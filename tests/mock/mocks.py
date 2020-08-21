@@ -10,10 +10,12 @@ from sun.sundata import Sundata
 
 class SunAPIMock(ObservableSunAPI):
     def fetch_sundata(self, date):
-        return get_sundata_mock(date)
+        self.sundata = get_sundata_mock(date)
+        self.notify()
+        return self.sundata
 
 
-def get_sundata_mock(now, time_delta: int = 30):
+def get_sundata_mock(now, time_delta: int = 10):
     delta = timedelta(seconds=time_delta)
     now = datetime.now(global_date.zone)
     multiplier = 1
