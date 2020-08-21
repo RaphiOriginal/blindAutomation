@@ -5,20 +5,22 @@ logger = logging.getLogger(__name__)
 
 
 class WeatherConditionEnum(Enum):
-    STORM = 1
-    DRIZZLE = 2
-    RAIN = 3
-    SNOW = 4
-    MIST = 5
-    SMOKE = 6
-    HAZE = 7
-    DUST = 8
-    ASH = 9
-    SQUALL = 10
-    TORNADO = 11
-    CLEAR = 12
-    CLOUDS = 13
-    ATMOSPHERE = 14
+    UNKNOWN = []
+    STORM = [200, 201, 202, 210, 211, 212, 221, 230, 231, 232]
+    DRIZZLE = [300, 301, 302, 310, 311, 312, 313, 314, 321]
+    RAIN = [500, 501, 502, 503, 504, 511, 520, 521, 522, 531]
+    SNOW = [600, 601, 602, 611, 612, 613, 615, 616, 620, 621, 622]
+    CLEAR = [800]
+    CLOUDS = [801, 802, 803, 804]
+    ATMOSPHERE = [701, 711, 721, 731, 741, 751, 761, 762, 771, 781]
+
+    @staticmethod
+    def from_code(code: int):
+        for _, specific in WeatherConditionEnum.__members__.items():
+            if code in specific.value:
+                return specific
+        logger.info('Using fallback enum for code {}'.format(code))
+        return WeatherConditionEnum.UNKNOWN
 
 
 class WeatherSubConditionEnum(Enum):

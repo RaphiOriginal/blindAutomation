@@ -8,19 +8,9 @@ from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
 
 class WeatherCondition(ABC):
 
-    @staticmethod
+    @property
     @abstractmethod
-    def applies(code: int) -> (bool, WeatherCondition):
-        """
-        Returns true if code matches one of the class codes and returns class
-        :param code: int Weather code
-        :return: Tuple bool and Weather
-        """
-        pass
-
-    @staticmethod
-    @abstractmethod
-    def condition() -> WeatherConditionEnum:
+    def main_condition(self) -> WeatherConditionEnum:
         """
         Returns WeatherType that is represented by Class
         :return: WeatherType
@@ -38,7 +28,7 @@ class WeatherCondition(ABC):
 
     @property
     @abstractmethod
-    def weather_condition(self) -> (WeatherConditionEnum, WeatherSubConditionEnum):
+    def condition(self) -> (WeatherConditionEnum, WeatherSubConditionEnum):
         """
         Returns touple with main condition and sub condition
         :return: (WeatherConditionEnum, WeatherSupConditionEnum)
