@@ -34,3 +34,21 @@ class WeatherCondition(ABC):
         :return: (WeatherConditionEnum, WeatherSupConditionEnum)
         """
         pass
+
+    @property
+    @abstractmethod
+    def description(self) -> str:
+        """
+        Returns description
+        :return: str
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def icon(self) -> str:
+        """
+        Returns icon
+        :return: str
+        """
+        pass
