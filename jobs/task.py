@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import logging
 from abc import ABC, abstractmethod
+from typing import Optional, Union
 
 from building.blind_interface import BlindInterface
 from building.blind_state import State
@@ -34,7 +37,7 @@ class Task(ABC):
         pass
 
     @abstractmethod
-    def get(self, blind: BlindInterface) -> [__name__]:
+    def get(self, blind: BlindInterface) -> [Task]:
         """
         Combines blinds with task necessary before calling do()
         :param blind: Blind which the task belongs to
@@ -43,7 +46,7 @@ class Task(ABC):
         pass
 
 
-def create(task) -> Task:
+def create(task: Union[str, dict]) -> Optional[Task]:
     tasks: [Task] = []
     if create_task(task, Open.type(), Open.create, tasks) or \
             create_task(task, Close.type(), Close.create, tasks) or \
@@ -67,7 +70,7 @@ def create_task(task, type: str, constructor, tasks: [Task]) -> bool:
 
 
 class BaseTask(Task):
-    def __init__(self, blind: BlindInterface, target: State):
+    def __init__(self, blind: Optional[BlindInterface], target: State):
         self.blind: BlindInterface = blind
         self.__target: State = target
 
@@ -96,7 +99,7 @@ class BaseTask(Task):
         raise NotImplementedError()
 
     def __repr__(self):
-        return 'Task.%s' % self.type()
+        return 'Task.%s(%s)' % (self.type(), self.blind)
 
 
 class Close(BaseTask):
@@ -181,8 +184,3 @@ class Tilt(BaseTask):
 
     def __repr__(self):
         return 'Task.TILT(%s)' % self.__degree
-
-
-OPEN = Open()
-CLOSE = Close()
-TILT = Tilt()
