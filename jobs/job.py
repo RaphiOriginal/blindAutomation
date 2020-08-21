@@ -2,6 +2,7 @@
 from sched import scheduler
 
 from building.blind_interface import BlindInterface
+from jobs.interface import PriorityManager
 from jobs.worker import work
 
 
@@ -10,13 +11,12 @@ class Job:
         self.__trigger = trigger
         self.__blind: BlindInterface = blind
 
-    def schedule(self, schedule: scheduler):
+    def schedule(self, schedule: scheduler, prio_manager: PriorityManager):
         """Schedules the Job at the given timestamp"""
         tasks = self.__trigger.task().get(self.__blind)
-        prio = 1
         for task in tasks:
+            prio = prio_manager.prio(self.__trigger.time())
             schedule.enterabs(self.__trigger.time(), prio, work, argument=task)
-            prio += 1
 
     def get_time(self):
         return self.__trigger.time()
