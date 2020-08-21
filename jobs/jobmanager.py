@@ -67,5 +67,8 @@ class JobManager:
             self.__priority_map[runtime] = 2
             return 1
 
+    def __repr__(self):
+        return 'JobManager: { jobs: %s }' % self.__jobs
+
 
 manager = JobManager()

@@ -47,6 +47,7 @@ class BlindInterface(Observer, ABC):
         """
         pass
 
+    @property
     @abstractmethod
     def id(self) -> str:
         """

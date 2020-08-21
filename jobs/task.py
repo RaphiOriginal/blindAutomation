@@ -111,7 +111,7 @@ class Close(BaseTask):
 
     def get(self, blind: BlindInterface) -> [Task]:
         self.blind = blind
-        return [(self,)]
+        return [(Close(blind),)]
 
     @staticmethod
     def type() -> str:
@@ -130,8 +130,7 @@ class Open(BaseTask):
         return self.blind.open()
 
     def get(self, blind: BlindInterface) -> [Task]:
-        self.blind = blind
-        return [(self,)]
+        return [(Open(blind),)]
 
     @staticmethod
     def type() -> str:
@@ -169,8 +168,7 @@ class Tilt(BaseTask):
         return self.blind.tilt(self.__degree)
 
     def get(self, blind: BlindInterface) -> [Task]:
-        self.blind = blind
-        return [(PreTilt(self.blind),), (self,)]
+        return [(PreTilt(blind),), (Tilt(blind),)]
 
     @staticmethod
     def type() -> str:
