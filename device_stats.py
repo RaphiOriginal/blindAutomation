@@ -7,6 +7,7 @@ import urllib3
 from building import building
 from device.device import Device
 from settings import settings
+from weather.api import OpenWeatherAPI
 
 
 def searching(devices: [Device]) -> bool:
@@ -40,7 +41,8 @@ def main():
     for device in home.devices:
         logging.info('{} in position {}'.format(device, device.stats()))
 
-    logging.info(os.getenv('OPEN_WEATHER_API_KEY'))
+    api = OpenWeatherAPI()
+    logging.info(api.fetch_current())
 
 
 main()
