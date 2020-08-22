@@ -11,12 +11,12 @@ logger = logging.getLogger(__name__)
 
 
 class WeatherService(Subject):
-    def __init__(self, api: WeatherAPI = OpenWeatherAPI()):
+    def __init__(self, api: WeatherAPI = OpenWeatherAPI(), interval: int = 180):
         self.__observers: [Observer] = []
         self.__current: Optional[Weather] = None
         self.__api: WeatherAPI = api
         self.__event: Event = Event()
-        self.__interval: int = 180  # 3 minutes
+        self.__interval: int = interval  # in seconds
         self.__thread: Optional[Thread] = None
 
     def attach(self, observer: Observer):
