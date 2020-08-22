@@ -37,7 +37,7 @@ class WeatherEventBuilder(unittest.TestCase):
         events = ['CLOUDY', {'CLOUDY': {'task': 'TILT', 'intensity': ['SCATTERED']}}]
         b = blind(events)
         event.apply_weather_events(b)
-        result = b._events
+        result = b.events
         self.assertEqual(2, len(result))
         self.assertEqual(Open.type(), result[0]._task.type())
         self.assertEqual(Tilt.type(), result[1]._task.type())
@@ -56,7 +56,7 @@ class WeatherEventBuilder(unittest.TestCase):
         events = [{'CLOUDY': {'intensity': ['SCATTERED', 'OVERCAST']}}]
         b = blind(events)
         event.apply_weather_events(b)
-        result = b._events[0]
+        result = b.events[0]
         self.assertEqual(1, len(b._events))
         self.assertEqual(Open.type(), result._task.type())
         self.assertEqual(CloudsEvent.type(), result.type())
