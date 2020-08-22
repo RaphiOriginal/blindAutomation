@@ -4,7 +4,7 @@ from typing import Optional
 
 import requests
 
-from settings import settings
+from settings.coordinates import Coordinates
 from weather.interface import WeatherAPI
 from weather.weather import Weather
 
@@ -12,13 +12,12 @@ logger = logging.getLogger(__name__)
 
 
 class OpenWeatherAPI(WeatherAPI):
-    def __init__(self, units: str = 'metric', lang: str = 'de'):
+    def __init__(self, coordinates: Coordinates, units: str = 'metric', lang: str = 'de'):
         self.__units: str = units
         self.__lang: str = lang
         self.__base_url: str = 'https://api.openweathermap.org/data/2.5/{}'
         self.__current_template: str = 'weather?lat={}&lon={}&units={}&lang={}&appid={}'
-        settings.load_settings()
-        self.__coordinates = settings.coordinates
+        self.__coordinates: Coordinates = coordinates
 
     def fetch_current(self) -> Optional[Weather]:
         url = self.__build_current_url()
