@@ -143,6 +143,27 @@ class TriggerTest(unittest.TestCase):
         self.assertEqual(SunOutTrigger.type(), triggers[2].type())
         self.assertEqual(SunsetTrigger.type(), triggers[3].type())
 
+    def test_applies(self):
+        triggers = [{'SUNRISE': {'on': ['MO']}}]
+        result = trigger.extract_triggers(blind(triggers), sundata())
+        self.assertEqual(1, len(result))
+        self.assertEqual(Open.type(), result[0].task().type())
+        for item in result:
+            self.assertEqual(SunriseTrigger.type(), item.type())
+            self.assertEqual('2020-07-27T05:59:00+02:00', item.time().isoformat())
+            self.assertTrue(item.applies())
+
+    def test_applies_not(self):
+        triggers = [{'SUNRISE': {'on': ['TU']}}]
+        result = trigger.extract_triggers(blind(triggers), sundata())
+        self.assertEqual(1, len(result))
+        self.assertEqual(Open.type(), result[0].task().type())
+        for item in result:
+            self.assertEqual(SunriseTrigger.type(), item.type())
+            self.assertEqual('2020-07-27T05:59:00+02:00', item.time().isoformat())
+            self.assertFalse(item.applies())
+
+
 
 def blind(triggers: []) -> Blind:
     return Blind('test', 10, 20, None, triggers)
