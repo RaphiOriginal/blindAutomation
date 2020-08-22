@@ -25,6 +25,7 @@ blind:
     out: int(required=False)
     tilt_time: num(required=False)
     triggers: list(include('Trigger'), required=False)
+    events: list(include('Event'), required=False)
 
 Trigger: any(include('TriggerStr'), include('TriggerObj'))
 
@@ -86,6 +87,17 @@ POSITION:
     task: include('task')
     on: list(include('day'), required=False)
     offset: int(required=False)
+
+Event: any(include('EventStr'), include('EventObj'))
+
+EventStr: enum('CLOUDY')
+
+EventObj: any(include('CLOUDY'))
+
+CLOUDY:
+  CLOUDY:
+    task: include('task', required=False)
+    intensity: list(enum('FEW', 'SCATTERED', 'BROKEN', 'OVERCAST'), required=False)
 
 task: any(enum('OPEN', 'CLOSE', 'TILT', 'HALF'), include('TILT'))
 

@@ -21,6 +21,13 @@ walls:
                   offset: 30
               - SUNIN
               - SUNOUT
+            events:
+              - CLOUDY:
+                  intensity:
+                    - OVERCAST
+                    - BROKEN
+                    - SCATTERED
+                    - FEW
         - blind:
             name: Blind2
             out: 222
