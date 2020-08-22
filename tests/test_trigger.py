@@ -116,7 +116,8 @@ class TriggerTest(unittest.TestCase):
         self.assertEqual('2020-07-27T17:08:00+02:00', result[0].time().isoformat())
 
     def test_order(self):
-        triggers = [{'TIME': {'time': '23:59:59'}}, {'TIME': {'time': '00:00:01'}}, 'SUNOUT', 'SUNIN', 'SUNSET', 'SUNRISE']
+        triggers = [{'TIME': {'time': '23:59:59'}}, {'TIME': {'time': '00:00:01'}}, 'SUNOUT', 'SUNIN', 'SUNSET',
+                    'SUNRISE']
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(6, len(result))
         self.assertEqual(TimeTrigger.type(), result[4].type())
@@ -164,9 +165,8 @@ class TriggerTest(unittest.TestCase):
             self.assertFalse(item.applies())
 
 
-
 def blind(triggers: []) -> Blind:
-    return Blind('test', 10, 20, None, triggers)
+    return Blind('test', 10, 20, None, triggers, [])
 
 
 def sundata() -> Sundata:
