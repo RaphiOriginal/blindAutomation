@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import logging
 from abc import ABC, abstractmethod
 from typing import Any
 
 from building.interface import Shutter
 from event.event import Event
+from jobs import task
 from jobs.task import Task, Open
 from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
 from weather.weather import Weather, Condition
+
+logger = logging.getLogger(__name__)
 
 
 class WeatherEvent(Event, ABC):
@@ -80,3 +84,47 @@ class CloudsEvent(WeatherEvent):
 
     def __repr__(self):
         return 'CloudsEvent: {%s}' % super(CloudsEvent, self).__repr__()
+
+
+def apply_weather_events(blind: Shutter):
+    events: [Event] = []
+    for event in blind.event_configs:
+        if build_event(event, CloudsEvent.type(), CloudsEvent.create, events):
+            continue
+    blind.add_events(events)
+
+
+def build_event(eventdata, type: str, constructor, events: [Event]) -> bool:
+    logger.debug('parse: {} for {}'.format(eventdata, type))
+    if isinstance(eventdata, str):
+        if eventdata == type:
+            events.append(constructor())
+            return True
+        return False
+    if type in eventdata.keys():
+        eventdict = eventdata.get(type)
+        event = constructor()
+        set_optionals(event, eventdict)
+        events.append(event)
+        return True
+    return False
+
+
+def set_optionals(event: WeatherEvent, eventdict: dict):
+    set_intensity(event, eventdict)
+    set_task(event, eventdict)
+
+
+def set_intensity(event: WeatherEvent, eventdict: dict):
+    if 'intensity' in eventdict.keys():
+        intensity: [WeatherSubConditionEnum] = []
+        for item in eventdict['intensity']:
+            intensity.append(WeatherSubConditionEnum[item])
+        event.set_sub(intensity)
+
+
+def set_task(event: WeatherEvent, eventdict: dict):
+    if 'task' in eventdict.keys():
+        t = task.create(eventdict['task'])
+        if t:
+            event.set_task(t)
