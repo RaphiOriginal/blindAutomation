@@ -21,11 +21,11 @@ def convert_coordinates(coords: dict) -> Coordinates:
     return Coordinates(coords.get('lat'), coords.get('long'))
 
 
-def load_settings():
+def load_settings(settings_file: str = 'settings.yaml'):
     schema = yamale.make_schema('schema.yaml')
-    data = yamale.make_data('settings.yaml')
+    data = yamale.make_data(settings_file)
     yamale.validate(schema, data)
-    with open('settings.yaml', 'r') as stream:
+    with open(settings_file, 'r') as stream:
         data = yaml.safe_load(stream)
         settings.settings.root = data
         settings.settings.timezone = data.get('timezone')
