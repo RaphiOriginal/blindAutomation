@@ -36,11 +36,15 @@ class JobManager:
         return self
 
     def prepare(self):
-        """Removes all jobs in the past except for the last one, to ensure at least the last one will be executed!"""
+        """
+        Removes all jobs in the past, to ensure at least the last one will be executed!
+        It also removes all jobs which do not fulfill the condition to be applied e.g. wrong weekday
+        """
         for shelly, jobs in self.__jobs.items():
             jobs.sort(key=lambda job: job.get_time())
 
-            future = list(filter(lambda job: job.get_time() > datetime.now(global_date.zone), jobs))
+            applies = list(filter(lambda job: job.applies(), jobs))
+            future = list(filter(lambda job: job.get_time() > datetime.now(global_date.zone), applies))
 
             logger.info('{} jobs prepared for {}:'.format(len(future), shelly))
             for job in future:
