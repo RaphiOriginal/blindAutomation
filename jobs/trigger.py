@@ -337,7 +337,6 @@ def set_optionals(trigger, triggerdict):
     set_task(trigger, triggerdict)
     set_offset(trigger, triggerdict)
     set_on(trigger, triggerdict)
-    set_sub(trigger, triggerdict)
 
 
 def set_task(trigger: Trigger, triggerdict):
@@ -357,11 +356,3 @@ def set_on(trigger: Trigger, triggerdict):
     if 'on' in triggerdict:
         on = triggerdict.get('on')
         trigger.set_days(date.parse_config(on))
-
-
-def set_sub(trigger: Trigger, triggerdict):
-    if isinstance(trigger, EventTrigger):
-        sub_str = triggerdict.get('intensity')
-        trigger.set_sub(WeatherSubConditionEnum[sub_str])
-
-# endregion
