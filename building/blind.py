@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from api.api import ObservableSunAPI
-from building.blind_interface import BlindInterface
+from building.interface import Shutter
 from building.state import State
 from device.device import Device
 from jobs import trigger
@@ -9,7 +9,7 @@ from observable.observable import Subject
 from weather.service import WeatherService
 
 
-class Blind(BlindInterface):
+class Blind(Shutter):
     def __init__(self, name: str, sun_in: float, sun_out: float, device: Device, triggers: []):
         self._name: str = name
         self._sun_in: float = sun_in

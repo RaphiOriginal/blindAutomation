@@ -4,7 +4,7 @@ from datetime import datetime, time, timedelta
 from typing import Optional
 
 import global_date
-from building.blind_interface import BlindInterface
+from building.interface import Shutter
 from jobs import task
 from jobs.interface import Trigger
 from jobs.job import Job
@@ -251,7 +251,7 @@ def apply_triggers(manager: JobManager, sundata: Sundata, blind: BlindInterface)
             logger.debug('Trigger {} claims not to be time based 🧐')
 
 
-def extract_triggers(blind: BlindInterface, sundata: Sundata) -> [Trigger]:
+def extract_triggers(blind: Shutter, sundata: Sundata) -> [Trigger]:
     triggers: [Trigger] = []
     for trigger in blind.triggers:
         if build_trigger(trigger, SunriseTrigger.type(), SunriseTrigger.create, triggers, sundata=sundata) or \

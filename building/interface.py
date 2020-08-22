@@ -2,10 +2,11 @@
 from abc import ABC, abstractmethod
 
 from building.state import State
+from jobs.interface import EventTrigger
 from observable.observable import Observer
 
 
-class BlindInterface(Observer, ABC):
+class Shutter(Observer, ABC):
     @abstractmethod
     def open(self) -> bool:
         """
