@@ -16,6 +16,7 @@ class OpenWeatherAPI:
         self.__lang: str = lang
         self.__base_url: str = 'https://api.openweathermap.org/data/2.5/{}'
         self.__current_template: str = 'weather?lat={}&lon={}&units={}&lang={}&appid={}'
+        settings.load_settings()
         self.__coordinates = settings.coordinates
 
     def fetch_current(self) -> Optional[Weather]:
