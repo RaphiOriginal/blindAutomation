@@ -4,6 +4,7 @@ from building.interface import Shutter
 from building.state import State
 from device.device import Device
 from event.event import Event
+from event.trigger import Trigger
 from jobs import trigger
 from jobs.jobmanager import manager
 from observable.observable import Subject
@@ -80,10 +81,10 @@ class Blind(Shutter):
     def update(self, subject: Subject):
         if isinstance(subject, ObservableSunAPI):
             trigger.apply_triggers(manager, subject.sundata, self)
-        if isinstance(subject, WeatherService) and subject.current:
+        if isinstance(subject, Trigger):
             for event in self._events:
-                if event.applies(subject.current):
-                    event.do()
+                if event.applies(subject.trigger):
+                    event.do(self.device)
 
     def __repr__(self):
         return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, events: %s, triggers: %s, state: %s }' \
