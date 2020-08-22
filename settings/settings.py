@@ -4,6 +4,7 @@ from typing import Optional
 
 import yaml
 from yamale import yamale
+from os import path
 
 import settings
 from settings.coordinates import Coordinates
@@ -25,10 +26,11 @@ def load_settings(settings_file: str = 'settings.yaml'):
     schema = yamale.make_schema('schema.yaml')
     data = yamale.make_data(settings_file)
     yamale.validate(schema, data)
-    with open(settings_file, 'r') as stream:
-        data = yaml.safe_load(stream)
-        settings.settings.root = data
-        settings.settings.timezone = data.get('timezone')
-        logger.debug('Setting timezone: {}'.format(settings.settings.timezone))
-        settings.settings.coordinates = convert_coordinates(data.get('coordinates'))
-        logger.debug('Setting coordinates: {}'.format(settings.settings.coordinates))
+    if path.exists(settings_file):
+        with open(settings_file, 'r') as stream:
+            data = yaml.safe_load(stream)
+            settings.settings.root = data
+            settings.settings.timezone = data.get('timezone')
+            logger.debug('Setting timezone: {}'.format(settings.settings.timezone))
+            settings.settings.coordinates = convert_coordinates(data.get('coordinates'))
+            logger.debug('Setting coordinates: {}'.format(settings.settings.coordinates))
