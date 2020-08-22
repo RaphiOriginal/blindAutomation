@@ -24,8 +24,11 @@ class WeatherEvent(Event, ABC):
             return self.__cond_match(trigger.conditions)
         return False
 
-    def __cond_match(self, condition: Condition) -> bool:
-        return self._main == condition.main_condition and condition.sub_condition in self._sub
+    def __cond_match(self, conditions: [Condition]) -> bool:
+        for condition in conditions:
+            if self._main == condition.main_condition and condition.sub_condition in self._sub:
+                return True
+        return False
 
     def set_task(self, task: Task):
         self._task = task
@@ -61,7 +64,10 @@ class CloudsEvent(WeatherEvent):
 
     def do(self, on: Shutter) -> bool:
         if isinstance(on, Shutter):
-            return on.close()
+            success: bool = True
+            for task in self._task.get(on):
+                success = task[0].do() and success
+            return success
         return False
 
     @staticmethod
