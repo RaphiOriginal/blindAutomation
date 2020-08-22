@@ -41,8 +41,5 @@ def main():
     for device in home.devices:
         logging.info('{} in position {}'.format(device, device.stats()))
 
-    api = OpenWeatherAPI()
-    logging.info(api.fetch_current())
-
 
 main()
