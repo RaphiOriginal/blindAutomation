@@ -126,7 +126,7 @@ class Open(BaseTask):
     def __init__(self, blind: Shutter = None):
         super(Open, self).__init__(blind, State.OPEN)
 
-    def do(self):
+    def do(self) -> bool:
         return self.blind.open()
 
     def get(self, blind: Shutter) -> [Task]:
