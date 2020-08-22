@@ -33,3 +33,7 @@ class OpenWeatherAPI:
         parameters = self.__current_template.format(self.__coordinates.lat, self.__coordinates.long, self.__units,
                                                     self.__lang, key)
         return self.__base_url.format(parameters)
+
+    def __repr__(self):
+        return 'OpenWeatherApi: {units: %s, language: %s, url: %s, %s}' % \
+               (self.__units, self.__lang, self.__base_url, self.__coordinates)
