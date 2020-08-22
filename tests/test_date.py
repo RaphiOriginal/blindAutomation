@@ -149,6 +149,33 @@ class DateTestCase(unittest.TestCase):
         for day in ['MO', 'WE', 'TH', 'SA', 'SU']:
             self.assertTrue(day in result, '{} should be in list'.format(day))
 
+    def test_applies_str(self):
+        on = ['MO', 'FR']
+        self.assertTrue(date.applies('MO', on))
+        self.assertTrue(date.applies('FR', on))
+        self.assertFalse(date.applies('WE', on))
+
+    def test_applies_int(self):
+        on = ['MO', 'FR']
+        self.assertTrue(date.applies(0, on))
+        self.assertTrue(date.applies(4, on))
+        self.assertFalse(date.applies(2, on))
+
+    def test_applies_datetime(self):
+        on = ['MO', 'FR']
+        today = datetime.now()
+        monday = relativedelta(weekday=MO)
+        self.assertTrue(date.applies(today + monday, on))
+        friday = relativedelta(weekday=FR)
+        self.assertTrue(date.applies(today + friday, on))
+        wednesday = relativedelta(weekday=WE)
+        self.assertFalse(date.applies(today + wednesday, on))
+
+    def test_applies_gibberisch(self):
+        on = ['MO', 'FR']
+        self.assertFalse(date.applies(7, on))
+        self.assertFalse(date.applies('SO', on))
+
 
 if __name__ == '__main__':
     unittest.main()

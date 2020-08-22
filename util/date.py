@@ -68,3 +68,11 @@ def parse_config(patterns: [str]) -> [str]:
             for weekend in __weekend:
                 result.add(weekend)
     return list(result)
+
+
+def applies(day: Union[str, int, datetime], on: [str]) -> bool:
+    if isinstance(day, str):
+        return day in on
+    if isinstance(day, int) or isinstance(day, datetime):
+        return weekday(day) in on
+    return False
