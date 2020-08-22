@@ -3,8 +3,8 @@ from api.api import ObservableSunAPI
 from building.interface import Shutter
 from building.state import State
 from device.device import Device
+from event.event import Event
 from jobs import trigger
-from jobs.interface import EventTrigger
 from jobs.jobmanager import manager
 from observable.observable import Subject
 from weather.service import WeatherService
@@ -17,7 +17,7 @@ class Blind(Shutter):
         self._sun_out: float = sun_out
         self.device: Device = device
         self._triggers: [] = triggers
-        self._event_triggers: [EventTrigger] = []
+        self._events: [Event] = []
         self.state: State = State.UNKNOWN
         self.__degree: int = -1
         self.__duration: float = 1.2
@@ -50,8 +50,8 @@ class Blind(Shutter):
     def override_tilt_duration(self, duration):
         self.__duration = duration
 
-    def add_event(self, trigger: EventTrigger):
-        self._event_triggers.append(trigger)
+    def add_event(self, event: Event):
+        self._events.append(event)
 
     @property
     def id(self):
@@ -80,10 +80,11 @@ class Blind(Shutter):
     def update(self, subject: Subject):
         if isinstance(subject, ObservableSunAPI):
             trigger.apply_triggers(manager, subject.sundata, self)
-        if isinstance(subject, WeatherService):
-            if subject.current:
-                print('We got some new weather data to process: {}'.format(subject.current))
+        if isinstance(subject, WeatherService) and subject.current:
+            for event in self._events:
+                if event.applies(subject.current):
+                    event.do()
 
     def __repr__(self):
-        return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, event_triggers: %s, triggers: %s, state: %s }' \
-               % (self.name, self.sun_in, self.sun_out, self.device, self._event_triggers, self.triggers, self.state)
+        return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, events: %s, triggers: %s, state: %s }' \
+               % (self.name, self.sun_in, self.sun_out, self.device, self._events, self.triggers, self.state)

@@ -2,7 +2,7 @@
 from abc import ABC, abstractmethod
 
 from building.state import State
-from jobs.interface import EventTrigger
+from event.event import Event
 from observable.observable import Observer
 
 
@@ -99,7 +99,7 @@ class Shutter(Observer, ABC):
         pass
 
     @abstractmethod
-    def add_event(self, trigger: EventTrigger):
+    def add_event(self, event: Event):
         """
         Adds an event trigger to its internal list
         """
