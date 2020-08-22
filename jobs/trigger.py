@@ -10,6 +10,7 @@ from jobs.job import Job
 from jobs.jobmanager import JobManager
 from jobs.task import Task, Open, Close, Tilt
 from sun.sundata import Sundata
+from util import date
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +20,7 @@ class TriggerBase(Trigger):
         self._task: Task = task
         self._time: datetime = runtime
         self._offset: int = 0
+        self.__on: [str] = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU']
 
     def task(self) -> Task:
         return self._task
@@ -31,6 +33,12 @@ class TriggerBase(Trigger):
 
     def set_offset(self, offset: int):
         self._offset = offset
+
+    def set_days(self, on: [str]):
+        self.__on = on
+
+    def applies(self) -> bool:
+        return date.applies(self.time(), self.__on)
 
     def __apply_offset(self) -> datetime:
         delta = timedelta(minutes=abs(self._offset))
@@ -278,6 +286,7 @@ def build_trigger(triggerdata, type: str, constructor, triggers: [Trigger], **ar
 def set_optionals(trigger, triggerdict):
     set_task(trigger, triggerdict)
     set_offset(trigger, triggerdict)
+    set_on(trigger, triggerdict)
 
 
 def set_task(trigger: Trigger, triggerdict):
@@ -291,3 +300,9 @@ def set_offset(trigger: Trigger, triggerdict):
     if 'offset' in triggerdict:
         offset = triggerdict.get('offset')
         trigger.set_offset(offset)
+
+
+def set_on(trigger: Trigger, triggerdict):
+    if 'on' in triggerdict:
+        on = triggerdict.get('on')
+        trigger.set_days(date.parse_config(on))
