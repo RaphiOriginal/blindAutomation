@@ -55,6 +55,10 @@ class WeatherService(Subject):
             self.__update_current(weather)
             self.__event.wait(self.__interval)
 
+    @property
+    def current(self) -> Optional[Weather]:
+        return self.__current
+
     def __update_current(self, new: Optional[Weather]):
         if self.__current:
             self.__history.append(self.__current)
