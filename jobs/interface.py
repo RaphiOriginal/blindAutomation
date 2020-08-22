@@ -15,6 +15,7 @@ class PriorityManager(ABC):
         :param runtime: datetime
         :return: int
         """
+        pass
 
 
 class Trigger(ABC):
@@ -72,6 +73,7 @@ class Trigger(ABC):
         Returns True if the trigger is time based
         :return: True if trigger is time based
         """
+        pass
 
 
 class EventTrigger(Trigger):
