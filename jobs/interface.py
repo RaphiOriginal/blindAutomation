@@ -56,6 +56,7 @@ class Trigger(ABC):
         """
         pass
 
+    @abstractmethod
     def applies(self) -> bool:
         """
         Check if this trigger can be applied at this moment
@@ -63,6 +64,7 @@ class Trigger(ABC):
         """
         pass
 
+    @abstractmethod
     def time_based(self) -> bool:
         """
         Returns True if the trigger is time based
