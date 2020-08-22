@@ -36,6 +36,7 @@ def prepare_walls() -> [Wall]:
         wall = item.get('wall')
         w = Wall(wall.get('name'), wall.get('in'), wall.get('out'))
         triggers: [] = []
+        events: [] = []
         if 'blinds' in wall:
             for blind_item in wall.get('blinds'):
                 blind = blind_item.get('blind')
@@ -44,11 +45,13 @@ def prepare_walls() -> [Wall]:
                 controller = device_matcher.create(blind.get('device-id'), blind.get('device-typ'))
                 if 'triggers' in blind.keys():
                     triggers = blind.get('triggers')
+                if 'events' in blind.keys():
+                    events = blind.get('events')
                 if 'in' in blind.keys():
                     in_sun = blind.get('in')
                 if 'out' in blind.keys():
                     out_sun = blind.get('out')
-                b = Blind(blind.get('name'), in_sun, out_sun, controller, triggers)
+                b = Blind(blind.get('name'), in_sun, out_sun, controller, triggers, events)
                 if 'tilt_time' in blind.keys():
                     b.override_tilt_duration(blind.get('tilt_time'))
                 w.add_blind(b)

@@ -16,8 +16,8 @@ from tests.mock.mocks import SunAPIMock
 class ParallelBlindsCase(unittest.TestCase):
     def test_parallel_tasks_triggers_extract(self):
         blinds = [
-            Blind('A', 0, 0, TestDevice('A'), ['SUNRISE']),
-            Blind('B', 0, 0, TestDevice('B'), ['SUNRISE'])
+            Blind('A', 0, 0, TestDevice('A'), ['SUNRISE'], []),
+            Blind('B', 0, 0, TestDevice('B'), ['SUNRISE'], [])
         ]
         api = SunAPIMock()
         api.fetch_sundata(None)
@@ -35,8 +35,8 @@ class ParallelBlindsCase(unittest.TestCase):
     def test_parallel_tasks_directly(self):
         device_a = TestDevice('A')
         device_b = TestDevice('B')
-        manager.add(Job(SunriseTrigger(mocks.get_sundata_mock(), Open()), Blind('A', 0, 0, device_a, ['SUNRISE'])))
-        manager.add(Job(SunriseTrigger(mocks.get_sundata_mock(), Open()), Blind('B', 0, 0, device_b, ['SUNRISE'])))
+        manager.add(Job(SunriseTrigger(mocks.get_sundata_mock(), Open()), Blind('A', 0, 0, device_a, ['SUNRISE'], [])))
+        manager.add(Job(SunriseTrigger(mocks.get_sundata_mock(), Open()), Blind('B', 0, 0, device_b, ['SUNRISE'], [])))
         manager.prepare().run()
         self.assertEqual(1, device_b.counter, 'B was called')
         self.assertEqual(1, device_a.counter, 'A was called')

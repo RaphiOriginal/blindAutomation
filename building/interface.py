@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from abc import ABC, abstractmethod
+from typing import List
 
 from building.state import State
 from event.event import Event
@@ -83,9 +84,17 @@ class Shutter(Observer, ABC):
         pass
 
     @abstractmethod
-    def triggers(self) -> []:
+    def triggers(self) -> List:
         """
         List of triggers in string or object representation
+        :return: List
+        """
+        pass
+
+    @abstractmethod
+    def event_configs(self) -> List:
+        """
+        List of event in string or object representation
         :return: List
         """
         pass
@@ -99,7 +108,7 @@ class Shutter(Observer, ABC):
         pass
 
     @abstractmethod
-    def add_event(self, event: Event):
+    def add_events(self, events: [Event]):
         """
         Adds an event trigger to its internal list
         """

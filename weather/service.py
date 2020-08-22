@@ -3,9 +3,11 @@ import logging
 from threading import Thread, Event
 from typing import Optional
 
+from building.interface import Shutter
 from event.trigger import Trigger
 from observable.observable import Subject, Observer
 from settings import settings
+from weather import event
 from weather.api import OpenWeatherAPI
 from weather.interface import WeatherAPI
 from weather.weather import Weather
@@ -28,6 +30,8 @@ class WeatherService(Subject, Trigger):
 
     def attach(self, observer: Observer):
         logger.debug('Adding observer {}'.format(observer))
+        if isinstance(observer, Shutter):
+            event.apply_weather_events(observer)
         self.__observers.append(observer)
 
     def detach(self, observer: Observer):

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from typing import Any, List
+
 from api.api import ObservableSunAPI
 from building.interface import Shutter
 from building.state import State
@@ -11,16 +13,18 @@ from observable.observable import Subject
 
 
 class Blind(Shutter):
-    def __init__(self, name: str, sun_in: float, sun_out: float, device: Device, triggers: []):
+    def __init__(self, name: str, sun_in: float, sun_out: float, device: Device, triggers: [], event_config: []):
         self._name: str = name
         self._sun_in: float = sun_in
         self._sun_out: float = sun_out
         self.device: Device = device
         self._triggers: [] = triggers
+        self._event_config: [] = event_config
         self._events: [Event] = []
         self.state: State = State.UNKNOWN
         self.__degree: int = -1
         self.__duration: float = 1.2
+
 
     def open(self) -> bool:
         self.__degree = 0
@@ -50,8 +54,8 @@ class Blind(Shutter):
     def override_tilt_duration(self, duration):
         self.__duration = duration
 
-    def add_event(self, event: Event):
-        self._events.append(event)
+    def add_events(self, events: [Event]):
+        self._events = events
 
     @property
     def id(self):
@@ -74,8 +78,12 @@ class Blind(Shutter):
         return self._sun_out
 
     @property
-    def triggers(self) -> []:
+    def triggers(self) -> List:
         return self._triggers
+
+    @property
+    def event_configs(self) -> List:
+        return self._event_config
 
     def update(self, subject: Subject):
         if isinstance(subject, ObservableSunAPI):

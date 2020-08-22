@@ -11,16 +11,16 @@ class WeatherEventCase(unittest.TestCase):
     def test_clouds(self):
         # Setup
         event = CloudsEvent()
-        blind, trigger = self.__prepare(event, 804)
+        blind, trigger = self.__prepare([event], 804)
         # Test
         blind.update(trigger)
         # Check
         self.assertEqual(1, blind.open_c)
 
     @staticmethod
-    def __prepare(event: WeatherEvent, code: int) -> (BlindMock, TriggerMock):
+    def __prepare(events: [WeatherEvent], code: int) -> (BlindMock, TriggerMock):
         blind = get_blind()
-        blind.add_event(event)
+        blind.add_events(events)
         jsn = get_json()
         jsn['weather'][0]['id'] = code
         w = Weather(jsn)

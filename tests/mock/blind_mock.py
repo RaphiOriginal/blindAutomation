@@ -1,3 +1,5 @@
+from typing import List
+
 from building.interface import Shutter
 from building.state import State
 from event.event import Event
@@ -48,8 +50,11 @@ class BlindMock(Shutter):
     def degree(self) -> int:
         pass
 
-    def add_event(self, event: Event):
-        self.events.append(event)
+    def event_configs(self) -> List:
+        pass
+
+    def add_events(self, events: [Event]):
+        self.events = events
 
     def update(self, subject):
         for event in self.events:
