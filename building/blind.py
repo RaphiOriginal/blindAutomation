@@ -8,7 +8,6 @@ from event.trigger import Trigger
 from jobs import trigger
 from jobs.jobmanager import manager
 from observable.observable import Subject
-from weather.service import WeatherService
 
 
 class Blind(Shutter):
@@ -84,7 +83,7 @@ class Blind(Shutter):
         if isinstance(subject, Trigger):
             for event in self._events:
                 if event.applies(subject.trigger):
-                    event.do(self.device)
+                    event.do(self)
 
     def __repr__(self):
         return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, events: %s, triggers: %s, state: %s }' \
