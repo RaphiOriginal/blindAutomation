@@ -15,11 +15,11 @@ logger = getLogger(__name__)
 
 
 class App:
-    def __init__(self, setting_file: str = 'settings.yaml', logging_level: str = 'INFO'):
+    def __init__(self, setting_file: str = 'settings.yaml', log: str = 'INFO'):
         settings.load_settings(setting_file)
         self._api = self.__api(settings.root.get('api'))
         self._weather_service = WeatherService()
-        self._level = self.__level(logging_level)
+        self._level = self.__level(log)
         self.__home = building.prepare()
 
     def run(self):
