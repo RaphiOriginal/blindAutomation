@@ -46,3 +46,18 @@ class Trigger(ABC):
         :param offset:
         """
         pass
+
+    @abstractmethod
+    def set_days(self, on: [str]):
+        """
+        Sets days where the trigger only should apply
+        :param on: list of days as str
+        """
+        pass
+
+    def applies(self) -> bool:
+        """
+        Check if this trigger can be applied at this moment
+        :return: true if all conditions match
+        """
+        pass
