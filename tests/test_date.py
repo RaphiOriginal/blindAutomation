@@ -149,6 +149,23 @@ class DateTestCase(unittest.TestCase):
         for day in ['MO', 'WE', 'TH', 'SA', 'SU']:
             self.assertTrue(day in result, '{} should be in list'.format(day))
 
+    def test_parsing_overlapping(self):
+        to_test = ['WEEKEND', 'WORKINGDAY', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU', 'MO-SU']
+        result = date.parse_config(to_test)
+        self.assertEqual(7, len(result))
+        for day in ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU']:
+            self.assertTrue(day in result, '{} should be in list'.format(day))
+
+    def test_parsing_mix_with_wrongs(self):
+        to_test = ['SO', 'MO']
+        result = date.parse_config(to_test)
+        self.assertEqual(1, len(result))
+        self.assertEqual('MO', result[0])
+        to_test = ['MO', 'SO']
+        result = date.parse_config(to_test)
+        self.assertEqual(1, len(result))
+        self.assertEqual('MO', result[0])
+
     def test_applies_str(self):
         on = ['MO', 'FR']
         self.assertTrue(date.applies('MO', on))
