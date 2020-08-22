@@ -41,9 +41,6 @@ class TriggerBase(Trigger):
     def applies(self) -> bool:
         return date.applies(self.time(), self.__on)
 
-    def time_based(self) -> bool:
-        return self._time is not None
-
     def __apply_offset(self) -> Optional[datetime]:
         delta = timedelta(minutes=abs(self._offset))
         if not self._time:
@@ -241,14 +238,11 @@ class PositionTrigger(TriggerBase):
         return 'ElevationTrigger: { %s }' % (super(PositionTrigger, self).__repr__())
 
 
-def apply_triggers(manager: JobManager, sundata: Sundata, blind: BlindInterface):
+def apply_triggers(manager: JobManager, sundata: Sundata, blind: Shutter):
     triggers = extract_triggers(blind, sundata)
     logger.debug('Triggers for {}: {}'.format(blind.name, triggers))
     for trigger in triggers:
-        if trigger.time_based():
-            manager.add(Job(trigger, blind))
-        else:
-            logger.debug('Trigger {} claims not to be time based 🧐')
+        manager.add(Job(trigger, blind))
 
 
 def extract_triggers(blind: Shutter, sundata: Sundata) -> [Trigger]:
