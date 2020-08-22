@@ -15,10 +15,10 @@ timezone: str = 'Europe/Zurich'
 coordinates: Optional[Coordinates] = None
 
 
-def convert_coordinates(coordinates) -> Coordinates:
-    if 'alt' in coordinates.keys():
-        return Coordinates(coordinates.get('lat'), coordinates.get('long'), coordinates.get('alt'))
-    return Coordinates(coordinates.get('lat'), coordinates.get('long'))
+def convert_coordinates(coords: dict) -> Coordinates:
+    if 'alt' in coords.keys():
+        return Coordinates(coords.get('lat'), coords.get('long'), coords.get('alt'))
+    return Coordinates(coords.get('lat'), coords.get('long'))
 
 
 def load_settings():
