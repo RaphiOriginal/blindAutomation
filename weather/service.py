@@ -3,6 +3,7 @@ import logging
 from threading import Thread, Event
 from typing import Optional
 
+from event.trigger import Trigger
 from observable.observable import Subject, Observer
 from settings import settings
 from weather.api import OpenWeatherAPI
@@ -12,7 +13,8 @@ from weather.weather import Weather
 logger = logging.getLogger(__name__)
 
 
-class WeatherService(Subject):
+class WeatherService(Subject, Trigger):
+
     def __init__(self, api: Optional[WeatherAPI] = None, interval: int = 180):
         self.__observers: [Observer] = []
         self.__current: Optional[Weather] = None
@@ -63,6 +65,10 @@ class WeatherService(Subject):
     @property
     def current(self) -> Optional[Weather]:
         return self.__current
+
+    @property
+    def trigger(self) -> Optional[Weather]:
+        return self.current
 
     def __update_current(self, new: Optional[Weather]):
         if self.__current:
