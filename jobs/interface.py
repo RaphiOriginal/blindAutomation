@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
+from typing import Optional
 
 from jobs.task import Task
 
@@ -32,7 +33,7 @@ class Trigger(ABC):
         pass
 
     @abstractmethod
-    def time(self):
+    def time(self) -> Optional[datetime]:
         """
         Returns time where the Task needs to be triggered. Time will be caluclated with defined time and offset
         :return: datetime of configured time + offset
@@ -61,3 +62,9 @@ class Trigger(ABC):
         :return: true if all conditions match
         """
         pass
+
+    def time_based(self) -> bool:
+        """
+        Returns True if the trigger is time based
+        :return: True if trigger is time based
+        """

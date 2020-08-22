@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import logging
 from datetime import datetime, time, timedelta
+from typing import Optional
 
 import global_date
 from building.blind_interface import BlindInterface
@@ -16,9 +17,9 @@ logger = logging.getLogger(__name__)
 
 
 class TriggerBase(Trigger):
-    def __init__(self, task: Task, runtime: datetime):
+    def __init__(self, task: Task, runtime: Optional[datetime]):
         self._task: Task = task
-        self._time: datetime = runtime
+        self._time: Optional[datetime] = runtime
         self._offset: int = 0
         self.__on: [str] = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU']
 
@@ -28,7 +29,7 @@ class TriggerBase(Trigger):
     def set_task(self, task: Task):
         self._task = task
 
-    def time(self) -> datetime:
+    def time(self) -> Optional[datetime]:
         return self.__apply_offset()
 
     def set_offset(self, offset: int):
@@ -40,8 +41,13 @@ class TriggerBase(Trigger):
     def applies(self) -> bool:
         return date.applies(self.time(), self.__on)
 
-    def __apply_offset(self) -> datetime:
+    def time_based(self) -> bool:
+        return self._time is not None
+
+    def __apply_offset(self) -> Optional[datetime]:
         delta = timedelta(minutes=abs(self._offset))
+        if not self._time:
+            return self._time
         if self._offset > 0:
             return self._time + delta
         if self._offset < 0:
@@ -239,7 +245,10 @@ def apply_triggers(manager: JobManager, sundata: Sundata, blind: BlindInterface)
     triggers = extract_triggers(blind, sundata)
     logger.debug('Triggers for {}: {}'.format(blind.name, triggers))
     for trigger in triggers:
-        manager.add(Job(trigger, blind))
+        if trigger.time_based():
+            manager.add(Job(trigger, blind))
+        else:
+            logger.debug('Trigger {} claims not to be time based 🧐')
 
 
 def extract_triggers(blind: BlindInterface, sundata: Sundata) -> [Trigger]:
