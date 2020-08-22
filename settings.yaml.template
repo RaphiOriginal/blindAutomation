@@ -32,6 +32,17 @@ walls:
                     TILT: 45
               - SUNSET:
                   offset: -20
+                  on:
+                    - WEEKEND
+                    - WORKINGDAY
+                    - MO
+                    - TU
+                    - WE
+                    - TH
+                    - FR
+                    - SA
+                    - SU
+                    - MO-SU
               - SUNIN
               - SUNOUT
               - TIME:
