@@ -5,12 +5,13 @@ from typing import Optional
 import requests
 
 from settings import settings
+from weather.interface import WeatherAPI
 from weather.weather import Weather
 
 logger = logging.getLogger(__name__)
 
 
-class OpenWeatherAPI:
+class OpenWeatherAPI(WeatherAPI):
     def __init__(self, units: str = 'metric', lang: str = 'de'):
         self.__units: str = units
         self.__lang: str = lang
