@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import Optional
 
 from jobs.task import Task
-from weather.enum import WeatherSubConditionEnum
 
 
 class PriorityManager(ABC):
@@ -64,23 +63,5 @@ class Trigger(ABC):
         """
         Check if this trigger can be applied at this moment
         :return: true if all conditions match
-        """
-        pass
-
-    @abstractmethod
-    def time_based(self) -> bool:
-        """
-        Returns True if the trigger is time based
-        :return: True if trigger is time based
-        """
-        pass
-
-
-class EventTrigger(Trigger):
-
-    @abstractmethod
-    def set_sub(self, sub: WeatherSubConditionEnum):
-        """
-        Override subcondition of trigger
         """
         pass
