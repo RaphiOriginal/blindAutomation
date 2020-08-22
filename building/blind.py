@@ -5,6 +5,8 @@ from building.state import State
 from device.device import Device
 from jobs import trigger
 from jobs.jobmanager import manager
+from observable.observable import Subject
+from weather.service import WeatherService
 
 
 class Blind(BlindInterface):
@@ -70,8 +72,12 @@ class Blind(BlindInterface):
     def triggers(self) -> []:
         return self._triggers
 
-    def update(self, api: ObservableSunAPI):
-        trigger.apply_triggers(manager, api.sundata, self)
+    def update(self, subject: Subject):
+        if isinstance(subject, ObservableSunAPI):
+            trigger.apply_triggers(manager, subject.sundata, self)
+        if isinstance(subject, WeatherService):
+            if subject.current:
+                print('We got some new weather data to process: {}'.format(subject.current))
 
     def __repr__(self):
         return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, triggers: %s, state: %s }' % \
