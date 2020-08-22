@@ -25,7 +25,6 @@ class Blind(Shutter):
         self.__degree: int = -1
         self.__duration: float = 1.2
 
-
     def open(self) -> bool:
         self.__degree = 0
         return self.device.open()
@@ -55,7 +54,12 @@ class Blind(Shutter):
         self.__duration = duration
 
     def add_events(self, events: [Event]):
-        self._events = events
+        for event in events:
+            self._events.append(event)
+
+    @property
+    def events(self) -> [Event]:
+        return self._events
 
     @property
     def id(self):
@@ -94,5 +98,5 @@ class Blind(Shutter):
                     event.do(self)
 
     def __repr__(self):
-        return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, events: %s, triggers: %s, state: %s }' \
-               % (self.name, self.sun_in, self.sun_out, self.device, self._events, self.triggers, self.state)
+        return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, events: %s, triggers: %s, state: %s, event_config: %s}' \
+               % (self.name, self.sun_in, self.sun_out, self.device, self._events, self.triggers, self.state, self._event_config)
