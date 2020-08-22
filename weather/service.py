@@ -18,6 +18,7 @@ class WeatherService(Subject):
         self.__event: Event = Event()
         self.__interval: int = interval  # in seconds
         self.__thread: Optional[Thread] = None
+        self.__history: [Weather] = []
 
     def attach(self, observer: Observer):
         logger.debug('Adding observer {}'.format(observer))
@@ -42,6 +43,7 @@ class WeatherService(Subject):
 
     def start(self):
         logger.debug('Starting service')
+        self.__history = []
         self.__event.clear()
         self.__thread = Thread(target=self.run, daemon=True)
         self.__thread.start()
@@ -49,6 +51,17 @@ class WeatherService(Subject):
 
     def run(self):
         while not self.__event.is_set():
-            self.__current = self.__api.fetch_current()
-            self.notify()
+            weather = self.__api.fetch_current()
+            self.__update_current(weather)
             self.__event.wait(self.__interval)
+
+    def __update_current(self, new: Optional[Weather]):
+        if self.__current:
+            self.__history.append(self.__current)
+        logger.debug('Updating current: {} with: {}'.format(self.__current, new))
+        self.__current = new
+        self.notify()
+
+    def __repr__(self):
+        return 'WeatherService: {running: %s, interval: %s, current: %s, history: %s, api: %s}' % \
+               (not self.__event.is_set(), self.__interval, self.__current, self.__history, self.__api)
