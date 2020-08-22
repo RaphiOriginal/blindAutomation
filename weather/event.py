@@ -15,6 +15,8 @@ from weather.weather import Weather, Condition
 logger = logging.getLogger(__name__)
 
 
+# region Base
+
 class WeatherEvent(Event, ABC):
     def __init__(self, task: Task, main: WeatherConditionEnum, sub=None):
         if sub is None:
@@ -62,6 +64,9 @@ class WeatherEvent(Event, ABC):
         return 'main: %s, sub: %s, task: %s' % (self._main, self._sub, self._task)
 
 
+# endregion
+# region Weather Events
+
 class CloudsEvent(WeatherEvent):
     def __init__(self, task: Task = Open()):
         super(CloudsEvent, self).__init__(task, WeatherConditionEnum.CLOUDS, [WeatherSubConditionEnum.OVERCAST])
@@ -85,6 +90,9 @@ class CloudsEvent(WeatherEvent):
     def __repr__(self):
         return 'CloudsEvent: {%s}' % super(CloudsEvent, self).__repr__()
 
+
+# endregion
+# region Event creation
 
 def apply_weather_events(blind: Shutter):
     events: [Event] = []
@@ -128,3 +136,5 @@ def set_task(event: WeatherEvent, eventdict: dict):
         t = task.create(eventdict['task'])
         if t:
             event.set_task(t)
+
+# endregion
