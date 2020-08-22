@@ -41,7 +41,7 @@ class App:
 
     @staticmethod
     def __level(level: str) -> int:
-        return {'DEBUG': DEBUG, 'INFO': INFO, 'WARNING': WARNING, 'WARN': WARN, 'ERROR': ERROR, 'CRITICAL': CRITICAL,
+        return {'DEBUG': DEBUG, 'INFO': INFO, 'WARNING': WARNING, 'ERROR': ERROR, 'CRITICAL': CRITICAL,
                 'FATAL': FATAL}[level.upper()]
 
     @staticmethod
