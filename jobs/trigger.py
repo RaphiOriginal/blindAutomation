@@ -57,7 +57,7 @@ class TriggerBase(Trigger):
         return 1
 
     def __repr__(self):
-        return 'runtime: %s, task: %s, offset: %s' % (self._time, self._task, self._offset)
+        return 'runtime: %s, task: %s, offset: %s, on: %s' % (self._time, self._task, self._offset, self.__on)
 
 
 class SunriseTrigger(TriggerBase):
