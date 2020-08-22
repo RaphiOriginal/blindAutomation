@@ -58,15 +58,15 @@ class DateTestCase(unittest.TestCase):
 
     def test_is_workingday_str(self):
         for day in ['MO', 'TU', 'WE', 'TH', 'FR']:
-            self.assertTrue(date.is_workingday(day))
+            self.assertTrue(date.is_workingday(day), '{} should be in list'.format(day))
         for day in ['SA', 'SO']:
-            self.assertFalse(date.is_workingday(day))
+            self.assertFalse(date.is_workingday(day), '{} should be in list'.format(day))
 
     def test_is_workingday_int(self):
         for day in [0, 1, 2, 3, 4]:
-            self.assertTrue(date.is_workingday(day))
+            self.assertTrue(date.is_workingday(day), '{} should be in list'.format(day))
         for day in [5, 6]:
-            self.assertFalse(date.is_workingday(day))
+            self.assertFalse(date.is_workingday(day), '{} should be in list'.format(day))
 
     def test_is_workingday_datetime(self):
         today = datetime.now()
@@ -87,15 +87,15 @@ class DateTestCase(unittest.TestCase):
 
     def test_is_weekend_str(self):
         for day in ['MO', 'TU', 'WE', 'TH', 'FR']:
-            self.assertFalse(date.is_weekend(day))
-        for day in ['SA', 'SO']:
-            self.assertTrue(date.is_weekend(day))
+            self.assertFalse(date.is_weekend(day), '{} should be in list'.format(day))
+        for day in ['SA', 'SU']:
+            self.assertTrue(date.is_weekend(day), '{} should be in list'.format(day))
 
     def test_is_weekend_int(self):
         for day in [0, 1, 2, 3, 4]:
-            self.assertFalse(date.is_weekend(day))
+            self.assertFalse(date.is_weekend(day), '{} should be in list'.format(day))
         for day in [5, 6]:
-            self.assertTrue(date.is_weekend(day))
+            self.assertTrue(date.is_weekend(day), '{} should be in list'.format(day))
 
     def test_is_weekend_datetime(self):
         today = datetime.now()
@@ -118,7 +118,8 @@ class DateTestCase(unittest.TestCase):
         to_test = ['TU', 'SA']
         result = date.parse_config(to_test)
         self.assertEqual(2, len(result))
-        self.assertEqual(to_test, result)
+        for day in to_test:
+            self.assertTrue(day in result, '{} should be in list'.format(day))
 
     def test_parsing_range(self):
         to_test = ['MO-WE', 'FR-SA']
