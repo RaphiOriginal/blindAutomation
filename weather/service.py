@@ -43,7 +43,7 @@ class WeatherService(Subject):
         self.__event.set()
         if self.__thread and self.__thread.is_alive():
             self.__thread.join()
-        logger.debug('Service stopped')
+        logger.info('Service stopped')
 
     def start(self):
         logger.debug('Starting service')
@@ -51,13 +51,14 @@ class WeatherService(Subject):
         self.__event.clear()
         self.__thread = Thread(target=self.run, daemon=True)
         self.__thread.start()
-        logger.debug('Service started')
+        logger.info('Service started')
 
     def run(self):
         while not self.__event.is_set():
             weather = self.__api.fetch_current()
             self.__update_current(weather)
             self.__event.wait(self.__interval)
+        logger.debug('Leaving service loop')
 
     @property
     def current(self) -> Optional[Weather]:
