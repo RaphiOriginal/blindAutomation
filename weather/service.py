@@ -4,16 +4,17 @@ from typing import Optional
 
 from observable.observable import Subject, Observer
 from weather.api import OpenWeatherAPI
+from weather.interface import WeatherAPI
 from weather.weather import Weather
 
 logger = logging.getLogger(__name__)
 
 
 class WeatherService(Subject):
-    def __init__(self, api: OpenWeatherAPI = OpenWeatherAPI()):
+    def __init__(self, api: WeatherAPI = OpenWeatherAPI()):
         self.__observers: [Observer] = []
         self.__current: Optional[Weather] = None
-        self.__api: OpenWeatherAPI = api
+        self.__api: WeatherAPI = api
         self.__event: Event = Event()
         self.__interval: int = 180  # 3 minutes
         self.__thread: Optional[Thread] = None
