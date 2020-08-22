@@ -97,3 +97,10 @@ class Shutter(Observer, ABC):
         :return: int degree
         """
         pass
+
+    @abstractmethod
+    def add_event(self, trigger: EventTrigger):
+        """
+        Adds an event trigger to its internal list
+        """
+        pass
