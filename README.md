@@ -33,42 +33,42 @@ walls: #List of walls with blinds of your home
             triggers: #List of triggers you'd like to apply for the shelly
               SUNRISE: #Will open the blinds on sunrise
                 task: #(optional) default is OPEN
-                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAYS or WEEKEND. You can Mix all of them in the list
+                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAY or WEEKEND. You can Mix all of them in the list
                 offset: #(optional) default is 0 can be positiv or negativ
               SUNSET: #Will close the blinds on sunset
                 task: #(optional) default is CLOSE
-                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAYS or WEEKEND. You can Mix all of them in the list
+                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAY or WEEKEND. You can Mix all of them in the list
                 offset: #(optional) default is 0 can be positiv or negativ
               SUNIN: #Will tilt the blinds when the azimuth of the sun passes the azimuth defined for the related wall
                 task: #(optional) default is TILT
-                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAYS or WEEKEND. You can Mix all of them in the list
+                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAY or WEEKEND. You can Mix all of them in the list
                 offset: #(optional) default is 0 can be positiv or negativ
               SUNOUT: #Will open the blinds when the azimuth of the sun passes the azimuth defined for the related wall
                 task: #(optional) default is OPEN
-                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAYS or WEEKEND. You can Mix all of them in the list
+                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAY or WEEKEND. You can Mix all of them in the list
                 offset: #(optional) default is 0 can be positiv or negativ
               TIME: #Add a Task (OPEN, CLOSE, TILT) you want at a given time, will be run at this time daily
                 task: #(mandatory) Can be OPEN, CLOSE or TILT. Tilt will close the blind completle and then open for around 2%
-                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAYS or WEEKEND. You can Mix all of them in the list
+                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAY or WEEKEND. You can Mix all of them in the list
                 time: #(mandatory) Time when the task should be triggered in the HH:MM:SS format
                 offset: #(optional) default is 0 can be positiv or negativ (even if this would be ridiculous 😏)
               AZIMUTH:
                 azimuth: #(mandatory) defines azimuth to be passed to trigger task
                 task: #(optional) default is CLOSE
-                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAYS or WEEKEND. You can Mix all of them in the list
+                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAY or WEEKEND. You can Mix all of them in the list
                 offset: #(optional) default is 0 can be positiv or negativ
               ELEVATION:
                 elevation: #(mandatory) defines elevation to be passed to trigger task
                 direction: #(mandatory) choose between (RISE and SET) to define elevation when sun rises or when sun sets
                 task: #(optional) default is CLOSE
-                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAYS or WEEKEND. You can Mix all of them in the list
+                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAY or WEEKEND. You can Mix all of them in the list
                 offset: #(optional) default is 0 can be positiv or negativ
               POSITION: #will be triggered when azimuth and elevation has been passed (will take the later event)
                 azimuth: #(mandatory) defines elevation to be passed to trigger task
                 elevation: #(mandatory) defines elevation to be passed to trigger task
                 direction: #(mandatory) choose between (RISE and SET) to define elevation when sun rises or when sun sets
                 task: #(optional) default is CLOSE
-                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAYS or WEEKEND. You can Mix all of them in the list
+                on: #(optional List) defines on which weekdays the trigger applies. Options are: MO, TU, WE, TH, FR, SA, SU, or ranges e.g. MO-WE or WORKINGDAY or WEEKEND. You can Mix all of them in the list
                 offset: #(optional) default is 0 can be positiv or negativ
 ```
 
