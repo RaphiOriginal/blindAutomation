@@ -6,18 +6,21 @@ from typing import Optional
 import global_date
 from building.interface import Shutter
 from jobs import task
-from jobs.interface import Trigger
+from jobs.interface import Trigger, EventTrigger
 from jobs.job import Job
 from jobs.jobmanager import JobManager
 from jobs.task import Task, Open, Close, Tilt
 from sun.sundata import Sundata
 from util import date
+from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
 
 logger = logging.getLogger(__name__)
 
 
+# region basetrigger
+
 class TriggerBase(Trigger):
-    def __init__(self, task: Task, runtime: Optional[datetime]):
+    def __init__(self, task: Task, runtime: Optional[datetime] = None):
         self._task: Task = task
         self._time: Optional[datetime] = runtime
         self._offset: int = 0
@@ -42,7 +45,7 @@ class TriggerBase(Trigger):
         return date.applies(self.time(), self.__on)
 
     def time_based(self) -> bool:
-        return self._time is not None
+        return isinstance(self, EventTrigger)
 
     def __apply_offset(self) -> Optional[datetime]:
         delta = timedelta(minutes=abs(self._offset))
@@ -65,6 +68,10 @@ class TriggerBase(Trigger):
     def __repr__(self):
         return 'runtime: %s, task: %s, offset: %s, on: %s' % (self._time, self._task, self._offset, self.__on)
 
+
+# endregion
+
+# region time based triggers
 
 class SunriseTrigger(TriggerBase):
     def __init__(self, sundata: Sundata, task: Task = Open()):
@@ -241,14 +248,47 @@ class PositionTrigger(TriggerBase):
         return 'ElevationTrigger: { %s }' % (super(PositionTrigger, self).__repr__())
 
 
-def apply_triggers(manager: JobManager, sundata: Sundata, blind: BlindInterface):
+# endregion
+
+# weather based triggers
+
+class CloudsTrigger(TriggerBase, EventTrigger):
+    def __init__(self, task: Task = Open()):
+        super(CloudsTrigger, self).__init__(task)
+        self.__main: WeatherConditionEnum = WeatherConditionEnum.CLOUDS
+        self.__sub: WeatherSubConditionEnum = WeatherSubConditionEnum.OVERCAST
+
+    def set_sub(self, sub: WeatherSubConditionEnum):
+        allowed = [WeatherSubConditionEnum.FEW, WeatherSubConditionEnum.SCATTERED, WeatherSubConditionEnum.BROKEN,
+                   WeatherSubConditionEnum.OVERCAST]
+        if sub in allowed:
+            self.__sub = sub
+
+    @staticmethod
+    def type() -> str:
+        return 'CLOUDY'
+
+    @staticmethod
+    def create(trigger, **args) -> Trigger:
+        return CloudsTrigger()
+
+    def __repr__(self):
+        return 'CloudsTrigger: { main: %s, sub: %s, %s }' % \
+               (self.__main, self.__sub, super(CloudsTrigger, self).__repr__())
+
+
+# endregion
+
+# region trigger extraction
+
+def apply_triggers(manager: JobManager, sundata: Sundata, blind: Shutter):
     triggers = extract_triggers(blind, sundata)
     logger.debug('Triggers for {}: {}'.format(blind.name, triggers))
     for trigger in triggers:
         if trigger.time_based():
             manager.add(Job(trigger, blind))
         else:
-            logger.debug('Trigger {} claims not to be time based 🧐')
+            blind.add_event(trigger)
 
 
 def extract_triggers(blind: Shutter, sundata: Sundata) -> [Trigger]:
@@ -263,7 +303,8 @@ def extract_triggers(blind: Shutter, sundata: Sundata) -> [Trigger]:
                 build_trigger(trigger, TimeTrigger.type(), TimeTrigger.create, triggers) or \
                 build_trigger(trigger, AzimuthTrigger.type(), AzimuthTrigger.create, triggers, sundata=sundata) or \
                 build_trigger(trigger, ElevationTrigger.type(), ElevationTrigger.create, triggers, sundata=sundata) or \
-                build_trigger(trigger, PositionTrigger.type(), PositionTrigger.create, triggers, sundata=sundata):
+                build_trigger(trigger, PositionTrigger.type(), PositionTrigger.create, triggers, sundata=sundata) or \
+                build_trigger(trigger, CloudsTrigger.type(), CloudsTrigger.create, triggers):
             continue
         logger.error('No Trigger for {} existing'.format(trigger))
 
