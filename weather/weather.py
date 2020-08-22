@@ -4,12 +4,12 @@ from __future__ import annotations
 import logging
 
 from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
-from weather.interface import WeatherCondition
+from weather.interface import ConditionData, WeatherData, TemperatureData, AtmosphereData, WindData, CloudsData
 
 logger = logging.getLogger(__name__)
 
 
-class Condition(WeatherCondition):
+class Condition(ConditionData):
     def __init__(self, code: int, description: str = 'Keine', icon: str = '01d'):
         self.__condition: WeatherConditionEnum = WeatherConditionEnum.from_code(code)
         self.__sub_condition: WeatherSubConditionEnum = WeatherSubConditionEnum.from_code(code)
@@ -41,7 +41,7 @@ class Condition(WeatherCondition):
                (self.main_condition, self.sub_condition, self.description, self.icon)
 
 
-class Temperature:
+class Temperature(TemperatureData):
     def __init__(self, data: dict):
         self.__data: dict = data
         self.__temp: float = 0.0
@@ -77,7 +77,7 @@ class Temperature:
                (self.temp, self.feels_like, self.temp_min, self.temp_max)
 
 
-class Atmosphere:
+class Atmosphere(AtmosphereData):
     def __init__(self, data: dict):
         self.__data: dict = data
         self.__pressure: int = 0
@@ -100,7 +100,7 @@ class Atmosphere:
         return 'Atmosphere: {pressure: %s, humidity: %s}' % (self.pressure, self.humidity)
 
 
-class Wind:
+class Wind(WindData):
     def __init__(self, data: dict):
         self.__data: dict = data
         self.__speed: float = 0.0
@@ -123,7 +123,7 @@ class Wind:
         return 'Wind: {speed: %s, deg: %s}' % (self.speed, self.deg)
 
 
-class Clouds:
+class Clouds(CloudsData):
     def __init__(self, data: dict):
         self.__data: dict = data
         self.__all: int = 0
@@ -140,7 +140,7 @@ class Clouds:
         return 'Clouds: {all: %s}' % self.all
 
 
-class Weather:
+class Weather(WeatherData):
     def __init__(self, data: dict):
         self.__data: dict = data
         self.__conditions: [Condition] = []

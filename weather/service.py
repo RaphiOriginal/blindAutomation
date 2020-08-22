@@ -1,0 +1,53 @@
+import logging
+from threading import Thread, Event
+from typing import Optional
+
+from observable.observable import Subject, Observer
+from weather.api import OpenWeatherAPI
+from weather.weather import Weather
+
+logger = logging.getLogger(__name__)
+
+
+class WeatherService(Subject):
+    def __init__(self, api: OpenWeatherAPI = OpenWeatherAPI()):
+        self.__observers: [Observer] = []
+        self.__current: Optional[Weather] = None
+        self.__api: OpenWeatherAPI = api
+        self.__event: Event = Event()
+        self.__interval: int = 180  # 3 minutes
+        self.__thread: Optional[Thread] = None
+
+    def attach(self, observer: Observer):
+        logger.debug('Adding observer {}'.format(observer))
+        self.__observers.append(observer)
+
+    def detach(self, observer: Observer):
+        logger.debug('Removing observer {}'.format(observer))
+        self.__observers.remove(observer)
+
+    def notify(self):
+        if self.__current:
+            logger.debug('Notifying observers: {}'.format(self.__observers))
+            for observer in self.__observers:
+                observer.update(self)
+
+    def stop(self):
+        logger.debug('Stopping service')
+        self.__event.set()
+        if self.__thread and self.__thread.is_alive():
+            self.__thread.join()
+        logger.debug('Service stopped')
+
+    def start(self):
+        logger.debug('Starting service')
+        self.__event.clear()
+        self.__thread = Thread(target=self.run, daemon=True)
+        self.__thread.start()
+        logger.debug('Service started')
+
+    def run(self):
+        while not self.__event.is_set():
+            self.__current = self.__api.fetch_current()
+            self.notify()
+            self.__event.wait(self.__interval)

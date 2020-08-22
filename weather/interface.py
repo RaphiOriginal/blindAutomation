@@ -2,11 +2,12 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
 
 
-class WeatherCondition(ABC):
+class ConditionData(ABC):
 
     @property
     @abstractmethod
@@ -52,3 +53,154 @@ class WeatherCondition(ABC):
         :return: str
         """
         pass
+
+
+class TemperatureData(ABC):
+
+    @property
+    @abstractmethod
+    def temp(self) -> float:
+        """
+        Temperature
+        :return: temperature
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def feels_like(self) -> float:
+        """
+        Feels like temperature
+        :return: temperature
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def temp_min(self) -> float:
+        """
+        Min temperature
+        :return: temperature
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def temp_max(self) -> float:
+        """
+        Max temperature
+        :return: temperature
+        """
+        pass
+
+
+class AtmosphereData(ABC):
+
+    @property
+    @abstractmethod
+    def pressure(self) -> int:
+        """
+        Air pressure
+        :return: pressure
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def humidity(self) -> int:
+        """
+        Air humidity
+        :return: humidity
+        """
+        pass
+
+
+class WindData(ABC):
+
+    @property
+    @abstractmethod
+    def speed(self) -> float:
+        """
+        Wind speed
+        :return: speed
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def deg(self) -> int:
+        """
+        Wind direction in degrees
+        :return: direction
+        """
+        pass
+
+
+class CloudsData(ABC):
+
+    @property
+    @abstractmethod
+    def all(self) -> int:
+        """
+        Cloud coverate in percentage
+        :return: all
+        """
+        pass
+
+
+class WeatherData(ABC):
+
+    @property
+    @abstractmethod
+    def conditions(self) -> [ConditionData]:
+        """
+        Weather condition with main and sub condition
+        :return: ConditionData
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def temperature(self) -> TemperatureData:
+        """
+        Temperature object with temperature data
+        :return: TemperatureData
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def atmosphere(self) -> AtmosphereData:
+        """
+        Atmosphere object with air data
+        :return: AtmosphereData
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def wind(self) -> WindData:
+        """
+        Wind object with wind data
+        :return: WindData
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def clouds(self) -> CloudsData:
+        """
+        Clouds object with cloud data
+        :return: CloudsData
+        """
+        pass
+
+
+class WeatherAPI(ABC):
+
+    @abstractmethod
+    def fetch_current(self) -> Optional[WeatherData]:
+        """
+        Fetches and returns current weather
+        :return: Optional WeatherData
+        """
