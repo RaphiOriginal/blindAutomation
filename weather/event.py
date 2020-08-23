@@ -3,12 +3,13 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Optional
 
 from building.interface import Shutter
+from building.state import State
 from event.event import Event
 from jobs import task
-from jobs.task import Task, Open
+from jobs.task import Task, Open, Close, Tilt
 from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
 from weather.weather import Weather, Condition
 
@@ -22,13 +23,22 @@ class WeatherEvent(Event, ABC):
         if sub is None:
             sub = []
         self._task = task
+        self._undo: Optional[Task] = None
         self._main: WeatherConditionEnum = main
         self._sub: [WeatherSubConditionEnum] = sub
+        self.__active: bool = False
 
     def applies(self, trigger: Any) -> bool:
         if trigger and isinstance(trigger, Weather):
             return self.__cond_match(trigger.conditions)
         return False
+
+    def __applies(self, conditions: [Condition]) -> bool:
+        cond: bool = self.__cond_match(conditions)
+        if self.__active:
+            return not cond
+        else:
+            return cond
 
     def __cond_match(self, conditions: [Condition]) -> bool:
         for condition in conditions:
@@ -41,6 +51,25 @@ class WeatherEvent(Event, ABC):
 
     def set_sub(self, intensity: [WeatherSubConditionEnum]):
         self._sub = intensity
+
+    def _set_previous(self, blind: Shutter):
+        previous = blind.stats()
+        if previous == State.OPEN:
+            self._undo = Open(blind)
+        if previous == State.CLOSED:
+            self._undo = Close(blind)
+        if previous == State.TILT:
+            self._undo = Tilt(blind)
+
+    def activate(self):
+        self.__active = True
+
+    def deactivate(self):
+        self.__active = False
+
+    @property
+    def active(self) -> bool:
+        return self.__active
 
     @staticmethod
     @abstractmethod
@@ -74,8 +103,14 @@ class CloudsEvent(WeatherEvent):
     def do(self, on: Shutter) -> bool:
         if isinstance(on, Shutter):
             success: bool = True
-            for task in self._task.get(on):
-                success = task[0].do() and success
+            if not self.active:
+                self.activate()
+                for task in self._task.get(on):
+                    success = task[0].do() and success
+            else:
+                self.deactivate()
+                for task in self._undo.get(on):
+                    success = task[0].do() and success
             return success
         return False
 
