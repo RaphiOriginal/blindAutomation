@@ -33,6 +33,22 @@ class WeatherEvent(Event, ABC):
             return self.__applies(trigger.conditions)
         return False
 
+    def do(self, on: Shutter) -> Blocker:
+        if isinstance(on, Shutter):
+            if not self.active:
+                self.activate()
+                success = True
+                for task in self._task.get(on):
+                    success = task[0].do() and success
+                if success:
+                    self._blocker.block()
+            else:
+                self.deactivate()
+                self._blocker.unblock()
+                for task in self.undo.get(on):
+                    task[0].do()
+        return self._blocker
+
     def __applies(self, conditions: [Condition]) -> bool:
         cond: bool = self.__cond_match(conditions)
         if self.__active:
@@ -132,22 +148,6 @@ class WeatherBlocker(Blocker):
 class CloudsEvent(WeatherEvent):
     def __init__(self, task: Task = Open()):
         super(CloudsEvent, self).__init__(task, WeatherConditionEnum.CLOUDS, [WeatherSubConditionEnum.OVERCAST])
-
-    def do(self, on: Shutter) -> Blocker:
-        if isinstance(on, Shutter):
-            if not self.active:
-                self.activate()
-                success = True
-                for task in self._task.get(on):
-                    success = task[0].do() and success
-                if success:
-                    self._blocker.block()
-            else:
-                self.deactivate()
-                self._blocker.unblock()
-                for task in self.undo.get(on):
-                    task[0].do()
-        return self._blocker
 
     @staticmethod
     def type() -> str:
