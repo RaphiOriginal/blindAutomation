@@ -36,39 +36,39 @@ TriggerObj: any(include('TIME'), include('SUNRISE'), include('SUNSET'), include(
 TIME:
   TIME:
     task: include('task')
-    on: list(include('day'), required=False)
+    at: list(include('day'), required=False)
     time: str()
     offset: int(required=False)
 
 SUNRISE:
   SUNRISE:
     task: include('task', required=False)
-    on: list(include('day'), required=False)
+    at: list(include('day'), required=False)
     offset: int(required=False)
 
 SUNSET:
   SUNSET:
     task: include('task', required=False)
-    on: list(include('day'), required=False)
+    at: list(include('day'), required=False)
     offset: int(required=False)
 
 SUNIN:
   SUNIN:
     task: include('task', required=False)
-    on: list(include('day'), required=False)
+    at: list(include('day'), required=False)
     offset: int(required=False)
 
 SUNOUT:
   SUNOUT:
     task: include('task', required=False)
-    on: list(include('day'), required=False)
+    at: list(include('day'), required=False)
     offset: int(required=False)
 
 AZIMUTH:
   AZIMUTH:
     azimuth: int()
     task: include('task', required=False)
-    on: list(include('day'), required=False)
+    at: list(include('day'), required=False)
     offset: int(required=False)
 
 ELEVATION:
@@ -76,7 +76,7 @@ ELEVATION:
     elevation: int()
     direction: str(any('RISE', 'SET'))
     task: include('task', required=False)
-    on: list(include('day'), required=False)
+    at: list(include('day'), required=False)
     offset: int(required=False)
 
 POSITION:
@@ -85,7 +85,7 @@ POSITION:
     elevation: int()
     direction: str(any('RISE', 'SET'))
     task: include('task')
-    on: list(include('day'), required=False)
+    at: list(include('day'), required=False)
     offset: int(required=False)
 
 Event: any(include('EventStr'), include('EventObj'))

@@ -15,20 +15,19 @@ class SunAPIMock(ObservableSunAPI):
         return self.sundata
 
 
-def get_sundata_mock(time_delta: int = 10):
+def get_sundata_mock(date: datetime = datetime.now(global_date.zone), time_delta: int = 10):
     delta = timedelta(seconds=time_delta)
-    now = datetime.now(global_date.zone)
     multiplier = 1
     positions: [Position] = []
-    sunrise = now + delta
+    sunrise = date + delta
     for dec in range(50, 310):
-        stamp = now + delta * multiplier
+        stamp = date + delta * multiplier
         azi = Azimuth(stamp, dec)
         ele = Elevation(stamp, dec / 50)
         if dec > 180:
             ele = Elevation(stamp, (310 - dec) / 50)
         positions.append(Position(stamp, azi, ele))
         multiplier += 1
-    sunset = now + delta * 60
+    sunset = date + delta * 60
     data = Sundata(sunrise, sunset, positions)
     return data

@@ -39,7 +39,7 @@ walls:
                     TILT: 45
               - SUNSET:
                   offset: -20
-                  on:
+                  at:
                     - WEEKEND
                     - WORKINGDAY
                     - MO

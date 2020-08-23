@@ -53,6 +53,9 @@ class Blind(Shutter):
     def override_tilt_duration(self, duration):
         self.__duration = duration
 
+    def overwrite_degree(self, degree: int):
+        self.__degree = degree
+
     def add_events(self, events: [Event]):
         for event in events:
             self._events.append(event)

@@ -6,7 +6,6 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 
 import global_date
-from jobs.interface import PriorityManager
 from jobs.job import Job
 
 logger = logging.getLogger(__name__)
@@ -29,7 +28,6 @@ class JobManager:
     def __init__(self):
         self.__schedule = sched.scheduler(now, delay)
         self.__jobs = defaultdict(list)
-        self.__priority_manager = self.PriorityManager()
 
     def add(self, job: Job):
         self.__jobs[job.get_id()].append(job)
@@ -48,31 +46,23 @@ class JobManager:
 
             logger.info('{} jobs prepared for {}:'.format(len(future), shelly))
             for job in future:
-                job.schedule(self.__schedule, self.__priority_manager)
+                job.schedule(self.__schedule)
                 logger.info(job)
 
-        self.__jobs = defaultdict(list)
         return self
 
     def run(self) -> bool:
         if not self.__schedule.empty():
             self.__schedule.run()
+            self.__jobs = defaultdict(list)
         return not self.__schedule.empty()
 
-    class PriorityManager(PriorityManager):
-        def __init__(self):
-            self.__priority_map = defaultdict(int)
-
-        def prio(self, runtime: datetime) -> int:
-            if self.__priority_map[runtime]:
-                next = self.__priority_map[runtime]
-                self.__priority_map[runtime] = next + 1
-                return next
-            self.__priority_map[runtime] = 2
-            return 1
+    @property
+    def jobs(self) -> [Job]:
+        return self.__jobs
 
     def __repr__(self):
-        return 'JobManager: { jobs: %s }' % self.__jobs
+        return 'JobManager: { length: %s, queue: %s }' % (len(self.__schedule.queue), self.__schedule.queue)
 
 
 manager = JobManager()

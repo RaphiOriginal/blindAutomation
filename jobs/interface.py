@@ -6,17 +6,6 @@ from typing import Optional
 from jobs.task import Task
 
 
-class PriorityManager(ABC):
-    @abstractmethod
-    def prio(self, runtime: datetime) -> int:
-        """
-        manages prio to avoid collitions on runtime
-        :param runtime: datetime
-        :return: int
-        """
-        pass
-
-
 class Trigger(ABC):
     @abstractmethod
     def task(self) -> Task:

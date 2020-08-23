@@ -3,7 +3,6 @@ from datetime import datetime
 from sched import scheduler
 
 from building.interface import Shutter
-from jobs.interface import PriorityManager
 from jobs.worker import work
 
 
@@ -13,12 +12,13 @@ class Job:
         self.__blind: Shutter = blind
         self.__applies: bool = trigger.applies()
 
-    def schedule(self, schedule: scheduler, prio_manager: PriorityManager):
+    def schedule(self, schedule: scheduler):
         """Schedules the Job at the given timestamp"""
         tasks = self.__trigger.task().get(self.__blind)
+        prio = 1
         for task in tasks:
-            prio = prio_manager.prio(self.__trigger.time())
             schedule.enterabs(self.__trigger.time(), prio, work, argument=task)
+            prio = prio + 1
 
     def get_time(self) -> datetime:
         return self.__trigger.time()

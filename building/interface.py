@@ -43,6 +43,10 @@ class Shutter(Observer, ABC):
         pass
 
     @abstractmethod
+    def overwrite_degree(self, degree: int):
+        pass
+
+    @abstractmethod
     def stats(self) -> State:
         """
         Command to fetch blind Stat

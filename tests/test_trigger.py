@@ -145,7 +145,7 @@ class TriggerTest(unittest.TestCase):
         self.assertEqual(SunsetTrigger.type(), triggers[3].type())
 
     def test_applies(self):
-        triggers = [{'SUNRISE': {'on': ['MO']}}]
+        triggers = [{'SUNRISE': {'at': ['MO']}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(Open.type(), result[0].task().type())
@@ -155,7 +155,7 @@ class TriggerTest(unittest.TestCase):
             self.assertTrue(item.applies())
 
     def test_applies_not(self):
-        triggers = [{'SUNRISE': {'on': ['TU']}}]
+        triggers = [{'SUNRISE': {'at': ['TU']}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(Open.type(), result[0].task().type())
@@ -164,6 +164,14 @@ class TriggerTest(unittest.TestCase):
             self.assertEqual('2020-07-27T05:59:00+02:00', item.time().isoformat())
             self.assertFalse(item.applies())
 
+    def test_extract_workingdays(self):
+        triggers = [{'SUNRISE': {'at': ['WORKINGDAY']}}]
+        result = trigger.extract_triggers(blind(triggers), sundata())
+        self.assertEqual(1, len(result))
+        self.assertEqual(Open.type(), result[0].task().type())
+        self.assertEqual(5, len(result[0]._on))
+        for day in result[0]._on:
+            self.assertTrue(day in ['MO', 'TU', 'WE', 'TH', 'FR'], 'Day {} not in list {}'.format(day, result[0]._on))
 
 def blind(triggers: []) -> Blind:
     return Blind('test', 10, 20, None, triggers, [])
