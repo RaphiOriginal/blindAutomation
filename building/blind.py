@@ -71,6 +71,7 @@ class Blind(Shutter):
 
     @property
     def events(self) -> [Event]:
+        self._events.sort(key=lambda event: not event.blocker.blocking)
         return self._events
 
     @property
