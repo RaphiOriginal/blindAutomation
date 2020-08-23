@@ -3,7 +3,7 @@ import json
 import unittest
 
 from weather.enum import WeatherSubConditionEnum
-from weather.weather import WeatherConditionEnum, Condition, Weather, Temperature, Atmosphere, Wind, Clouds
+from weather.weather import WeatherConditionEnum, Condition, Weather, Temperature, Atmosphere, Wind, Clouds, Sun
 
 
 class WeatherConditionTestCase(unittest.TestCase):
@@ -72,12 +72,14 @@ class WeatherTestCase(unittest.TestCase):
         atmos = w.atmosphere
         wind = w.wind
         clouds = w.clouds
+        sun = w.sun
         self.assertEqual(1, len(cond))
         self.__check_condition(cond[0], WeatherConditionEnum.CLEAR, WeatherSubConditionEnum.CLEAR, 'Klarer Himmel', '01d')
         self.__check_temperature(temp, 29.85, 31.87, 28.89, 31.11)
         self.__check_atmosphere(atmos, 1011, 49)
         self.__check_wind(wind, 1.09, 165)
         self.__check_clouds(clouds, 0)
+        self.__check_sun(sun, '2020-08-20T06:31:13+02:00', '2020-08-20T20:31:17+02:00')
 
     def __check_condition(self, condition: Condition, main: WeatherConditionEnum, sub: WeatherSubConditionEnum,
                           description: str, icon: str):
@@ -107,6 +109,11 @@ class WeatherTestCase(unittest.TestCase):
     def __check_clouds(self, clouds: Clouds, all: int):
         self.assertIsNotNone(clouds)
         self.assertEqual(all, clouds.all)
+
+    def __check_sun(self, sun: Sun, sunrise: str, sunset: str):
+        self.assertIsNotNone(sun)
+        self.assertEqual(sunrise, sun.sunrise.isoformat())
+        self.assertEqual(sunset, sun.sunset.isoformat())
 
 
 def get_json():

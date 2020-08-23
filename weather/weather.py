@@ -2,9 +2,12 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime
+from typing import Optional
 
+import global_date
 from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
-from weather.interface import ConditionData, WeatherData, TemperatureData, AtmosphereData, WindData, CloudsData
+from weather.interface import ConditionData, WeatherData, TemperatureData, AtmosphereData, WindData, CloudsData, SunData
 
 logger = logging.getLogger(__name__)
 
@@ -140,6 +143,29 @@ class Clouds(CloudsData):
         return 'Clouds: {all: %s}' % self.all
 
 
+class Sun(SunData):
+    def __init__(self, data: dict):
+        self.__data: dict = data
+        self.__parse_sun()
+
+    @property
+    def sunrise(self) -> datetime:
+        return self.__sunrise
+
+    @property
+    def sunset(self) -> datetime:
+        return self.__sunset
+
+    def __parse_sun(self):
+        sunrise = self.__data.get('sunrise')
+        sunset = self.__data.get('sunset')
+        self.__sunrise = datetime.fromtimestamp(sunrise, global_date.zone)
+        self.__sunset = datetime.fromtimestamp(sunset, global_date.zone)
+
+    def __repr__(self):
+        return 'Sun: {sunrise %s, sunset %s}' % (self.sunrise, self.sunset)
+
+
 class Weather(WeatherData):
     def __init__(self, data: dict):
         self.__data: dict = data
@@ -148,6 +174,7 @@ class Weather(WeatherData):
         self.__atmosphere: Atmosphere = Atmosphere(data.get('main'))
         self.__wind: Wind = Wind(data.get('wind'))
         self.__clouds: Clouds = Clouds(data.get('clouds'))
+        self.__sun: Sun = Sun(data.get('sys'))
         self.__parse_weather()
 
     @property
@@ -169,6 +196,10 @@ class Weather(WeatherData):
     @property
     def clouds(self) -> Clouds:
         return self.__clouds
+
+    @property
+    def sun(self) -> Sun:
+        return self.__sun
 
     def __parse_weather(self):
         weather_list = self.__data.get('weather')

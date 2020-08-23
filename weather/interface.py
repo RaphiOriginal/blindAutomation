@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import Optional
 
 from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
@@ -148,6 +149,27 @@ class CloudsData(ABC):
         pass
 
 
+class SunData(ABC):
+
+    @property
+    @abstractmethod
+    def sunrise(self) -> datetime:
+        """
+        Datetime when the sun rises
+        :return: datetime
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def sunset(self) -> datetime:
+        """
+        Datetime when the sun sets
+        :return: datetime
+        """
+        pass
+
+
 class WeatherData(ABC):
 
     @property
@@ -192,6 +214,15 @@ class WeatherData(ABC):
         """
         Clouds object with cloud data
         :return: CloudsData
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def sun(self) -> SunData:
+        """
+        Sun object with sunrise and sunset date
+        :return: SunData
         """
         pass
 
