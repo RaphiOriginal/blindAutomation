@@ -50,6 +50,9 @@ class BlindMock(Shutter):
     def degree(self) -> int:
         pass
 
+    def overwrite_degree(self, degree: int):
+        pass
+
     def event_configs(self) -> List:
         pass
 
