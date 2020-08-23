@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-from typing import Any, List
+from typing import List, Optional
 
 from api.api import ObservableSunAPI
 from building.interface import Shutter
 from building.state import State
 from device.device import Device
-from event.event import Event
+from event.event import Event, Blocker
 from event.trigger import Trigger
 from jobs import trigger
 from jobs.jobmanager import manager
@@ -24,27 +24,36 @@ class Blind(Shutter):
         self.state: State = State.UNKNOWN
         self.__degree: int = -1
         self.__duration: float = 1.2
+        self.__blocker: Optional[Blocker] = None
 
-    def open(self) -> bool:
-        self.__degree = 0
-        return self.device.open()
+    def open(self) -> Optional[Blocker]:
+        if self.__not_blocking():
+            self.__degree = 0
+            self.device.open()
+        return self.__blocker
 
-    def close(self) -> bool:
-        self.__degree = 90
-        return self.device.close()
+    def close(self) -> Optional[Blocker]:
+        if self.__not_blocking():
+            self.__degree = 90
+            self.device.close()
+        return self.__blocker
 
-    def move(self, pos: int) -> bool:
-        return self.device.move(pos)
+    def move(self, pos: int) -> Optional[Blocker]:
+        if self.__not_blocking():
+            self.device.move(pos)
+        return self.__blocker
 
-    def tilt(self, degree: int) -> bool:
-        target = min(max(degree, 0), 90)
-        offset = target - self.__degree
-        duration = abs(self.__duration / 90 * offset)
-        self.__degree = target
-        if offset > 0:
-            return self.device.tilt('close', duration)
-        else:
-            return self.device.tilt('open', duration)
+    def tilt(self, degree: int) -> Optional[Blocker]:
+        if self.__not_blocking():
+            target = min(max(degree, 0), 90)
+            offset = target - self.__degree
+            duration = abs(self.__duration / 90 * offset)
+            self.__degree = target
+            if offset > 0:
+                self.device.tilt('close', duration)
+            else:
+                self.device.tilt('open', duration)
+        return self.__blocker
 
     def stats(self) -> State:
         self.state = self.device.stats()
@@ -99,6 +108,9 @@ class Blind(Shutter):
             for event in self._events:
                 if event.applies(subject.trigger):
                     event.do(self)
+
+    def __not_blocking(self) -> bool:
+        return self.__blocker is None or not self.__blocker.blocking
 
     def __repr__(self):
         return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, events: %s, triggers: %s, state: %s, event_config: %s}' \

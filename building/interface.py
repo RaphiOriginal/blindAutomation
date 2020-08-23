@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 
 from building.state import State
-from event.event import Event
+from event.event import Event, Blocker
 from observable.observable import Observer
 
 
 class Shutter(Observer, ABC):
     @abstractmethod
-    def open(self) -> bool:
+    def open(self) -> Optional[Blocker]:
         """
         Command to open blind
         :return: true if command was successful
@@ -17,7 +17,7 @@ class Shutter(Observer, ABC):
         pass
 
     @abstractmethod
-    def close(self) -> bool:
+    def close(self) -> Optional[Blocker]:
         """
         Command to close blind
         :return: true if command was successful
@@ -25,7 +25,7 @@ class Shutter(Observer, ABC):
         pass
 
     @abstractmethod
-    def move(self, pos: int) -> bool:
+    def move(self, pos: int) -> Optional[Blocker]:
         """
         Command to move blind to a desired position
         :param pos: int Position the blind has move to
@@ -34,7 +34,7 @@ class Shutter(Observer, ABC):
         pass
 
     @abstractmethod
-    def tilt(self, degree: int) -> bool:
+    def tilt(self, degree: int) -> Optional[Blocker]:
         """
         Command to tilt blind to a specific degree
         :param degree: int Degre the blind has to be tilted to
