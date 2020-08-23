@@ -97,6 +97,10 @@ class WeatherEvent(Event, ABC):
     def active(self) -> bool:
         return self.__active
 
+    @property
+    def blocker(self) -> Blocker:
+        return self._blocker
+
     @staticmethod
     @abstractmethod
     def type() -> str:
