@@ -30,7 +30,7 @@ class WeatherEvent(Event, ABC):
 
     def applies(self, trigger: Any) -> bool:
         if trigger and isinstance(trigger, Weather):
-            return self.__cond_match(trigger.conditions)
+            return self.__applies(trigger.conditions)
         return False
 
     def __applies(self, conditions: [Condition]) -> bool:
