@@ -3,11 +3,11 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any, Callable
 
 from building.interface import Shutter
 from building.state import State
-from event.event import Event
+from event.event import Event, Blocker
 from jobs import task
 from jobs.task import Task, Open, Close, Tilt
 from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
@@ -23,10 +23,10 @@ class WeatherEvent(Event, ABC):
         if sub is None:
             sub = []
         self._task = task
-        self._undo: Optional[Task] = None
         self._main: WeatherConditionEnum = main
         self._sub: [WeatherSubConditionEnum] = sub
         self.__active: bool = False
+        self._blocker = WeatherBlocker()
 
     def applies(self, trigger: Any) -> bool:
         if trigger and isinstance(trigger, Weather):
@@ -68,6 +68,10 @@ class WeatherEvent(Event, ABC):
         self.__active = False
 
     @property
+    def undo(self) -> Task:
+        return self._blocker.last
+
+    @property
     def active(self) -> bool:
         return self.__active
 
@@ -90,7 +94,36 @@ class WeatherEvent(Event, ABC):
         pass
 
     def __repr__(self):
-        return 'main: %s, sub: %s, task: %s' % (self._main, self._sub, self._task)
+        return 'main: %s, sub: %s, task: %s, blocker: %s' % (self._main, self._sub, self._task, self._blocker)
+
+
+# endregion
+# region weather blocker
+
+class WeatherBlocker(Blocker):
+    def __init__(self):
+        self.__block = False
+        self.__tasks: [Task] = []
+
+    def block(self):
+        self.__block = True
+
+    def unblock(self):
+        self.__block = False
+
+    def update(self, task: Task):
+        self.__tasks.append(task)
+
+    @property
+    def last(self) -> Task:
+        return self.__tasks.pop()
+
+    @property
+    def blocking(self) -> bool:
+        return self.__block
+
+    def __repr__(self):
+        return 'Blocker: {blocking: %s, blocked: %s}' % (self.blocking, self.__tasks)
 
 
 # endregion
@@ -100,19 +133,22 @@ class CloudsEvent(WeatherEvent):
     def __init__(self, task: Task = Open()):
         super(CloudsEvent, self).__init__(task, WeatherConditionEnum.CLOUDS, [WeatherSubConditionEnum.OVERCAST])
 
-    def do(self, on: Shutter) -> bool:
+    def do(self, on: Shutter) -> Blocker:
         if isinstance(on, Shutter):
-            success: bool = True
             if not self.active:
-                self.activate()
-                for task in self._task.get(on):
-                    success = task[0].do() and success
+                self.__do(on, self.activate, self._blocker.block, self._task)
             else:
-                self.deactivate()
-                for task in self._undo.get(on):
-                    success = task[0].do() and success
-            return success
-        return False
+                self.__do(on, self.deactivate, self._blocker.unblock, self.undo)
+        return self._blocker
+
+    @staticmethod
+    def __do(on: Shutter, active: Callable, block: Callable, task: Task):
+        active()
+        success = True
+        for t in task.get(on):
+            success = t[0].do() and success
+        if success:
+            block()
 
     @staticmethod
     def type() -> str:
