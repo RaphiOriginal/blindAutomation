@@ -136,19 +136,18 @@ class CloudsEvent(WeatherEvent):
     def do(self, on: Shutter) -> Blocker:
         if isinstance(on, Shutter):
             if not self.active:
-                self.__do(on, self.activate, self._blocker.block, self._task)
+                self.activate()
+                success = True
+                for task in self._task.get(on):
+                    success = task[0].do() and success
+                if success:
+                    self._blocker.block()
             else:
-                self.__do(on, self.deactivate, self._blocker.unblock, self.undo)
+                self.deactivate()
+                self._blocker.unblock()
+                for task in self.undo.get(on):
+                    task[0].do()
         return self._blocker
-
-    @staticmethod
-    def __do(on: Shutter, active: Callable, block: Callable, task: Task):
-        active()
-        success = True
-        for t in task.get(on):
-            success = t[0].do() and success
-        if success:
-            block()
 
     @staticmethod
     def type() -> str:
