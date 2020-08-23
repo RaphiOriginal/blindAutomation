@@ -22,7 +22,9 @@ class BlindMock(Shutter):
         return self.blocker
 
     def close(self) -> Optional[Blocker]:
-        pass
+        if self.blocker is None or not self.blocker.blocking:
+            self.close_c = self.close_c + 1
+        return self.blocker
 
     def move(self, pos: int) -> Optional[Blocker]:
         pass
