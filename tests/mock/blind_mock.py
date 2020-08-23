@@ -67,3 +67,6 @@ class BlindMock(Shutter):
         for event in self.events:
             if event.applies(subject.trigger):
                 self.blocker = event.do(self)
+
+    def __repr__(self):
+        return 'Mock: {events: %s}' % self.events
