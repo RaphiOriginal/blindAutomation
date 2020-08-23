@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Callable
+from typing import Any, Optional
 
 from building.interface import Shutter
 from building.state import State
@@ -26,6 +26,7 @@ class WeatherEvent(Event, ABC):
         self._main: WeatherConditionEnum = main
         self._sub: [WeatherSubConditionEnum] = sub
         self.__active: bool = False
+        self._undo: Optional[Task] = None
         self._blocker = WeatherBlocker()
 
     def applies(self, trigger: Any) -> bool:
@@ -36,6 +37,7 @@ class WeatherEvent(Event, ABC):
     def do(self, on: Shutter) -> Blocker:
         if isinstance(on, Shutter):
             if not self.active:
+                self._set_previous(on)
                 self.activate()
                 success = True
                 for task in self._task.get(on):
@@ -45,8 +47,9 @@ class WeatherEvent(Event, ABC):
             else:
                 self.deactivate()
                 self._blocker.unblock()
-                for task in self.undo.get(on):
-                    task[0].do()
+                if self.undo:
+                    for task in self.undo.get(on):
+                        task[0].do()
         return self._blocker
 
     def __applies(self, conditions: [Condition]) -> bool:
@@ -84,8 +87,11 @@ class WeatherEvent(Event, ABC):
         self.__active = False
 
     @property
-    def undo(self) -> Task:
-        return self._blocker.last
+    def undo(self) -> Optional[Task]:
+        last = self._blocker.last
+        if last:
+            self._undo = last
+        return self._undo
 
     @property
     def active(self) -> bool:
@@ -131,8 +137,10 @@ class WeatherBlocker(Blocker):
         self.__tasks.append(task)
 
     @property
-    def last(self) -> Task:
-        return self.__tasks.pop()
+    def last(self) -> Optional[Task]:
+        if len(self.__tasks) > 0:
+            return self.__tasks.pop()
+        return None
 
     @property
     def blocking(self) -> bool:
