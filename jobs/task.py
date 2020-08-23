@@ -142,15 +142,24 @@ class Open(BaseTask):
 
 
 class PreTilt(BaseTask):
-    def __init__(self, blind: BlindInterface):
+    def __init__(self, blind: BlindInterface, degree: int):
         super(PreTilt, self).__init__(blind, State.TILT)
+        self.__degree: int = degree
+
+    def done(self) -> bool:
+        return self.blind.degree == self.__degree or self.blind.stats() == self._target()
 
     def do(self):
+        self.blind.overwrite_degree(90)
         return self.blind.close()
 
     @staticmethod
     def type() -> str:
         return 'PREPARE'
+
+    @staticmethod
+    def create(blind: BlindInterface, **args) -> Task:
+        return Close()
 
 
 class Tilt(BaseTask):
@@ -168,7 +177,7 @@ class Tilt(BaseTask):
         return self.blind.tilt(self.__degree)
 
     def get(self, blind: BlindInterface) -> [Task]:
-        return [(PreTilt(blind),), (Tilt(blind),)]
+        return [(PreTilt(blind, self.__degree),), (Tilt(blind, self.__degree),)]
 
     @staticmethod
     def type() -> str:

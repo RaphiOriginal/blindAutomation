@@ -45,6 +45,9 @@ class Blind(BlindInterface):
     def override_tilt_duration(self, duration):
         self.__duration = duration
 
+    def overwrite_degree(self, degree: int):
+        self.__degree = degree
+
     @property
     def id(self):
         return self.device.id
