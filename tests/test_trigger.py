@@ -162,6 +162,14 @@ class TriggerTest(unittest.TestCase):
             self.assertEqual('2020-07-27T05:59:00+02:00', item.time().isoformat())
             self.assertFalse(item.applies())
 
+    def test_extract_workingdays(self):
+        triggers = [{'SUNRISE': {'on': ['WORKINGDAY']}}]
+        result = trigger.extract_triggers(blind(triggers), sundata())
+        self.assertEqual(1, len(result))
+        self.assertEqual(Open.type(), result[0].task().type())
+        self.assertEqual(5, len(result[0]._on))
+        for day in result[0]._on:
+            self.assertTrue(day in ['MO', 'TU', 'WE', 'TH', 'FR'], 'Day {} not in list {}'.format(day, result[0]._on))
 
 
 def blind(triggers: []) -> Blind:
