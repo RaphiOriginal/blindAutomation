@@ -141,6 +141,7 @@ class WeatherBlockerTestCase(unittest.TestCase):
         # Check
         rain_trigger = self.__create_trigger(504)
         b.update(rain_trigger)
+        print(b)
         self.assertTrue(b.blocker.blocking)
         # Unblocks first event and then blocks with second event
         self.assertEqual(2, b.open_c)
@@ -153,6 +154,8 @@ class WeatherBlockerTestCase(unittest.TestCase):
         print(b)
         # Test
         b.update(trigger)
+        print(b)
+        self.assertTrue(b.blocker.blocking)
         # Check
         rain_trigger = self.__create_trigger(504)
         b.update(rain_trigger)
