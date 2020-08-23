@@ -303,6 +303,6 @@ def set_offset(trigger: Trigger, triggerdict):
 
 
 def set_on(trigger: Trigger, triggerdict):
-    if 'on' in triggerdict:
-        on = triggerdict.get('on')
+    if 'at' in triggerdict:
+        on = triggerdict.get('at')
         trigger.set_days(date.parse_config(on))

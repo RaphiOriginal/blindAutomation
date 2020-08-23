@@ -143,7 +143,7 @@ class TriggerTest(unittest.TestCase):
         self.assertEqual(SunsetTrigger.type(), triggers[3].type())
 
     def test_applies(self):
-        triggers = [{'SUNRISE': {'on': ['MO']}}]
+        triggers = [{'SUNRISE': {'at': ['MO']}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(Open.type(), result[0].task().type())
@@ -153,7 +153,7 @@ class TriggerTest(unittest.TestCase):
             self.assertTrue(item.applies())
 
     def test_applies_not(self):
-        triggers = [{'SUNRISE': {'on': ['TU']}}]
+        triggers = [{'SUNRISE': {'at': ['TU']}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(Open.type(), result[0].task().type())
@@ -163,7 +163,7 @@ class TriggerTest(unittest.TestCase):
             self.assertFalse(item.applies())
 
     def test_extract_workingdays(self):
-        triggers = [{'SUNRISE': {'on': ['WORKINGDAY']}}]
+        triggers = [{'SUNRISE': {'at': ['WORKINGDAY']}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(Open.type(), result[0].task().type())
