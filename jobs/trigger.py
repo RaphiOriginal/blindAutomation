@@ -20,7 +20,7 @@ class TriggerBase(Trigger):
         self._task: Task = task
         self._time: datetime = runtime
         self._offset: int = 0
-        self.__on: [str] = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU']
+        self._on: [str] = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU']
 
     def task(self) -> Task:
         return self._task
@@ -35,10 +35,10 @@ class TriggerBase(Trigger):
         self._offset = offset
 
     def set_days(self, on: [str]):
-        self.__on = on
+        self._on = on
 
     def applies(self) -> bool:
-        return date.applies(self.time(), self.__on)
+        return date.applies(self.time(), self._on)
 
     def __apply_offset(self) -> datetime:
         delta = timedelta(minutes=abs(self._offset))
@@ -57,7 +57,7 @@ class TriggerBase(Trigger):
         return 1
 
     def __repr__(self):
-        return 'runtime: %s, task: %s, offset: %s, on: %s' % (self._time, self._task, self._offset, self.__on)
+        return 'runtime: %s, task: %s, offset: %s, on: %s' % (self._time, self._task, self._offset, self._on)
 
 
 class SunriseTrigger(TriggerBase):
