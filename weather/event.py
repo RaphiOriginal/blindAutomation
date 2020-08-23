@@ -161,6 +161,31 @@ class CloudsEvent(WeatherEvent):
         return 'CloudsEvent: {%s}' % super(CloudsEvent, self).__repr__()
 
 
+class RainEvent(WeatherEvent):
+    def __init__(self, task: Task = Open()):
+        super(RainEvent, self).__init__(task, WeatherConditionEnum.RAIN, self.__default)
+
+    @staticmethod
+    def type() -> str:
+        return 'RAIN'
+
+    @staticmethod
+    def create() -> WeatherEvent:
+        return RainEvent()
+
+    @property
+    def __default(self) -> [WeatherSubConditionEnum]:
+        return [WeatherSubConditionEnum.HEAVY,
+                WeatherSubConditionEnum.VERY_HEAVY,
+                WeatherSubConditionEnum.EXTREME,
+                WeatherSubConditionEnum.SHOWER,
+                WeatherSubConditionEnum.HEAVY_SHOWER,
+                WeatherSubConditionEnum.RAGGED_SHOWER]
+
+    def __repr__(self):
+        return 'RainEvent: {%s}' % super(RainEvent, self).__repr__()
+
+
 # endregion
 # region Event creation
 
