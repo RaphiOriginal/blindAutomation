@@ -23,6 +23,15 @@ class Event(ABC):
         :return: True if event was Successfully executed
         """
 
+    @property
+    @abstractmethod
+    def blocker(self) -> Blocker:
+        """
+        Returns blocker for the Event
+        :return: Blocker for the Event
+        """
+        pass
+
 
 T = TypeVar('T')
 
