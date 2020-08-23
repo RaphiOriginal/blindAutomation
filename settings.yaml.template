@@ -28,6 +28,9 @@ walls:
                     - BROKEN
                     - SCATTERED
                     - FEW
+              - RAIN:
+                  intensity:
+                    - MODERATE
         - blind:
             name: Blind2
             out: 222
@@ -55,6 +58,9 @@ walls:
               - TIME:
                   task: TILT
                   time: '16:00:00'
+            events:
+              - CLOUDY
+              - RAIN
   - wall:
       name: west
       in: 200
