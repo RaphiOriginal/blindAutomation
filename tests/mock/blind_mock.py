@@ -64,6 +64,7 @@ class BlindMock(Shutter):
         self.events = events
 
     def update(self, subject):
+        self.events.sort(key=lambda event: not event.blocker.blocking)
         for event in self.events:
             if event.applies(subject.trigger):
                 self.blocker = event.do(self)
