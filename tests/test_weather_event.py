@@ -130,6 +130,36 @@ class WeatherBlockerTestCase(unittest.TestCase):
         Close(b).do()
         self.assertEqual(2, b.close_c, 'Further task shouldn\'t be blocked')
 
+    def test_event_order(self):
+        # Setup
+        c = CloudsEvent()
+        r = RainEvent()
+        b, trigger = self.__prepare([c, r], 804)
+        print(b)
+        # Test
+        b.update(trigger)
+        # Check
+        rain_trigger = self.__create_trigger(504)
+        b.update(rain_trigger)
+        self.assertTrue(b.blocker.blocking)
+        # Unblocks first event and then blocks with second event
+        self.assertEqual(2, b.open_c)
+
+    def test_event_reverse(self):
+        # Setup
+        c = CloudsEvent()
+        r = RainEvent()
+        b, trigger = self.__prepare([r, c], 804)
+        print(b)
+        # Test
+        b.update(trigger)
+        # Check
+        rain_trigger = self.__create_trigger(504)
+        b.update(rain_trigger)
+        self.assertTrue(b.blocker.blocking)
+        # Unblocks first event and then blocks with second event
+        self.assertEqual(2, b.open_c)
+
     def __prepare(self, events: [WeatherEvent], code: int) -> (BlindMock, TriggerMock):
         b = get_blind()
         b.add_events(events)
