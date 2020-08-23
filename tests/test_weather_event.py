@@ -2,7 +2,7 @@ import json
 import unittest
 
 from building.blind import Blind
-from jobs.task import Open, Tilt
+from jobs.task import Open, Tilt, Close
 from tests.mock.blind_mock import BlindMock
 from tests.mock.trigger_mock import TriggerMock
 from weather import event
@@ -20,6 +20,15 @@ class WeatherEventCase(unittest.TestCase):
         b.update(trigger)
         # Check
         self.assertEqual(1, b.open_c)
+
+    def test_clouds_not_applying(self):
+        # Setup
+        e = CloudsEvent()
+        b, trigger = self.__prepare([e], 803)
+        # Test
+        b.update(trigger)
+        # Check
+        self.assertEqual(0, b.open_c)
 
     @staticmethod
     def __prepare(events: [WeatherEvent], code: int) -> (BlindMock, TriggerMock):
@@ -64,6 +73,57 @@ class WeatherEventBuilder(unittest.TestCase):
         self.assertEqual(2, len(result._sub))
         self.assertEqual(WeatherSubConditionEnum.SCATTERED, result._sub[0])
         self.assertEqual(WeatherSubConditionEnum.OVERCAST, result._sub[1])
+
+
+class WeatherBlockerTestCase(unittest.TestCase):
+    def test_blocking(self):
+        # Setup
+        e = CloudsEvent()
+        b, trigger = self.__prepare([e], 804)
+        # Test
+        b.update(trigger)
+        # Check
+        self.assertEqual(1, b.open_c)
+        self.assertTrue(b.blocker.blocking)
+        Close(b).do()
+        Open(b).do()
+        self.assertEqual(0, b.close_c)
+        self.assertEqual(1, b.open_c)
+        self.assertEqual(Open.type(), b.blocker.last.type())
+
+    def test_unblocking(self):
+        # Setup
+        e = CloudsEvent()
+        b, trigger = self.__prepare([e], 804)
+        # Test
+        b.update(trigger)
+        # Check
+        self.assertEqual(1, b.open_c)
+        self.assertTrue(b.blocker.blocking)
+        Close(b).do()
+        Open(b).do()
+        self.assertEqual(0, b.close_c)
+        self.assertEqual(1, b.open_c)
+        self.assertEqual(Open.type(), b.blocker.last.type())
+        release = self.__create_trigger(803)
+        b.update(release)
+        self.assertFalse(b.blocker.blocking, 'Blocking should be released')
+        self.assertEqual(1, b.close_c, 'Last blocked Task should be applied')
+        Close(b).do()
+        self.assertEqual(2, b.close_c, 'Further task shouldn\'t be blocked')
+
+    def __prepare(self, events: [WeatherEvent], code: int) -> (BlindMock, TriggerMock):
+        b = get_blind()
+        b.add_events(events)
+        trigger = self.__create_trigger(code)
+        return b, trigger
+
+    @staticmethod
+    def __create_trigger(code: int) -> TriggerMock:
+        jsn = get_json()
+        jsn['weather'][0]['id'] = code
+        w = Weather(jsn)
+        return TriggerMock(w)
 
 
 def get_blind(name: str = 'Test') -> BlindMock:
