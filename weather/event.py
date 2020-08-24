@@ -39,6 +39,7 @@ class WeatherEvent(Event, ABC):
     def do(self, on: Shutter) -> Blocker:
         if isinstance(on, Shutter):
             if not self.active:
+                logger.info('On {} Event {} activated'.format(on.name(), self))
                 self._set_previous(on)
                 self.activate()
                 success = True
@@ -47,6 +48,7 @@ class WeatherEvent(Event, ABC):
                 if success:
                     self._blocker.block()
             else:
+                logger.info('On {} Event {} activated'.format(on.name(), self))
                 self.deactivate()
                 self._blocker.unblock()
                 if self.undo:
