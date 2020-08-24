@@ -139,13 +139,28 @@ class WeatherEventCase(unittest.TestCase):
         # Check
         self.assertEqual(0, b.device.open_counter)
 
+    def test_night_mode_blocking(self):
+        e = ClearEvent()
+        b, trigger = self.__prepare([e], 800, 2)
+        # Test
+        b.update(trigger)
+        self.assertEqual(0, b.device.close_counter)
+
+    def test_night_mode_deactivated(self):
+        e = ClearEvent()
+        e.set_night_mode(False)
+        b, trigger = self.__prepare([e], 800, 2)
+        # Test
+        b.update(trigger)
+        self.assertEqual(1, b.device.close_counter)
 
     @staticmethod
-    def __prepare(events: [WeatherEvent], code: int) -> (Blind, TriggerMock):
+    def __prepare(events: [WeatherEvent], code: int, hours: int = 0) -> (Blind, TriggerMock):
         b = get_blind()
         b.add_events(events)
         jsn = get_json()
         jsn['weather'][0]['id'] = code
+        jsn['dt'] = jsn['dt'] + hours * 3600
         w = Weather(jsn)
         trigger = TriggerMock(w)
         return b, trigger
@@ -172,14 +187,15 @@ class WeatherEventBuilder(unittest.TestCase):
         self.assertEqual(WeatherSubConditionEnum.SCATTERED, item._sub[0])
 
     def test_clear(self):
-        events = ['CLEAR']
+        events = ['CLEAR', {'CLEAR': {'task': 'TILT'}}]
         b = blind(events)
         event.apply_weather_events(b)
         result = b.events
-        self.assertEqual(1, len(result))
+        self.assertEqual(2, len(result))
         for e in result:
             self.assertEqual(WeatherConditionEnum.CLEAR, e._main)
             self.assertEqual('CLEAR', e.type())
+        self.assertEqual(Tilt.type(), result[1]._task.type())
 
     def test_special_weather(self):
         events = ['SPECIAL', {'SPECIAL': {'task': 'TILT', 'events': ['TORNADO']}}]
@@ -245,6 +261,17 @@ class WeatherEventBuilder(unittest.TestCase):
         self.assertEqual(1, len(result[1]._sub))
         self.assertEqual(WeatherSubConditionEnum.RAGGED, result[1]._sub[0])
         self.assertEqual(Tilt.type(), result[1]._task.type())
+
+    def test_override_night_mode(self):
+        events = [{'CLEAR': {'night': False}}]
+        b = blind(events)
+        event.apply_weather_events(b)
+        result = b.events
+        self.assertEqual(1, len(result))
+        for e in result:
+            self.assertEqual(WeatherConditionEnum.CLEAR, e._main)
+            self.assertEqual('CLEAR', e.type())
+            self.assertFalse(e._night_mode)
 
     def test_multi_sub(self):
         events = [{'CLOUDY': {'intensity': ['SCATTERED', 'OVERCAST']}}]

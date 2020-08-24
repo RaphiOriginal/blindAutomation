@@ -163,7 +163,7 @@ class Sun(SunData):
         self.__sunset = datetime.fromtimestamp(sunset, global_date.zone)
 
     def __repr__(self):
-        return 'Sun: {sunrise %s, sunset %s}' % (self.sunrise, self.sunset)
+        return 'Sun: {sunrise: %s, sunset: %s}' % (self.sunrise, self.sunset)
 
 
 class Weather(WeatherData):
@@ -175,6 +175,7 @@ class Weather(WeatherData):
         self.__wind: Wind = Wind(data.get('wind'))
         self.__clouds: Clouds = Clouds(data.get('clouds'))
         self.__sun: Sun = Sun(data.get('sys'))
+        self.__time: datetime = self.__parse_time()
         self.__parse_weather()
 
     @property
@@ -201,12 +202,20 @@ class Weather(WeatherData):
     def sun(self) -> Sun:
         return self.__sun
 
+    @property
+    def time(self) -> datetime:
+        return self.__time
+
     def __parse_weather(self):
         weather_list = self.__data.get('weather')
         for weather in weather_list:
             code = weather.get('id')
             self.__conditions.append(Condition(code, weather.get('description'), weather.get('icon')))
 
+    def __parse_time(self) -> datetime:
+        timestamp = self.__data['dt']
+        return datetime.fromtimestamp(timestamp, global_date.zone)
+
     def __repr__(self):
-        return 'Weather: {%s, %s, %s, %s, %s}' % \
-               (self.conditions, self.temperature, self.atmosphere, self.wind, self.clouds)
+        return 'Weather: {%s, %s, %s, %s, %s, %s, time: %s}' % \
+               (self.conditions, self.temperature, self.atmosphere, self.wind, self.clouds, self.sun, self.time)

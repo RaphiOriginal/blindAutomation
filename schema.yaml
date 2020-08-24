@@ -92,35 +92,46 @@ Event: any(include('EventStr'), include('EventObj'))
 
 EventStr: enum('CLOUDY', 'RAIN', 'CLEAR', 'STORM', 'DRIZZLE', 'SNOW', 'SPECIAL')
 
-EventObj: any(include('CLOUDY'), include('RAIN'), include('STORM'), include('DRIZZLE'), include('SNOW'), include('SPECIAL'))
+EventObj: any(include('CLEAR'), include('CLOUDY'), include('RAIN'), include('STORM'), include('DRIZZLE'), include('SNOW'), include('SPECIAL'))
+
+CLEAR:
+  CLEAR:
+    night: bool(required=False)
+    task: include('task', required=False)
 
 CLOUDY:
   CLOUDY:
+    night: bool(required=False)
     task: include('task', required=False)
     intensity: list(enum('FEW', 'SCATTERED', 'BROKEN', 'OVERCAST'), required=False)
 
 RAIN:
   RAIN:
+    night: bool(required=False)
     task: include('task', required=False)
     intensity: list(enum('MODERATE', 'VERY_HEAVY', 'EXTREME', 'FREEZING', 'LIGHT_SHOWER', 'HEAVY_SHOWER', 'RAGGED_SHOWER', 'SHOWER', 'HEAVY', 'LIGHT'), required=False)
 
 STORM:
   STORM:
+    night: bool(required=False)
     task: include('task', required=False)
     intensity: list(enum('LIGHT_RAIN', 'RAIN', 'HEAVY_RAIN', 'LIGHT', 'NORMAL', 'HEAVY', 'RAGGED', 'LIGHT_DRIZZLE', 'DRIZZLE', 'HEAVY_DRIZZLE'), required=False)
 
 DRIZZLE:
   DRIZZLE:
+    night: bool(required=False)
     task: include('task', required=False)
     intensity: list(enum('LIGHT_RAIN', 'RAIN', 'LIGHT', 'NORMAL', 'HEAVY', 'HEAVY_RAIN', 'SHOWER_RAIN', 'HEAVY_SHOWER_RAIN', 'SHOWER'), required=False)
 
 SNOW:
   SNOW:
+    night: bool(required=False)
     task: include('task', required=False)
     intensity: list(enum('LIGHT_RAIN', 'RAIN', 'LIGHT', 'NORMAL', 'HEAVY', 'SHOWER', 'LIGHT_SHOWER', 'HEAVY_SHOWER', 'SLEET', 'LIGHT_SHOWER_SLEET', 'SHOWER_SLEET'), required=False)
 
 SPECIAL:
   SPECIAL:
+    night: bool(required=False)
     task: include('task', required=False)
     events: list(enum('MIST', 'SMOKE', 'HAZE', 'WHIRLS', 'FOG', 'SAND', 'DUST', 'ASH', 'SQUALL', 'TORNADO'), required=False)
 

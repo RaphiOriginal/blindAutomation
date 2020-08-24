@@ -22,6 +22,8 @@ walls:
               - SUNIN
               - SUNOUT
             events:
+              - CLEAR:
+                  night: False
               - CLOUDY:
                   intensity:
                     - OVERCAST

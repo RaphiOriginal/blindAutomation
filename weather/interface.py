@@ -226,6 +226,15 @@ class WeatherData(ABC):
         """
         pass
 
+    @property
+    @abstractmethod
+    def time(self) -> datetime:
+        """
+        Timestamp when the current weather data applies
+        :return: datetime
+        """
+        pass
+
 
 class WeatherAPI(ABC):
 

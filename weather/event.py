@@ -3,15 +3,17 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import Any, Optional
 
+import global_date
 from building.interface import Shutter
 from building.state import State
 from event.event import Event, Blocker
 from jobs import task
 from jobs.task import Task, Open, Close, Tilt
 from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
-from weather.weather import Weather, Condition
+from weather.weather import Weather, Condition, Sun
 
 logger = logging.getLogger(__name__)
 
@@ -28,10 +30,11 @@ class WeatherEvent(Event, ABC):
         self.__active: bool = False
         self._undo: Optional[Task] = None
         self._blocker = WeatherBlocker()
+        self._night_mode: bool = True
 
     def applies(self, trigger: Any) -> bool:
         if trigger and isinstance(trigger, Weather):
-            return self.__applies(trigger.conditions)
+            return self.__applies(trigger)
         return False
 
     def do(self, on: Shutter) -> Blocker:
@@ -52,12 +55,12 @@ class WeatherEvent(Event, ABC):
                         task[0].do()
         return self._blocker
 
-    def __applies(self, conditions: [Condition]) -> bool:
-        cond: bool = self.__cond_match(conditions)
+    def __applies(self, weather: Weather) -> bool:
+        cond: bool = self.__cond_match(weather.conditions)
         if self.__active:
-            return not cond
+            return not cond or not self._allowed(weather)
         else:
-            return cond
+            return cond and self._allowed(weather)
 
     def __cond_match(self, conditions: [Condition]) -> bool:
         for condition in conditions:
@@ -65,11 +68,21 @@ class WeatherEvent(Event, ABC):
                 return True
         return False
 
+    def _allowed(self, weather: Weather) -> bool:
+        if self._night_mode:
+            sun: Sun = weather.sun
+            now: datetime = weather.time
+            return sun.sunrise < now < sun.sunset
+        return True
+
     def set_task(self, task: Task):
         self._task = task
 
     def set_sub(self, intensity: [WeatherSubConditionEnum]):
         self._sub = intensity
+
+    def set_night_mode(self, night_mode: bool):
+        self._night_mode = night_mode
 
     def _set_previous(self, blind: Shutter):
         previous = blind.stats()
@@ -362,6 +375,7 @@ def set_optionals(event: WeatherEvent, eventdict: dict):
     set_intensity(event, eventdict)
     set_events(event, eventdict)
     set_task(event, eventdict)
+    set_night_mode(event, eventdict)
 
 
 def set_intensity(event: WeatherEvent, eventdict: dict):
@@ -385,5 +399,11 @@ def set_task(event: WeatherEvent, eventdict: dict):
         t = task.create(eventdict['task'])
         if t:
             event.set_task(t)
+
+
+def set_night_mode(event: WeatherEvent, evendict: dict):
+    if 'night' in evendict.keys():
+        night_mode = evendict['night']
+        event.set_night_mode(night_mode)
 
 # endregion
