@@ -90,7 +90,7 @@ POSITION:
 
 Event: any(include('EventStr'), include('EventObj'))
 
-EventStr: enum('CLOUDY', 'RAIN')
+EventStr: enum('CLOUDY', 'RAIN', 'CLEAR')
 
 EventObj: any(include('CLOUDY'), include('RAIN'))
 
