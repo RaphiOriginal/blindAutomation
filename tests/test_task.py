@@ -70,6 +70,33 @@ class Task(unittest.TestCase):
         tilt = Tilt(blind)
         self.assertFalse(tilt.done())
 
+    def test_done_open_open_state(self):
+        device = DeviceMock('TestDevice')
+        blind = Blind('Test', 0, 0, device, [])
+        Open(blind).do()
+        self.assertEqual(1, device.open_counter)
+        self.assertEqual(State.OPEN, device.state)
+        open_task = Open(blind)
+        self.assertTrue(open_task.done())
+
+    def test_done_open_close_state(self):
+        device = DeviceMock('TestDevice')
+        blind = Blind('Test', 0, 0, device, [])
+        Close(blind).do()
+        self.assertEqual(1, device.close_counter)
+        self.assertEqual(State.CLOSED, device.state)
+        open_task = Open(blind)
+        self.assertFalse(open_task.done())
+
+    def test_done_open_tilt_state(self):
+        device = DeviceMock('TestDevice')
+        blind = Blind('Test', 0, 0, device, [])
+        Tilt(blind).do()
+        self.assertEqual(1, device.tilt_counter)
+        self.assertEqual(State.TILT, device.state)
+        open_task = Open(blind)
+        self.assertFalse(open_task.done())
+
 
 if __name__ == '__main__':
     unittest.main()

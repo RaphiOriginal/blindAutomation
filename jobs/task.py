@@ -126,6 +126,9 @@ class Open(BaseTask):
     def __init__(self, blind: BlindInterface = None):
         super(Open, self).__init__(blind, State.OPEN)
 
+    def done(self) -> bool:
+        return self.blind.stats() == State.OPEN
+
     def do(self):
         return self.blind.open()
 
