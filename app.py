@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import logging
-from logging import getLogger, DEBUG, INFO, WARNING, ERROR, WARN, CRITICAL, FATAL
+from logging import getLogger, DEBUG, INFO, WARNING, ERROR, CRITICAL, FATAL
 
 import global_date
 from api.api import ObservableSunAPI
