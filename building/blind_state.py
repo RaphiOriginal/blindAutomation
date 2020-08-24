@@ -34,7 +34,9 @@ class BlindState:
         if 1 < self.__position < 5:
             return State.TILT
 
-        return State.OPEN
+        if self.__position > 95:
+            return State.OPEN
+        return State.MOVED
 
     def __repr__(self):
         return 'BlindState: { position: %s, last_direction: %s, state: %s}' %\
