@@ -6,7 +6,6 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Any, Optional
 
-import global_date
 from building.interface import Shutter
 from building.state import State
 from event.event import Event, Blocker
