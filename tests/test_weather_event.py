@@ -3,7 +3,7 @@ import unittest
 
 from building.blind import Blind
 from jobs.task import Open, Tilt, Close
-from tests.mock.blind_mock import BlindMock
+from tests.mock.device import DeviceMock
 from tests.mock.trigger_mock import TriggerMock
 from weather import event
 from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
@@ -20,7 +20,7 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(1, b.open_c)
+        self.assertEqual(1, b.device.open_counter)
 
     def test_clouds_not_applying(self):
         # Setup
@@ -29,7 +29,7 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(0, b.open_c)
+        self.assertEqual(0, b.device.open_counter)
 
     def test_rain(self):
         # Setup
@@ -38,7 +38,7 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(1, b.open_c)
+        self.assertEqual(1, b.device.open_counter)
 
     def test_rain_not_applying(self):
         # Setup
@@ -47,7 +47,7 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(0, b.open_c)
+        self.assertEqual(0, b.device.open_counter)
 
     def test_clear(self):
         # Setup
@@ -56,7 +56,7 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(1, b.close_c)
+        self.assertEqual(1, b.device.close_counter)
 
     def test_clear_not_applying(self):
         # Setup
@@ -65,7 +65,7 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(0, b.close_c)
+        self.assertEqual(0, b.device.close_counter)
 
     def test_storm(self):
         # Setup
@@ -74,7 +74,7 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(1, b.open_c)
+        self.assertEqual(1, b.device.open_counter)
 
     def test_storm_not_applying(self):
         # Setup
@@ -83,7 +83,7 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(0, b.open_c)
+        self.assertEqual(0, b.device.open_counter)
 
     def test_drizzle(self):
         # Setup
@@ -92,7 +92,7 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(1, b.open_c)
+        self.assertEqual(1, b.device.open_counter)
 
     def test_drizzle_not_applying(self):
         # Setup
@@ -101,7 +101,7 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(0, b.open_c)
+        self.assertEqual(0, b.device.open_counter)
 
     def test_snow(self):
         # Setup
@@ -110,7 +110,7 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(1, b.open_c)
+        self.assertEqual(1, b.device.open_counter)
 
     def test_snow_not_applying(self):
         # Setup
@@ -119,7 +119,7 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(0, b.open_c)
+        self.assertEqual(0, b.device.open_counter)
 
     def test_atmosphere(self):
         # Setup
@@ -128,7 +128,7 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(1, b.open_c)
+        self.assertEqual(1, b.device.open_counter)
 
     def test_atmosphere_not_applying(self):
         # Setup
@@ -137,11 +137,11 @@ class WeatherEventCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(0, b.open_c)
+        self.assertEqual(0, b.device.open_counter)
 
 
     @staticmethod
-    def __prepare(events: [WeatherEvent], code: int) -> (BlindMock, TriggerMock):
+    def __prepare(events: [WeatherEvent], code: int) -> (Blind, TriggerMock):
         b = get_blind()
         b.add_events(events)
         jsn = get_json()
@@ -268,13 +268,13 @@ class WeatherBlockerTestCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(1, b.open_c)
-        self.assertTrue(b.blocker.blocking)
+        self.assertEqual(1, b.device.open_counter)
+        self.assertTrue(b.blocked)
         Close(b).do()
         Open(b).do()
-        self.assertEqual(0, b.close_c)
-        self.assertEqual(1, b.open_c)
-        self.assertEqual(Open.type(), b.blocker.last.type())
+        self.assertEqual(0, b.device.close_counter)
+        self.assertEqual(1, b.device.open_counter)
+        self.assertEqual(Open.type(), b._blocker.last.type())
 
     def test_unblocking(self):
         # Setup
@@ -283,19 +283,19 @@ class WeatherBlockerTestCase(unittest.TestCase):
         # Test
         b.update(trigger)
         # Check
-        self.assertEqual(1, b.open_c)
-        self.assertTrue(b.blocker.blocking)
+        self.assertEqual(1, b.device.open_counter)
+        self.assertTrue(b.blocked)
         Close(b).do()
         Open(b).do()
-        self.assertEqual(0, b.close_c)
-        self.assertEqual(1, b.open_c)
-        self.assertEqual(Open.type(), b.blocker.last.type())
+        self.assertEqual(0, b.device.close_counter)
+        self.assertEqual(1, b.device.open_counter)
+        self.assertEqual(Open.type(), b._blocker.last.type())
         release = self.__create_trigger(803)
         b.update(release)
-        self.assertFalse(b.blocker.blocking, 'Blocking should be released')
-        self.assertEqual(1, b.close_c, 'Last blocked Task should be applied')
+        self.assertFalse(b.blocked, 'Blocking should be released')
+        self.assertEqual(1, b.device.close_counter, 'Last blocked Task should be applied')
         Close(b).do()
-        self.assertEqual(2, b.close_c, 'Further task shouldn\'t be blocked')
+        self.assertEqual(2, b.device.close_counter, 'Further task shouldn\'t be blocked')
 
     def test_event_order(self):
         # Setup
@@ -309,9 +309,9 @@ class WeatherBlockerTestCase(unittest.TestCase):
         rain_trigger = self.__create_trigger(504)
         b.update(rain_trigger)
         print(b)
-        self.assertTrue(b.blocker.blocking)
+        self.assertTrue(b.blocked)
         # Unblocks first event and then blocks with second event
-        self.assertEqual(2, b.open_c)
+        self.assertEqual(2, b.device.open_counter)
 
     def test_event_reverse(self):
         # Setup
@@ -322,15 +322,15 @@ class WeatherBlockerTestCase(unittest.TestCase):
         # Test
         b.update(trigger)
         print(b)
-        self.assertTrue(b.blocker.blocking)
+        self.assertTrue(b.blocked)
         # Check
         rain_trigger = self.__create_trigger(504)
         b.update(rain_trigger)
-        self.assertTrue(b.blocker.blocking)
+        self.assertTrue(b.blocked)
         # Unblocks first event and then blocks with second event
-        self.assertEqual(2, b.open_c)
+        self.assertEqual(2, b.device.open_counter)
 
-    def __prepare(self, events: [WeatherEvent], code: int) -> (BlindMock, TriggerMock):
+    def __prepare(self, events: [WeatherEvent], code: int) -> (Blind, TriggerMock):
         b = get_blind()
         b.add_events(events)
         trigger = self.__create_trigger(code)
@@ -344,12 +344,12 @@ class WeatherBlockerTestCase(unittest.TestCase):
         return TriggerMock(w)
 
 
-def get_blind(name: str = 'Test') -> BlindMock:
-    return BlindMock(name)
+def get_blind(name: str = 'Test') -> Blind:
+    return Blind(name, 10, 20, DeviceMock(name), [], [])
 
 
 def blind(events: []) -> Blind:
-    return Blind('test', 10, 20, None, [], events)
+    return Blind('test', 10, 20, DeviceMock('YOLO'), [], events)
 
 
 def get_json():

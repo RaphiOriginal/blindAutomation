@@ -24,24 +24,24 @@ class Blind(Shutter):
         self.state: State = State.UNKNOWN
         self.__degree: int = -1
         self.__duration: float = 1.2
-        self.__blocker: Optional[Blocker] = None
+        self._blocker: Optional[Blocker] = None
 
     def open(self) -> Optional[Blocker]:
         if self.__not_blocking():
             self.__degree = 0
             self.device.open()
-        return self.__blocker
+        return self._blocker
 
     def close(self) -> Optional[Blocker]:
         if self.__not_blocking():
             self.__degree = 90
             self.device.close()
-        return self.__blocker
+        return self._blocker
 
     def move(self, pos: int) -> Optional[Blocker]:
         if self.__not_blocking():
             self.device.move(pos)
-        return self.__blocker
+        return self._blocker
 
     def tilt(self, degree: int) -> Optional[Blocker]:
         if self.__not_blocking():
@@ -53,7 +53,7 @@ class Blind(Shutter):
                 self.device.tilt('close', duration)
             else:
                 self.device.tilt('open', duration)
-        return self.__blocker
+        return self._blocker
 
     def stats(self) -> State:
         self.state = self.device.stats()
@@ -102,16 +102,22 @@ class Blind(Shutter):
     def event_configs(self) -> List:
         return self._event_config
 
+    @property
+    def blocked(self) -> bool:
+        if self._blocker:
+            return self._blocker.blocking
+        return False
+
     def update(self, subject: Subject):
         if isinstance(subject, ObservableSunAPI):
             trigger.apply_triggers(manager, subject.sundata, self)
         if isinstance(subject, Trigger):
-            for event in self._events:
+            for event in self.events:
                 if event.applies(subject.trigger):
-                    event.do(self)
+                    self._blocker = event.do(self)
 
     def __not_blocking(self) -> bool:
-        return self.__blocker is None or not self.__blocker.blocking
+        return self._blocker is None or not self._blocker.blocking
 
     def __repr__(self):
         return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, events: %s, triggers: %s, state: %s, event_config: %s}' \
