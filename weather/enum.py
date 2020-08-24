@@ -26,7 +26,7 @@ class WeatherConditionEnum(Enum):
 
 class WeatherSubConditionEnum(Enum):
     UNKNOWN = []
-    # Storm
+    # Storm 2XX
     LIGHT_RAIN = [200, 310, 615]
     RAIN = [201, 311, 616]
     HEAVY_RAIN = [202, 312]
@@ -37,11 +37,11 @@ class WeatherSubConditionEnum(Enum):
     LIGHT_DRIZZLE = [230]
     DRIZZLE = [231]
     HEAVY_DRIZZLE = [232]
-    # Drizzle
+    # Drizzle 3XX
     SHOWER_RAIN = [313]
     HEAVY_SHOWER_RAIN = [314]
     SHOWER = [321, 521, 621]
-    # Rain
+    # Rain 5XX
     MODERATE = [501]
     VERY_HEAVY = [503]
     EXTREME = [504]
@@ -49,11 +49,11 @@ class WeatherSubConditionEnum(Enum):
     LIGHT_SHOWER = [520, 620]
     HEAVY_SHOWER = [522, 622]
     RAGGED_SHOWER = [531]
-    # Snow
+    # Snow 6XX
     SLEET = [611]
     LIGHT_SHOWER_SLEET = [612]
     SHOWER_SLEET = [613]
-    # Atmosphere
+    # Atmosphere 7XX
     MIST = [701]
     SMOKE = [711]
     HAZE = [721]
@@ -64,9 +64,9 @@ class WeatherSubConditionEnum(Enum):
     ASH = [762]
     SQUALL = [771]
     TORNADO = [781]
-    # Clear
+    # Clear 800
     CLEAR = [800]
-    # Clouds
+    # Clouds 80X > 800
     FEW = [801]  # 11-25%
     SCATTERED = [802]  # 25-50%
     BROKEN = [803]  # 51-84%
