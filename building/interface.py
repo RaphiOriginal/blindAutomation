@@ -3,14 +3,14 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from building.state import State
-from event.event import Event, Blocker
+from event.event import Event, EventBlocker
 from observable.observable import Observer
 
 
 class Shutter(Observer, ABC):
 
     @abstractmethod
-    def open(self) -> Optional[Blocker]:
+    def open(self) -> Optional[EventBlocker]:
         """
         Command to open blind
         :return: true if command was successful
@@ -18,7 +18,7 @@ class Shutter(Observer, ABC):
         pass
 
     @abstractmethod
-    def close(self) -> Optional[Blocker]:
+    def close(self) -> Optional[EventBlocker]:
         """
         Command to close blind
         :return: true if command was successful
@@ -26,7 +26,7 @@ class Shutter(Observer, ABC):
         pass
 
     @abstractmethod
-    def move(self, pos: int) -> Optional[Blocker]:
+    def move(self, pos: int) -> Optional[EventBlocker]:
         """
         Command to move blind to a desired position
         :param pos: int Position the blind has move to
@@ -35,7 +35,7 @@ class Shutter(Observer, ABC):
         pass
 
     @abstractmethod
-    def tilt(self, degree: int) -> Optional[Blocker]:
+    def tilt(self, degree: int) -> Optional[EventBlocker]:
         """
         Command to tilt blind to a specific degree
         :param degree: int Degree the blind has to be tilted to
@@ -127,3 +127,12 @@ class Shutter(Observer, ABC):
         :return: List of events
         """
         pass
+
+    @property
+    @abstractmethod
+    def blocker(self) -> EventBlocker:
+        """
+        Returns the Blinds EventBlocker to activate or deactivate it to avoid task overwrites
+        :return: EventBlocker
+        """
+    pass

@@ -16,19 +16,20 @@ class Event(ABC):
         pass
 
     @abstractmethod
-    def do(self, on: Any) -> Blocker:
+    def do(self, on: Any) -> bool:
         """
         Execute the event
         :param on: Blinds to be moved
         :return: True if event was Successfully executed
         """
+        pass
 
     @property
     @abstractmethod
-    def blocker(self) -> Blocker:
+    def active(self) -> bool:
         """
-        Returns blocker for the Event
-        :return: Blocker for the Event
+        Returns true if event is active
+        :return: True if event is active
         """
         pass
 
@@ -36,7 +37,7 @@ class Event(ABC):
 T = TypeVar('T')
 
 
-class Blocker(ABC):
+class EventBlocker(ABC):
 
     @abstractmethod
     def block(self):

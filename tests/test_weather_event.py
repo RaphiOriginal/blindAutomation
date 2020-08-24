@@ -357,29 +357,6 @@ class WeatherBlockerTestCase(unittest.TestCase):
         # Unblocks first event and then blocks with second event
         self.assertEqual(2, b.device.open_counter)
 
-    def test_blocker_does_not_change(self):
-        # Setup
-        c = CloudsEvent()
-        blocker = c.blocker
-        r = RainEvent()
-        rain_blocker = r.blocker
-        b, trigger = self.__prepare([r, c], 804)
-        print(b)
-        # Test
-        b.update(trigger)
-        self.assertIs(blocker, b.blocker)
-        print(b)
-        self.assertTrue(b.blocked)
-        # Check
-        rain_trigger = self.__create_trigger(504)
-        rain_trigger.trigger.conditions.append(trigger.trigger.conditions[0])
-        b.update(rain_trigger)
-        self.assertIs(blocker, b.blocker)
-        self.assertIsNot(rain_blocker, b.blocker)
-        self.assertTrue(blocker.blocking)
-        self.assertFalserain_(blocker.blocking)
-
-
     def __prepare(self, events: [WeatherEvent], code: int) -> (Blind, TriggerMock):
         b = get_blind()
         b.add_events(events)

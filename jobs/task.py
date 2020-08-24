@@ -7,7 +7,7 @@ from typing import Optional, Union
 
 from building.interface import Shutter
 from building.blind_state import State
-from event.event import Blocker
+from event.blocker import Blocker
 
 logger = logging.getLogger(__name__)
 

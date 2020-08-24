@@ -8,7 +8,7 @@ from typing import Any, Optional
 
 from building.interface import Shutter
 from building.state import State
-from event.event import Event, Blocker
+from event.event import Event
 from jobs import task
 from jobs.task import Task, Open, Close, Tilt
 from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
@@ -28,7 +28,6 @@ class WeatherEvent(Event, ABC):
         self._sub: [WeatherSubConditionEnum] = sub
         self.__active: bool = False
         self._undo: Optional[Task] = None
-        self._blocker = WeatherBlocker()
         self._night_mode: bool = True
 
     def applies(self, trigger: Any) -> bool:
@@ -36,7 +35,7 @@ class WeatherEvent(Event, ABC):
             return self.__applies(trigger)
         return False
 
-    def do(self, on: Shutter) -> Blocker:
+    def do(self, on: Shutter) -> bool:
         if isinstance(on, Shutter):
             if not self.active:
                 logger.info('On {} Event {} activated'.format(on.name, self))
@@ -46,15 +45,18 @@ class WeatherEvent(Event, ABC):
                 for task in self._task.get(on):
                     success = task[0].do() and success
                 if success:
-                    self._blocker.block()
+                    on.blocker.block()
+                return success
             else:
                 logger.info('On {} Event {} activated'.format(on.name, self))
                 self.deactivate()
-                self._blocker.unblock()
-                if self.undo:
-                    for task in self.undo.get(on):
-                        task[0].do()
-        return self._blocker
+                on.blocker.unblock()
+                success = True
+                if self.undo(on.blocker.last):
+                    for task in self.undo().get(on):
+                        success = task[0].do() and success
+                return success
+        return False
 
     def __applies(self, weather: Weather) -> bool:
         cond: bool = self.__cond_match(weather.conditions)
@@ -100,9 +102,7 @@ class WeatherEvent(Event, ABC):
     def deactivate(self):
         self.__active = False
 
-    @property
-    def undo(self) -> Optional[Task]:
-        last = self._blocker.last
+    def undo(self, last: Optional[Task] = None) -> Optional[Task]:
         if last:
             self._undo = last
         return self._undo
@@ -110,10 +110,6 @@ class WeatherEvent(Event, ABC):
     @property
     def active(self) -> bool:
         return self.__active
-
-    @property
-    def blocker(self) -> Blocker:
-        return self._blocker
 
     @staticmethod
     @abstractmethod
@@ -134,38 +130,7 @@ class WeatherEvent(Event, ABC):
         pass
 
     def __repr__(self):
-        return 'main: %s, sub: %s, task: %s, blocker: %s' % (self._main, self._sub, self._task, self._blocker)
-
-
-# endregion
-# region weather blocker
-
-class WeatherBlocker(Blocker):
-    def __init__(self):
-        self.__block = False
-        self.__tasks: [Task] = []
-
-    def block(self):
-        self.__block = True
-
-    def unblock(self):
-        self.__block = False
-
-    def update(self, task: Task):
-        self.__tasks.append(task)
-
-    @property
-    def last(self) -> Optional[Task]:
-        if len(self.__tasks) > 0:
-            return self.__tasks.pop()
-        return None
-
-    @property
-    def blocking(self) -> bool:
-        return self.__block
-
-    def __repr__(self):
-        return 'Blocker: {blocking: %s, blocked: %s}' % (self.blocking, self.__tasks)
+        return 'main: %s, sub: %s, task: %s' % (self._main, self._sub, self._task)
 
 
 # endregion

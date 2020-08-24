@@ -5,7 +5,8 @@ from api.api import ObservableSunAPI
 from building.interface import Shutter
 from building.state import State
 from device.device import Device
-from event.event import Event, Blocker
+from event.blocker import Blocker
+from event.event import Event
 from event.trigger import Trigger
 from jobs import trigger
 from jobs.jobmanager import manager
@@ -24,7 +25,7 @@ class Blind(Shutter):
         self.state: State = State.UNKNOWN
         self.__degree: int = -1
         self.__duration: float = 1.2
-        self._blocker: Optional[Blocker] = None
+        self._blocker: Blocker = Blocker()
 
     def open(self) -> Optional[Blocker]:
         if self.__not_blocking():
@@ -71,7 +72,7 @@ class Blind(Shutter):
 
     @property
     def events(self) -> [Event]:
-        self._events.sort(key=lambda event: not event.blocker.blocking)
+        self._events.sort(key=lambda event: not event.active)
         return self._events
 
     @property
@@ -109,7 +110,7 @@ class Blind(Shutter):
         return False
 
     @property
-    def blocker(self) -> Optional[Blocker]:
+    def blocker(self) -> Blocker:
         return self._blocker
 
     def update(self, subject: Subject):
@@ -118,7 +119,7 @@ class Blind(Shutter):
         if isinstance(subject, Trigger):
             for event in self.events:
                 if event.applies(subject.trigger):
-                    self._blocker = event.do(self)
+                    event.do(self)
 
     def __not_blocking(self) -> bool:
         return self._blocker is None or not self._blocker.blocking
