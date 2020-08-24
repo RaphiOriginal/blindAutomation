@@ -147,7 +147,8 @@ class PreTilt(BaseTask):
         self.__degree: int = degree
 
     def done(self) -> bool:
-        return self.blind.degree == self.__degree or self.blind.stats() == self._target()
+        return False
+        # return self.blind.degree == self.__degree or self.blind.stats() == self._target()
 
     def do(self):
         self.blind.overwrite_degree(90)
