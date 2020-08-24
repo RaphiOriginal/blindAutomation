@@ -11,23 +11,52 @@ class BlindStateCase(unittest.TestCase):
         state = BlindState(0, Direction.CLOSE)
         self.assertEqual(State.CLOSED, state.state())
 
-    def test_open_state(self):
+    def test_tilt_close_state(self):
         state = BlindState(1, Direction.CLOSE)
-        self.assertEqual(State.OPEN, state.state())
+        self.assertEqual(State.TILT, state.state())
 
-    def test_tilt_state(self):
+    def test_tilt_open_state(self):
         state = BlindState(4, Direction.OPEN)
         self.assertEqual(State.TILT, state.state())
+
+    def test_open_max_state(self):
+        state = BlindState(100, Direction.OPEN)
+        self.assertEqual(State.OPEN, state.state())
+
+    def test_open_min_state(self):
+        state = BlindState(96, Direction.OPEN)
+        self.assertEqual(State.OPEN, state.state())
+
+    def test_moved_max_open_state(self):
+        state = BlindState(95, Direction.OPEN)
+        self.assertEqual(State.MOVED, state.state())
+
+    def test_moved_max_close_state(self):
+        state = BlindState(100, Direction.CLOSE)
+        self.assertEqual(State.MOVED, state.state())
+
+    def test_moved_min_open_state(self):
+        state = BlindState(5, Direction.OPEN)
+        self.assertEqual(State.MOVED, state.state())
+
+    def test_moved_min_close_state(self):
+        state = BlindState(5, Direction.CLOSE)
+        self.assertEqual(State.MOVED, state.state())
+
+    def test_moved_zero_open_State(self):
+        state = BlindState(0, Direction.OPEN)
+        self.assertEqual(State.MOVED, state.state())
+
 
     def test_closed_str(self):
         state = BlindState(0, Direction.CLOSE.value)
         self.assertEqual(State.CLOSED, state.state())
 
-    def test_open_str(self):
+    def test_tilt_close_str(self):
         state = BlindState(1, Direction.CLOSE.value)
-        self.assertEqual(State.OPEN, state.state())
+        self.assertEqual(State.TILT, state.state())
 
-    def test_tilt_str(self):
+    def test_tilt_open_str(self):
         state = BlindState(4, Direction.OPEN.value)
         self.assertEqual(State.TILT, state.state())
 

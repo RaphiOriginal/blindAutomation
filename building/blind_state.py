@@ -31,10 +31,13 @@ class BlindState:
         if self.__last_direction == Direction.CLOSE and self.__position == 0:
             return State.CLOSED
 
-        if 1 < self.__position < 5:
+        if 1 <= self.__position < 5:
             return State.TILT
 
-        return State.OPEN
+        if self.__position > 95 and self.__last_direction == Direction.OPEN:
+            return State.OPEN
+
+        return State.MOVED
 
     def __repr__(self):
         return 'BlindState: { position: %s, last_direction: %s, state: %s}' %\

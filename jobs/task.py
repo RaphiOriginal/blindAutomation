@@ -38,7 +38,7 @@ class Task(ABC):
         pass
 
     @abstractmethod
-    def get(self, blind: Shutter) -> [Task]:
+    def get(self, blind: Shutter) -> ([Task],):
         """
         Combines blinds with task necessary before calling do()
         :param blind: Blind which the task belongs to
@@ -84,9 +84,9 @@ class BaseTask(Task):
     def do(self) -> bool:
         pass
 
-    def get(self, blind: Shutter) -> [Task]:
+    def get(self, blind: Shutter) -> ([Task],):
         self.blind = blind
-        return []
+        return ([],)
 
     def _target(self):
         return self.__target
@@ -107,6 +107,9 @@ class Close(BaseTask):
     def __init__(self, blind: Shutter = None):
         super(Close, self).__init__(blind, State.CLOSED)
 
+    def done(self) -> bool:
+        return self.blind.stats() == State.CLOSED
+
     def do(self) -> bool:
         blocker = self.blind.close()
         if blocker is not None and blocker.blocking:
@@ -114,9 +117,9 @@ class Close(BaseTask):
             return False
         return True
 
-    def get(self, blind: Shutter) -> [Task]:
+    def get(self, blind: Shutter) -> ([Task],):
         self.blind = blind
-        return [(Close(blind),)]
+        return ([Close(blind)],)
 
     @staticmethod
     def type() -> str:
@@ -131,6 +134,9 @@ class Open(BaseTask):
     def __init__(self, blind: Shutter = None):
         super(Open, self).__init__(blind, State.OPEN)
 
+    def done(self) -> bool:
+        return self.blind.stats() == State.OPEN
+
     def do(self) -> bool:
         blocker: Optional[Blocker] = self.blind.open()
         if blocker is not None and blocker.blocking:
@@ -138,8 +144,8 @@ class Open(BaseTask):
             return False
         return True
 
-    def get(self, blind: Shutter) -> [Task]:
-        return [(Open(blind),)]
+    def get(self, blind: Shutter) -> ([Task],):
+        return ([Open(blind)],)
 
     @staticmethod
     def type() -> str:
@@ -151,12 +157,11 @@ class Open(BaseTask):
 
 
 class PreTilt(BaseTask):
-    def __init__(self, blind: Shutter, degree: int):
+    def __init__(self, blind: Shutter):
         super(PreTilt, self).__init__(blind, State.TILT)
-        self.__degree: int = degree
 
     def done(self) -> bool:
-        return self.blind.degree == self.__degree or self.blind.stats() == self._target()
+        return self.blind.stats() == State.TILT or self.blind.stats() == State.CLOSED
 
     def do(self):
         blocker = self.blind.close()
@@ -186,6 +191,9 @@ class Tilt(BaseTask):
         logger.debug(state)
         return state == self.__precondition or state == self._target()
 
+    def done(self) -> bool:
+        return self.blind.stats() == State.TILT and self.blind.degree == self.__degree
+
     def do(self) -> bool:
         blocker = self.blind.tilt(self.__degree)
         if blocker is not None and blocker.blocking:
@@ -193,8 +201,8 @@ class Tilt(BaseTask):
             return False
         return True
 
-    def get(self, blind: Shutter) -> [Task]:
-        return [(PreTilt(blind, self.__degree),), (Tilt(blind, self.__degree),)]
+    def get(self, blind: Shutter) -> ([Task],):
+        return ([PreTilt(blind), Tilt(blind, self.__degree)],)
 
     @staticmethod
     def type() -> str:

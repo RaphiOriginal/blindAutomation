@@ -6,4 +6,5 @@ class State(Enum):
     OPEN = 1
     CLOSED = 2
     TILT = 3
-    UNKNOWN = 4
+    MOVED = 4
+    UNKNOWN = 5
