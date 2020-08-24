@@ -1,3 +1,6 @@
+from typing import Optional
+
+from building.blind_state import BlindState, Direction
 from building.state import State
 from device.device import Device
 
@@ -5,8 +8,10 @@ from device.device import Device
 class DeviceMock(Device):
     def __init__(self, name: str):
         self.name: str = name
-        self.state: State = State.UNKNOWN
+        self.state: Optional[BlindState] = None
         self.time: float = -1
+        self.direction: str = '🤷'
+        self.position: int = 100
         self.close_counter: int = 0
         self.open_counter: int = 0
         self.move_counter: int = 0
@@ -14,26 +19,35 @@ class DeviceMock(Device):
 
     def close(self) -> bool:
         self.close_counter = self.close_counter + 1
-        self.state = State.CLOSED
+        self.position = 0
+        self.state = BlindState(self.position, Direction.CLOSE)
         return True
 
     def open(self) -> bool:
         self.open_counter = self.open_counter + 1
-        self.state = State.OPEN
+        self.position = 100
+        self.state = BlindState(self.position, Direction.OPEN)
         return True
 
     def move(self, pos: int) -> bool:
         self.move_counter = self.move_counter + 1
+        if pos < self.position:
+            self.state = BlindState(pos, Direction.CLOSE)
+        else:
+            self.state = BlindState(pos, Direction.OPEN)
+        self.position = pos
         return True
 
     def tilt(self, direction: str, time: float) -> bool:
         self.time = time
+        self.direction = direction
         self.tilt_counter = self.tilt_counter + 1
-        self.state = State.TILT
+        self.position = 2
+        self.state = BlindState(self.position, Direction.from_name(direction))
         return True
 
     def stats(self) -> State:
-        return self.state
+        return self.state.state()
 
     def id(self) -> str:
         return self.name

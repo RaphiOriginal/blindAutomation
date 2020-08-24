@@ -14,7 +14,7 @@ class Blind(BlindInterface):
         self.device: Device = device
         self._triggers: [] = triggers
         self.state: State = State.UNKNOWN
-        self.__degree: int = -1
+        self.__degree: int = 90
         self.__duration: float = 1.2
 
     def open(self) -> bool:
