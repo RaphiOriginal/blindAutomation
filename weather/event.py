@@ -360,6 +360,7 @@ def build_event(eventdata, type: str, constructor, events: [Event]) -> bool:
 
 def set_optionals(event: WeatherEvent, eventdict: dict):
     set_intensity(event, eventdict)
+    set_events(event, eventdict)
     set_task(event, eventdict)
 
 
@@ -367,6 +368,14 @@ def set_intensity(event: WeatherEvent, eventdict: dict):
     if 'intensity' in eventdict.keys():
         intensity: [WeatherSubConditionEnum] = []
         for item in eventdict['intensity']:
+            intensity.append(WeatherSubConditionEnum[item])
+        event.set_sub(intensity)
+
+
+def set_events(event: WeatherEvent, eventdict: dict):
+    if 'events' in eventdict.keys():
+        intensity: [WeatherSubConditionEnum] = []
+        for item in eventdict['events']:
             intensity.append(WeatherSubConditionEnum[item])
         event.set_sub(intensity)
 
