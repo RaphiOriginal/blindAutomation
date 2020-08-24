@@ -108,6 +108,10 @@ class Blind(Shutter):
             return self._blocker.blocking
         return False
 
+    @property
+    def blocker(self) -> Optional[Blocker]:
+        return self._blocker
+
     def update(self, subject: Subject):
         if isinstance(subject, ObservableSunAPI):
             trigger.apply_triggers(manager, subject.sundata, self)
