@@ -172,6 +172,9 @@ class Tilt(BaseTask):
         logger.debug(state)
         return state == self.__precondition or state == self._target()
 
+    def done(self) -> bool:
+        return self.blind.stats() == State.TILT and self.blind.degree == self.__degree
+
     def do(self):
         return self.blind.tilt(self.__degree)
 
