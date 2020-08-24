@@ -7,7 +7,7 @@ from tests.mock.blind_mock import BlindMock
 from tests.mock.trigger_mock import TriggerMock
 from weather import event
 from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
-from weather.event import CloudsEvent, WeatherEvent, RainEvent, ClearEvent
+from weather.event import CloudsEvent, WeatherEvent, RainEvent, ClearEvent, StormEvent
 from weather.weather import Weather
 
 
@@ -65,6 +65,24 @@ class WeatherEventCase(unittest.TestCase):
         b.update(trigger)
         # Check
         self.assertEqual(0, b.close_c)
+
+    def test_storm(self):
+        # Setup
+        e = StormEvent()
+        b, trigger = self.__prepare([e], 200)
+        # Test
+        b.update(trigger)
+        # Check
+        self.assertEqual(1, b.open_c)
+
+    def test_storm_not_applying(self):
+        # Setup
+        e = StormEvent()
+        b, trigger = self.__prepare([e], 300)
+        # Test
+        b.update(trigger)
+        # Check
+        self.assertEqual(0, b.open_c)
 
     @staticmethod
     def __prepare(events: [WeatherEvent], code: int) -> (BlindMock, TriggerMock):

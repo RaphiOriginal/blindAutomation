@@ -31,6 +31,10 @@ walls:
               - RAIN:
                   intensity:
                     - MODERATE
+              - STORM:
+                  task: CLOSE
+                  intensity:
+                    - RAGGED
         - blind:
             name: Blind2
             out: 222
@@ -62,6 +66,7 @@ walls:
               - CLOUDY
               - RAIN
               - CLEAR
+              - STORM
   - wall:
       name: west
       in: 200

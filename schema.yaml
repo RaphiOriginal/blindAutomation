@@ -90,9 +90,9 @@ POSITION:
 
 Event: any(include('EventStr'), include('EventObj'))
 
-EventStr: enum('CLOUDY', 'RAIN', 'CLEAR')
+EventStr: enum('CLOUDY', 'RAIN', 'CLEAR', 'STORM')
 
-EventObj: any(include('CLOUDY'), include('RAIN'))
+EventObj: any(include('CLOUDY'), include('RAIN'), include('STORM'))
 
 CLOUDY:
   CLOUDY:
@@ -103,6 +103,11 @@ RAIN:
   RAIN:
     task: include('task', required=False)
     intensity: list(enum('MODERATE', 'VERY_HEAVY', 'EXTREME', 'FREEZING', 'LIGHT_SHOWER', 'HEAVY_SHOWER', 'RAGGED_SHOWER', 'SHOWER', 'HEAVY', 'LIGHT'), required=False)
+
+STORM:
+  STORM:
+    task: include('task', required=False)
+    intensity: list(enum('LIGHT_RAIN', 'RAIN', 'HEAVY_RAIN', 'LIGHT', 'NORMAL', 'HEAVY', 'RAGGED', 'LIGHT_DRIZZLE', 'DRIZZLE', 'HEAVY_DRIZZLE'), required=False)
 
 task: any(enum('OPEN', 'CLOSE', 'TILT', 'HALF'), include('TILT'))
 
