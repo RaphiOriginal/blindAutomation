@@ -6,6 +6,7 @@ class DeviceMock(Device):
     def __init__(self, name: str):
         self.name: str = name
         self.state: State = State.UNKNOWN
+        self.time: float = -1
         self.close_counter: int = 0
         self.open_counter: int = 0
         self.move_counter: int = 0
@@ -26,6 +27,7 @@ class DeviceMock(Device):
         return True
 
     def tilt(self, direction: str, time: float) -> bool:
+        self.time = time
         self.tilt_counter = self.tilt_counter + 1
         self.state = State.TILT
         return True
