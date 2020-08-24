@@ -8,6 +8,7 @@ from observable.observable import Observer
 
 
 class Shutter(Observer, ABC):
+
     @abstractmethod
     def open(self) -> Optional[Blocker]:
         """
@@ -37,7 +38,7 @@ class Shutter(Observer, ABC):
     def tilt(self, degree: int) -> Optional[Blocker]:
         """
         Command to tilt blind to a specific degree
-        :param degree: int Degre the blind has to be tilted to
+        :param degree: int Degree the blind has to be tilted to
         :return: true if command was successful
         """
         pass
@@ -115,5 +116,14 @@ class Shutter(Observer, ABC):
     def add_events(self, events: [Event]):
         """
         Adds an event trigger to its internal list
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def events(self) -> [Event]:
+        """
+        Returns sorted list of events
+        :return: List of events
         """
         pass
