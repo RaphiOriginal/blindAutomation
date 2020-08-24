@@ -41,6 +41,9 @@ walls:
               - SNOW:
                   intensity:
                     - SLEET
+              - SPECIAL:
+                  events:
+                    - TORNADO
         - blind:
             name: Blind2
             out: 222
@@ -75,6 +78,7 @@ walls:
               - STORM
               - DRIZZLE
               - SNOW
+              - SPECIAL
   - wall:
       name: west
       in: 200
