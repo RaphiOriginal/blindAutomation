@@ -106,6 +106,9 @@ class Close(BaseTask):
     def __init__(self, blind: BlindInterface = None):
         super(Close, self).__init__(blind, State.CLOSED)
 
+    def done(self) -> bool:
+        return self.blind.stats() == State.CLOSED
+
     def do(self) -> bool:
         return self.blind.close()
 
