@@ -171,6 +171,81 @@ class WeatherEventBuilder(unittest.TestCase):
         self.assertEqual(1, len(item._sub))
         self.assertEqual(WeatherSubConditionEnum.SCATTERED, item._sub[0])
 
+    def test_clear(self):
+        events = ['CLEAR']
+        b = blind(events)
+        event.apply_weather_events(b)
+        result = b.events
+        self.assertEqual(1, len(result))
+        for e in result:
+            self.assertEqual(WeatherConditionEnum.CLEAR, e._main)
+            self.assertEqual('CLEAR', e.type())
+
+    def test_special_weather(self):
+        events = ['SPECIAL', {'SPECIAL': {'task': 'TILT', 'events': ['TORNADO']}}]
+        b = blind(events)
+        event.apply_weather_events(b)
+        result = b.events
+        self.assertEqual(2, len(result))
+        for e in result:
+            self.assertEqual(WeatherConditionEnum.ATMOSPHERE, e._main)
+            self.assertEqual('SPECIAL', e.type())
+        self.assertEqual(1, len(result[1]._sub))
+        self.assertEqual(WeatherSubConditionEnum.TORNADO, result[1]._sub[0])
+        self.assertEqual(Tilt.type(), result[1]._task.type())
+
+    def test_snow(self):
+        events = ['SNOW', {'SNOW': {'task': 'TILT', 'intensity': ['SLEET']}}]
+        b = blind(events)
+        event.apply_weather_events(b)
+        result = b.events
+        self.assertEqual(2, len(result))
+        for e in result:
+            self.assertEqual(WeatherConditionEnum.SNOW, e._main)
+            self.assertEqual('SNOW', e.type())
+        self.assertEqual(1, len(result[1]._sub))
+        self.assertEqual(WeatherSubConditionEnum.SLEET, result[1]._sub[0])
+        self.assertEqual(Tilt.type(), result[1]._task.type())
+
+    def test_rain(self):
+        events = ['RAIN', {'RAIN': {'task': 'TILT', 'intensity': ['HEAVY']}}]
+        b = blind(events)
+        event.apply_weather_events(b)
+        result = b.events
+        self.assertEqual(2, len(result))
+        for e in result:
+            self.assertEqual(WeatherConditionEnum.RAIN, e._main)
+            self.assertEqual('RAIN', e.type())
+        self.assertEqual(1, len(result[1]._sub))
+        self.assertEqual(WeatherSubConditionEnum.HEAVY, result[1]._sub[0])
+        self.assertEqual(Tilt.type(), result[1]._task.type())
+
+    def test_drizzle(self):
+        events = ['DRIZZLE', {'DRIZZLE': {'task': 'TILT', 'intensity': ['SHOWER']}}]
+        b = blind(events)
+        event.apply_weather_events(b)
+        result = b.events
+        self.assertEqual(2, len(result))
+        for e in result:
+            self.assertEqual(WeatherConditionEnum.DRIZZLE, e._main)
+            self.assertEqual('DRIZZLE', e.type())
+        self.assertEqual(1, len(result[1]._sub))
+        self.assertEqual(WeatherSubConditionEnum.SHOWER, result[1]._sub[0])
+        self.assertEqual(Tilt.type(), result[1]._task.type())
+
+    def test_storm(self):
+        events = ['STORM', {'STORM': {'task': 'TILT', 'intensity': ['RAGGED']}}]
+        b = blind(events)
+        event.apply_weather_events(b)
+        result = b.events
+        self.assertEqual(2, len(result))
+        for e in result:
+            self.assertEqual(WeatherConditionEnum.STORM, e._main)
+            self.assertEqual('STORM', e.type())
+        self.assertEqual(1, len(result[1]._sub))
+        self.assertEqual(WeatherSubConditionEnum.RAGGED, result[1]._sub[0])
+        self.assertEqual(Tilt.type(), result[1]._task.type())
+
     def test_multi_sub(self):
         events = [{'CLOUDY': {'intensity': ['SCATTERED', 'OVERCAST']}}]
         b = blind(events)
