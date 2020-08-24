@@ -37,7 +37,7 @@ class Task(ABC):
         pass
 
     @abstractmethod
-    def get(self, blind: BlindInterface) -> [Task]:
+    def get(self, blind: BlindInterface) -> ([Task],):
         """
         Combines blinds with task necessary before calling do()
         :param blind: Blind which the task belongs to
@@ -83,9 +83,9 @@ class BaseTask(Task):
     def do(self):
         pass
 
-    def get(self, blind: BlindInterface) -> [Task]:
+    def get(self, blind: BlindInterface) -> ([Task],):
         self.blind = blind
-        return []
+        return ([],)
 
     def _target(self):
         return self.__target
@@ -109,9 +109,9 @@ class Close(BaseTask):
     def do(self) -> bool:
         return self.blind.close()
 
-    def get(self, blind: BlindInterface) -> [Task]:
+    def get(self, blind: BlindInterface) -> ([Task],):
         self.blind = blind
-        return [(Close(blind),)]
+        return ([Close(blind)],)
 
     @staticmethod
     def type() -> str:
@@ -129,8 +129,8 @@ class Open(BaseTask):
     def do(self):
         return self.blind.open()
 
-    def get(self, blind: BlindInterface) -> [Task]:
-        return [(Open(blind),)]
+    def get(self, blind: BlindInterface) -> ([Task],):
+        return ([Open(blind)],)
 
     @staticmethod
     def type() -> str:
@@ -147,8 +147,7 @@ class PreTilt(BaseTask):
         self.__degree: int = degree
 
     def done(self) -> bool:
-        return False
-        # return self.blind.degree == self.__degree or self.blind.stats() == self._target()
+        return self.blind.degree == self.__degree and self.blind.stats() == self._target()
 
     def do(self):
         self.blind.overwrite_degree(90)
@@ -177,8 +176,8 @@ class Tilt(BaseTask):
     def do(self):
         return self.blind.tilt(self.__degree)
 
-    def get(self, blind: BlindInterface) -> [Task]:
-        return [(PreTilt(blind, self.__degree),), (Tilt(blind, self.__degree),)]
+    def get(self, blind: BlindInterface) -> ([Task],):
+        return ([PreTilt(blind, self.__degree), Tilt(blind, self.__degree)],)
 
     @staticmethod
     def type() -> str:
