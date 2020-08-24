@@ -339,6 +339,8 @@ class WeatherBlockerTestCase(unittest.TestCase):
         self.assertTrue(b.blocked)
         # Unblocks first event and then blocks with second event
         self.assertEqual(2, b.device.open_counter)
+        self.assertFalse(c.active)
+        self.assertTrue(r.active)
 
     def test_event_reverse(self):
         # Setup
@@ -356,6 +358,25 @@ class WeatherBlockerTestCase(unittest.TestCase):
         self.assertTrue(b.blocked)
         # Unblocks first event and then blocks with second event
         self.assertEqual(2, b.device.open_counter)
+
+    def test_only_one_active_event(self):
+        # Setup
+        c = CloudsEvent()
+        r = RainEvent()
+        b, trigger = self.__prepare([r, c], 804)
+        print(b)
+        # Test
+        b.update(trigger)
+        print(b)
+        self.assertTrue(b.blocked)
+        # Check
+        rain_trigger = self.__create_trigger(504)
+        rain_trigger.trigger.conditions.append(trigger.trigger.conditions[0])
+        b.update(rain_trigger)
+        self.assertTrue(b.blocked)
+        self.assertTrue(c.active, 'Clouds should still be active')
+        self.assertFalse(r.active, 'Rain should not get activated')
+
 
     def __prepare(self, events: [WeatherEvent], code: int) -> (Blind, TriggerMock):
         b = get_blind()

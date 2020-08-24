@@ -30,9 +30,9 @@ class WeatherEvent(Event, ABC):
         self._undo: Optional[Task] = None
         self._night_mode: bool = True
 
-    def applies(self, trigger: Any) -> bool:
+    def applies(self, trigger: Any, on: Shutter) -> bool:
         if trigger and isinstance(trigger, Weather):
-            return self.__applies(trigger)
+            return self.__applies(trigger, on)
         return False
 
     def do(self, on: Shutter) -> bool:
@@ -58,12 +58,12 @@ class WeatherEvent(Event, ABC):
                 return success
         return False
 
-    def __applies(self, weather: Weather) -> bool:
+    def __applies(self, weather: Weather, on: Shutter) -> bool:
         cond: bool = self.__cond_match(weather.conditions)
         if self.__active:
             return not cond or not self._allowed(weather)
         else:
-            return cond and self._allowed(weather)
+            return cond and self._allowed(weather) and not on.blocked
 
     def __cond_match(self, conditions: [Condition]) -> bool:
         for condition in conditions:

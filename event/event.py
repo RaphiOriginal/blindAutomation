@@ -3,20 +3,23 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, TypeVar, Generic
 
+S = TypeVar('S')
+
 
 class Event(ABC):
 
     @abstractmethod
-    def applies(self, trigger: Any) -> bool:
+    def applies(self, trigger: Any, on: S) -> bool:
         """
         Check if the Event applies. Always typecheck the trigger it could by anything!
+        :param on: Blinds to be moved
         :param trigger: object that could trigger an event
         :return: True if event applies
         """
         pass
 
     @abstractmethod
-    def do(self, on: Any) -> bool:
+    def do(self, on: S) -> bool:
         """
         Execute the event
         :param on: Blinds to be moved

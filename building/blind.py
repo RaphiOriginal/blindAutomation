@@ -118,7 +118,7 @@ class Blind(Shutter):
             trigger.apply_triggers(manager, subject.sundata, self)
         if isinstance(subject, Trigger):
             for event in self.events:
-                if event.applies(subject.trigger):
+                if event.applies(subject.trigger, self):
                     event.do(self)
 
     def __not_blocking(self) -> bool:

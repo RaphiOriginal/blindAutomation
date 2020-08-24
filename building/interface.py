@@ -130,6 +130,15 @@ class Shutter(Observer, ABC):
 
     @property
     @abstractmethod
+    def blocked(self) -> bool:
+        """
+        Check if blind is blocked
+        :return: True if blind is blocked
+        """
+        pass
+
+    @property
+    @abstractmethod
     def blocker(self) -> EventBlocker:
         """
         Returns the Blinds EventBlocker to activate or deactivate it to avoid task overwrites
