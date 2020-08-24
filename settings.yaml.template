@@ -35,6 +35,9 @@ walls:
                   task: CLOSE
                   intensity:
                     - RAGGED
+              - DRIZZLE:
+                  intensity:
+                    - NORMAL
         - blind:
             name: Blind2
             out: 222
@@ -67,6 +70,7 @@ walls:
               - RAIN
               - CLEAR
               - STORM
+              - DRIZZLE
   - wall:
       name: west
       in: 200
