@@ -331,7 +331,13 @@ class SpecialWeatherEvent(WeatherEvent):
 def apply_weather_events(blind: Shutter):
     events: [Event] = []
     for event in blind.event_configs:
-        if build_event(event, CloudsEvent.type(), CloudsEvent.create, events):
+        if build_event(event, CloudsEvent.type(), CloudsEvent.create, events) or \
+                build_event(event, ClearEvent.type(), ClearEvent.create, events) or \
+                build_event(event, SpecialWeatherEvent.type(), SpecialWeatherEvent.create, events) or \
+                build_event(event, SnowEvent.type(), SnowEvent.create, events) or \
+                build_event(event, RainEvent.type(), RainEvent.create, events) or \
+                build_event(event, DrizzleEvent.type(), DrizzleEvent.create, events) or \
+                build_event(event, StormEvent.type(), StormEvent.create, events):
             continue
     blind.add_events(events)
 
