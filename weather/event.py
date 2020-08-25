@@ -325,15 +325,26 @@ class WindEvent(WeatherEvent):
     def _cond_match(self, weather: Weather) -> bool:
         cond: bool = self.__speed <= weather.wind.speed
         if self.__direction_from and self.__direction_to:
-            cond = self.__direction_from < weather.wind.deg < self.__direction_to and cond
+            if self.__direction_from < self.__direction_to:
+                cond = self.__direction_from <= weather.wind.deg <= self.__direction_to and cond
+            else:
+                cond = self.__direction_from >= weather.wind.deg or self.__direction_to <= weather.wind.deg
         return cond
 
     def set_speed(self, speed: float):
         self.__speed = speed
 
-    def set_direction(self, d_from: float, d_to: float):
+    def set_direction(self, d_from: Optional[float], d_to: Optional[float]):
         self.__direction_from = d_from
         self.__direction_to = d_to
+
+    @property
+    def speed(self) -> float:
+        return self.__speed
+
+    @property
+    def direction(self) -> (float, float):
+        return self.__direction_from, self.__direction_to
 
     @staticmethod
     def type() -> str:
@@ -356,7 +367,8 @@ def apply_weather_events(blind: Shutter):
                 build_event(event, SnowEvent.type(), SnowEvent.create, events) or \
                 build_event(event, RainEvent.type(), RainEvent.create, events) or \
                 build_event(event, DrizzleEvent.type(), DrizzleEvent.create, events) or \
-                build_event(event, StormEvent.type(), StormEvent.create, events):
+                build_event(event, StormEvent.type(), StormEvent.create, events) or \
+                build_event(event, WindEvent.type(), WindEvent.create, events):
             continue
     blind.add_events(events)
 
@@ -426,7 +438,7 @@ def set_wind_properties(event: WeatherEvent, eventdict: dict):
         if 'direction' in eventdict.keys():
             f = eventdict['direction']['from']
             t = eventdict['direction']['to']
-            set_wind_properties(f, t)
+            event.set_direction(f, t)
         if 'speed' in eventdict.keys():
             speed = eventdict['speed']
             event.set_speed(speed)

@@ -9,7 +9,7 @@ from tests.mock.trigger_mock import TriggerMock
 from weather import event
 from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
 from weather.event import CloudsEvent, WeatherEvent, RainEvent, ClearEvent, StormEvent, DrizzleEvent, SnowEvent, \
-    SpecialWeatherEvent
+    SpecialWeatherEvent, WindEvent
 from weather.weather import Weather
 
 
@@ -140,6 +140,81 @@ class WeatherEventCase(unittest.TestCase):
         # Check
         self.assertEqual(0, b.device.open_counter)
 
+    def test_wind(self):
+        #Setup
+        e = WindEvent()
+        e.set_speed(1)
+        b, trigger = self.__prepare([e], 300)
+        #Test
+        b.update(trigger)
+        #Check
+        self.assertEqual(1, b.device.open_counter)
+
+    def test_wind_not_applying(self):
+        #Setup
+        e = WindEvent()
+        e.set_speed(2)
+        b, trigger = self.__prepare([e], 300)
+        #Test
+        b.update(trigger)
+        #Check
+        self.assertEqual(0, b.device.open_counter)
+
+    def test_wind_direction(self):
+        #Setup
+        e = WindEvent()
+        e.set_speed(1)
+        e.set_direction(164, 166)
+        b, trigger = self.__prepare([e], 300)
+        #Test
+        b.update(trigger)
+        #Check
+        self.assertEqual(1, b.device.open_counter)
+
+    def test_wind_direction_not_applying(self):
+        #Setup
+        e = WindEvent()
+        e.set_speed(1)
+        e.set_direction(160, 164)
+        b, trigger = self.__prepare([e], 300)
+        #Test
+        b.update(trigger)
+        #Check
+        self.assertEqual(0, b.device.open_counter)
+
+    def test_wind_speed_not_applying(self):
+        #Setup
+        e = WindEvent()
+        e.set_speed(2)
+        e.set_direction(164, 166)
+        b, trigger = self.__prepare([e], 300)
+        #Test
+        b.update(trigger)
+        #Check
+        self.assertEqual(0, b.device.open_counter)
+
+    def test_wind_inverted_direction(self):
+        #Setup
+        e = WindEvent()
+        e.set_speed(1)
+        e.set_direction(166, 90)
+        b, trigger = self.__prepare([e], 300)
+        #Test
+        b.update(trigger)
+        #Check
+        self.assertEqual(1, b.device.open_counter)
+
+    def test_wind_inverted_direction_not_applying(self):
+        #Setup
+        e = WindEvent()
+        e.set_speed(1)
+        e.set_direction(164, 90)
+        b, trigger = self.__prepare([e], 300)
+        #Test
+        b.update(trigger)
+        #Check
+        self.assertEqual(1, b.device.open_counter)
+
     def test_night_mode_blocking(self):
         e = ClearEvent()
         b, trigger = self.__prepare([e], 800, 2)
@@ -263,6 +338,21 @@ class WeatherEventBuilder(unittest.TestCase):
             self.assertEqual('STORM', e.type())
         self.assertEqual(1, len(result[1]._sub))
         self.assertEqual(WeatherSubConditionEnum.RAGGED, result[1]._sub[0])
+        self.assertEqual(Tilt.type(), result[1]._task.type())
+
+    def test_wind(self):
+        events = ['WIND', {'WIND': {'task': 'TILT', 'speed': 100, 'direction': {'from': 100, 'to': 200}}}]
+        b = blind(events)
+        event.apply_weather_events(b)
+        result = b.events
+        self.assertEqual(2, len(result))
+        for e in result:
+            self.assertEqual('WIND', e.type())
+        self.assertEqual(120.0, result[0].speed)
+        self.assertEqual(100, result[1].speed)
+        self.assertIsNone(result[0].direction[0])
+        self.assertIsNone(result[0].direction[1])
+        self.assertEqual((100, 200), result[1].direction)
         self.assertEqual(Tilt.type(), result[1]._task.type())
 
     def test_override_night_mode(self):
