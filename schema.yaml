@@ -12,8 +12,8 @@ coordinates:
 wall:
   wall:
     name: str()
-    in: int()
-    out: int()
+    in: int(min=0, max=360)
+    out: int(min=0, max=360)
     blinds: list(include('blind'), required=False)
 
 blind:
@@ -21,8 +21,8 @@ blind:
     name: str()
     device-id: str()
     device-typ: enum('SHELLY')
-    in: int(required=False)
-    out: int(required=False)
+    in: int(min=0, max=360, required=False)
+    out: int(min=0, max=360, required=False)
     tilt_time: num(required=False)
     triggers: list(include('Trigger'), required=False)
     events: list(include('Event'), required=False)
@@ -66,14 +66,14 @@ SUNOUT:
 
 AZIMUTH:
   AZIMUTH:
-    azimuth: int()
+    azimuth: int(min=0, max=360)
     task: include('task', required=False)
     at: list(include('day'), required=False)
     offset: int(required=False)
 
 ELEVATION:
   ELEVATION:
-    elevation: int()
+    elevation: int(min=-90, max=90)
     direction: str(any('RISE', 'SET'))
     task: include('task', required=False)
     at: list(include('day'), required=False)
@@ -81,8 +81,8 @@ ELEVATION:
 
 POSITION:
   POSITION:
-    azimuth: int()
-    elevation: int()
+    azimuth: int(min=0, max=360)
+    elevation: int(min=-90, max=90)
     direction: str(any('RISE', 'SET'))
     task: include('task')
     at: list(include('day'), required=False)
