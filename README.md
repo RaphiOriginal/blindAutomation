@@ -211,7 +211,74 @@ events:
         to: degree stopping the wind direction range
 ```
 
-#####
+##### CLOUDY
+* Default task: `OPEN`
+* Triggers when cloud coverage passes specified percentage
+* Default percentage: `100`%
+* Optional fields:
+  * `night:`
+  * `task:`
+  * `coverage:`
+##### CLEAR
+* Default task: `OPEN`
+* Triggers when the sky is clear
+* Optional fields:
+  * `night:`
+  * `task:`
+##### RAIN
+* Default task: `OPEN`
+* Triggers when its raining
+* Available intensities are: `MODERATE`, `VERY_HEAVY`, `EXTREME`, `FREEZING`, `LIGHT_SHOWER`, `HEAVY_SHOWER`, `RAGGED_SHOWER`, `SHOWER`, `HEAVY`, `LIGHT`
+* Default set intensities are: `HEAVY`, `VERY_HEAVY`, `EXTREME`, `SHOWER`, `HEAVY_SHOWER`, `RAGGED_SHOWER`
+* Optional fields:
+  * `night:`
+  * `task:`
+  * `intensity:`
+##### STORM
+* Default task: `OPEN`
+* Triggers when there is a storm
+* Available intensities are: `LIGHT_RAIN`, `RAIN`, `HEAVY_RAIN`, `LIGHT`, `NORMAL`, `HEAVY`, `RAGGED`, `LIGHT_DRIZZLE`, `DRIZZLE`, `HEAVY_DRIZZLE`
+* Default set intensities are: `LIGHT_RAIN`, `RAIN`, `HEAVY_RAIN`, `LIGHT`, `NORMAL`, `HEAVY`, `RAGGED`, `LIGHT_DRIZZLE`, `DRIZZLE`, `HEAVY_DRIZZLE`
+* Optional fields:
+  * `night:`
+  * `task:`
+  * `intensity:`
+##### DRIZZLE
+* Default task: `OPEN`
+* Triggers when there is drizzle
+* Available intensities are: `LIGHT_RAIN`, `RAIN`, `LIGHT`, `NORMAL`, `HEAVY`, `HEAVY_RAIN`, `SHOWER_RAIN`, `HEAVY_SHOWER_RAIN`, `SHOWER`
+* Default set intensities are: `HEAVY_RAIN`, `SHOWER_RAIN`, `HEAVY_SHOWER_RAIN`, `SHOWER`
+* Optional fields:
+  * `night:`
+  * `task:`
+  * `intensity:`
+##### SNOW
+* Default task: `OPEN`
+* Triggers when it is snowing
+* Available intensities are: `LIGHT_RAIN`, `RAIN`, `LIGHT`, `NORMAL`, `HEAVY`, `SHOWER`, `LIGHT_SHOWER`, `HEAVY_SHOWER`, `SLEET`, `LIGHT_SHOWER_SLEET`, `SHOWER_SLEET`
+* Default set intensities are: `LIGHT_RAIN`, `RAIN`, `LIGHT`, `NORMAL`, `HEAVY`, `SHOWER`, `LIGHT_SHOWER`, `HEAVY_SHOWER`, `SLEET`, `LIGHT_SHOWER_SLEET`, `SHOWER_SLEET`
+* Optional fields:
+  * `night:`
+  * `task:`
+  * `intensity:`
+##### SPECIAL
+* Default task: `OPEN`
+* Triggers when there appears one of the defined events
+* Available events are: `MIST`, `SMOKE`, `HAZE`, `WHIRLS`, `FOG`, `SAND`, `DUST`, `ASH`, `SQUALL`, `TORNADO`
+* Default set events are: `MIST`, `SMOKE`, `HAZE`, `WHIRLS`, `FOG`, `SAND`, `DUST`, `ASH`, `SQUALL`, `TORNADO`
+* Optional fields:
+  * `night:`
+  * `task:`
+  * `events:`
+##### WIND
+* Default task: `OPEN`
+* Triggers when the wind hits a certain speed and if configured a specific direction
+* Default speed: `120` meters per second
+* Default direction: There is per default no direction set
+* Optional fields:
+  * `night:`
+  * `task:`
+  * `direction:`
 ## Running and Installation 🏃🏗
 ##### Balena.io
 After you downloaded the project and prepared your settings file, the easiest way to do it is by deploying it with [balena](https://www.balena.io/os)
