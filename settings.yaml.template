@@ -25,11 +25,7 @@ walls:
               - CLEAR:
                   night: False
               - CLOUDY:
-                  intensity:
-                    - OVERCAST
-                    - BROKEN
-                    - SCATTERED
-                    - FEW
+                  coverage: 85
               - RAIN:
                   intensity:
                     - MODERATE

@@ -1,5 +1,6 @@
 import json
 import unittest
+from typing import Optional
 
 from building.blind import Blind
 from jobs.task import Open, Tilt, Close
@@ -16,7 +17,7 @@ class WeatherEventCase(unittest.TestCase):
     def test_clouds(self):
         # Setup
         e = CloudsEvent()
-        b, trigger = self.__prepare([e], 804)
+        b, trigger = self.__prepare([e], 804, percentage=95)
         # Test
         b.update(trigger)
         # Check
@@ -25,7 +26,7 @@ class WeatherEventCase(unittest.TestCase):
     def test_clouds_not_applying(self):
         # Setup
         e = CloudsEvent()
-        b, trigger = self.__prepare([e], 803)
+        b, trigger = self.__prepare([e], 804, percentage=94)
         # Test
         b.update(trigger)
         # Check
@@ -155,12 +156,14 @@ class WeatherEventCase(unittest.TestCase):
         self.assertEqual(1, b.device.close_counter)
 
     @staticmethod
-    def __prepare(events: [WeatherEvent], code: int, hours: int = 0) -> (Blind, TriggerMock):
+    def __prepare(events: [WeatherEvent], code: int, hours: int = 0, percentage: Optional[int] = None) -> (Blind, TriggerMock):
         b = get_blind()
         b.add_events(events)
         jsn = get_json()
         jsn['weather'][0]['id'] = code
         jsn['dt'] = jsn['dt'] + hours * 3600
+        if percentage:
+            jsn['clouds']['all'] = percentage
         w = Weather(jsn)
         trigger = TriggerMock(w)
         return b, trigger
@@ -168,7 +171,7 @@ class WeatherEventCase(unittest.TestCase):
 
 class WeatherEventBuilder(unittest.TestCase):
     def test_clouds(self):
-        events = ['CLOUDY', {'CLOUDY': {'task': 'TILT', 'intensity': ['SCATTERED']}}]
+        events = ['CLOUDY', {'CLOUDY': {'task': 'TILT', 'coverage': 93}}]
         b = blind(events)
         event.apply_weather_events(b)
         result = b.events
@@ -178,13 +181,13 @@ class WeatherEventBuilder(unittest.TestCase):
         item = result[0]
         self.assertEqual(CloudsEvent.type(), item.type())
         self.assertEqual(WeatherConditionEnum.CLOUDS, item._main)
-        self.assertEqual(1, len(item._sub))
-        self.assertEqual(WeatherSubConditionEnum.OVERCAST, item._sub[0])
+        self.assertEqual(0, len(item._sub))
+        self.assertEqual(95, item.percentage)
         item = result[1]
         self.assertEqual(CloudsEvent.type(), item.type())
         self.assertEqual(WeatherConditionEnum.CLOUDS, item._main)
-        self.assertEqual(1, len(item._sub))
-        self.assertEqual(WeatherSubConditionEnum.SCATTERED, item._sub[0])
+        self.assertEqual(0, len(item._sub))
+        self.assertEqual(93, item.percentage)
 
     def test_clear(self):
         events = ['CLEAR', {'CLEAR': {'task': 'TILT'}}]
@@ -291,7 +294,7 @@ class WeatherBlockerTestCase(unittest.TestCase):
     def test_blocking(self):
         # Setup
         e = CloudsEvent()
-        b, trigger = self.__prepare([e], 804)
+        b, trigger = self.__prepare([e], 804, percentage=95)
         # Test
         b.update(trigger)
         # Check
@@ -306,7 +309,7 @@ class WeatherBlockerTestCase(unittest.TestCase):
     def test_unblocking(self):
         # Setup
         e = CloudsEvent()
-        b, trigger = self.__prepare([e], 804)
+        b, trigger = self.__prepare([e], 804, percentage=95)
         # Test
         b.update(trigger)
         # Check
@@ -317,7 +320,7 @@ class WeatherBlockerTestCase(unittest.TestCase):
         self.assertEqual(0, b.device.close_counter)
         self.assertEqual(1, b.device.open_counter)
         self.assertEqual(Open.type(), b._blocker.last.type())
-        release = self.__create_trigger(803)
+        release = self.__create_trigger(803, percentage=93)
         b.update(release)
         self.assertFalse(b.blocked, 'Blocking should be released')
         self.assertEqual(1, b.device.close_counter, 'Last blocked Task should be applied')
@@ -328,12 +331,12 @@ class WeatherBlockerTestCase(unittest.TestCase):
         # Setup
         c = CloudsEvent()
         r = RainEvent()
-        b, trigger = self.__prepare([c, r], 804)
+        b, trigger = self.__prepare([c, r], 804, percentage=95)
         print(b)
         # Test
         b.update(trigger)
         # Check
-        rain_trigger = self.__create_trigger(504)
+        rain_trigger = self.__create_trigger(504, percentage=93)
         b.update(rain_trigger)
         print(b)
         self.assertTrue(b.blocked)
@@ -346,14 +349,14 @@ class WeatherBlockerTestCase(unittest.TestCase):
         # Setup
         c = CloudsEvent()
         r = RainEvent()
-        b, trigger = self.__prepare([r, c], 804)
+        b, trigger = self.__prepare([r, c], 804, percentage=95)
         print(b)
         # Test
         b.update(trigger)
         print(b)
         self.assertTrue(b.blocked)
         # Check
-        rain_trigger = self.__create_trigger(504)
+        rain_trigger = self.__create_trigger(504, percentage=93)
         b.update(rain_trigger)
         self.assertTrue(b.blocked)
         # Unblocks first event and then blocks with second event
@@ -363,31 +366,39 @@ class WeatherBlockerTestCase(unittest.TestCase):
         # Setup
         c = CloudsEvent()
         r = RainEvent()
-        b, trigger = self.__prepare([r, c], 804)
+        b, trigger = self.__prepare([r, c], 804, percentage=95)
         print(b)
         # Test
         b.update(trigger)
         print(b)
         self.assertTrue(b.blocked)
         # Check
-        rain_trigger = self.__create_trigger(504)
+        rain_trigger = self.__create_trigger(504, percentage=95)
         rain_trigger.trigger.conditions.append(trigger.trigger.conditions[0])
         b.update(rain_trigger)
         self.assertTrue(b.blocked)
         self.assertTrue(c.active, 'Clouds should still be active')
         self.assertFalse(r.active, 'Rain should not get activated')
 
-
-    def __prepare(self, events: [WeatherEvent], code: int) -> (Blind, TriggerMock):
+    @staticmethod
+    def __prepare(events: [WeatherEvent], code: int, hours: int = 0, percentage: Optional[int] = None) -> (Blind, TriggerMock):
         b = get_blind()
         b.add_events(events)
-        trigger = self.__create_trigger(code)
+        jsn = get_json()
+        jsn['weather'][0]['id'] = code
+        jsn['dt'] = jsn['dt'] + hours * 3600
+        if percentage:
+            jsn['clouds']['all'] = percentage
+        w = Weather(jsn)
+        trigger = TriggerMock(w)
         return b, trigger
 
     @staticmethod
-    def __create_trigger(code: int) -> TriggerMock:
+    def __create_trigger(code: int, percentage: Optional[int] = None) -> TriggerMock:
         jsn = get_json()
         jsn['weather'][0]['id'] = code
+        if percentage:
+            jsn['clouds']['all'] = percentage
         w = Weather(jsn)
         return TriggerMock(w)
 

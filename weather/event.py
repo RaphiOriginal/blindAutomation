@@ -59,14 +59,14 @@ class WeatherEvent(Event, ABC):
         return False
 
     def __applies(self, weather: Weather, on: Shutter) -> bool:
-        cond: bool = self.__cond_match(weather.conditions)
+        cond: bool = self._cond_match(weather)
         if self.__active:
             return not cond or not self._allowed(weather)
         else:
             return cond and self._allowed(weather) and not on.blocked
 
-    def __cond_match(self, conditions: [Condition]) -> bool:
-        for condition in conditions:
+    def _cond_match(self, weather: Weather) -> bool:
+        for condition in weather.conditions:
             if self._main == condition.main_condition and condition.sub_condition in self._sub:
                 return True
         return False
@@ -138,7 +138,14 @@ class WeatherEvent(Event, ABC):
 
 class CloudsEvent(WeatherEvent):
     def __init__(self, task: Task = Open()):
-        super(CloudsEvent, self).__init__(task, WeatherConditionEnum.CLOUDS, [WeatherSubConditionEnum.OVERCAST])
+        super(CloudsEvent, self).__init__(task, WeatherConditionEnum.CLOUDS, [])
+        self.__percentage: int = 95
+
+    def _cond_match(self, weather: Weather) -> bool:
+        return weather.clouds.all >= self.__percentage
+
+    def set_percentage(self, percentage: int):
+        self.__percentage = percentage
 
     @staticmethod
     def type() -> str:
@@ -147,6 +154,10 @@ class CloudsEvent(WeatherEvent):
     @staticmethod
     def create() -> WeatherEvent:
         return CloudsEvent()
+
+    @property
+    def percentage(self) -> int:
+        return self.__percentage
 
     def __repr__(self):
         return 'CloudsEvent: {%s}' % super(CloudsEvent, self).__repr__()
@@ -342,6 +353,7 @@ def set_optionals(event: WeatherEvent, eventdict: dict):
     set_events(event, eventdict)
     set_task(event, eventdict)
     set_night_mode(event, eventdict)
+    set_percentage(event, eventdict)
 
 
 def set_intensity(event: WeatherEvent, eventdict: dict):
@@ -371,5 +383,11 @@ def set_night_mode(event: WeatherEvent, evendict: dict):
     if 'night' in evendict.keys():
         night_mode = evendict['night']
         event.set_night_mode(night_mode)
+
+
+def set_percentage(event: WeatherEvent, eventdict: dict):
+    if isinstance(event, CloudsEvent) and 'coverage' in eventdict.keys():
+        percentage = eventdict['coverage']
+        event.set_percentage(percentage)
 
 # endregion
