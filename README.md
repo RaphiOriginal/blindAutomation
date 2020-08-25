@@ -279,6 +279,23 @@ events:
   * `night:`
   * `task:`
   * `direction:`
+#### Event properties
+* `night:` Property to turn on or off the night mode.
+  * Possible values are `True` or `False`. Default for all events is `True`.
+* `task:` Task string or `TILT` object
+  * Possible values are `OPEN`, `CLOSE` or `TILT` where `TILT` can have a value between `0`° and `90`°.
+* `intensity:` List of intensity strings to override the default intensity list.
+  * For possible values check the event detail descriptions.
+* `coverage:` Percentage of cloud coverage to define at which coverage the task should get triggered.
+  * Possible value is between `0`% and `100`%.
+* `events:` Property to limit the events when the special event task should be triggered.
+  * Available events are: `MIST`, `SMOKE`, `HAZE`, `WHIRLS`, `FOG`, `SAND`, `DUST`, `ASH`, `SQUALL`, `TORNADO`
+* `speed:` Property in meters per second for wind speed.
+  * Value has to be higher than `0.0`
+* `direction:` Property to define a specific direction range where the wind blows to, to trigger the task.
+  * `from:` Value between `0`° and `360`°.
+  * `to:` Value between `0`° and `360`°.
+  * the `from` property also can be lower than the `to` property then the range goes from `to`° over `0`° to `from`°.
 ## Running and Installation 🏃🏗
 ##### Balena.io
 After you downloaded the project and prepared your settings file, the easiest way to do it is by deploying it with [balena](https://www.balena.io/os)
