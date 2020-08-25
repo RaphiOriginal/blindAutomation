@@ -195,6 +195,22 @@ Following weather based events are available:
 * `SNOW` Will open the blinds when it's snowing 🌨
 * `WIND` Will open the blinds when it's windy 🌬
 * `SPECIAL` Will open the blinds when there is a special weather event like a tornado 🌪 or fog 🌫
+
+How events are represented in the settings.yaml file:
+```
+events:
+  - EVENT:
+      night: (optional) deactivates or activates events running at night
+      task: (optional) overrides the default task
+      intensity: (optional, except CLOUDY and WIND) overrides the default intensity of an weather event
+      coverage: (optional, CLOUDY only) percentage of how much the sky is covered in clouds ☁️ to open the blind
+      events: (optional, SPECIAL only) defines on which special event the blind should open
+      speed: (optional, WIND only) define a wind speed when blind should open
+      direction: (optional, WIND only) define a range in degree in which direction the wind should blow to open the blind
+        from: degree starting the wind direction range
+        to: degree stopping the wind direction range
+```
+
 #####
 ## Running and Installation 🏃🏗
 ##### Balena.io
