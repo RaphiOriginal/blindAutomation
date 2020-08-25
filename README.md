@@ -296,6 +296,33 @@ events:
   * `from:` Value between `0`° and `360`°.
   * `to:` Value between `0`° and `360`°.
   * the `from` property also can be lower than the `to` property then the range goes from `to`° over `0`° to `from`°.
+#### Examples
+```
+...
+events:
+  - CLOUDY
+  - RAIN
+  - SNOW:
+      intensity:
+        - SLEET
+        - LIGHT_SHOWER_SLEET
+        - SHOWER_SLEET
+  - SPECIAL:
+      task: CLOSE
+      events:
+        - TORNADO
+        - MIST
+        - FOG
+  - WIND:
+      night: False
+      task:
+        TILT: 60
+      speed: 80
+      direction:
+        from: 180.4
+        to: 200
+...
+```
 ## Running and Installation 🏃🏗
 ##### Balena.io
 After you downloaded the project and prepared your settings file, the easiest way to do it is by deploying it with [balena](https://www.balena.io/os)
