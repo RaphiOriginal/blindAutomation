@@ -59,7 +59,7 @@ Triggers are either a list of strings where each trigger just uses its default v
 Available triggers are:
 * `SUNRISE` Will open the blind at sunrise
 * `SUNSET` Will close the blind at sunset
-* `SININ` Will tilt the blind when sun passes configured wall or device azimuth
+* `SUNIN` Will tilt the blind when sun passes configured wall or device azimuth
 * `SUNOUT` Will open the blind when sun passes configured wall or device azimuth
 * `TIME` Will trigger the configured task when configured time is passed
 * `AZIMUTH` Will trigger the configured task when defined azimuth is passed by the sun
