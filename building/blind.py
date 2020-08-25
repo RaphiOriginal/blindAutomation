@@ -23,7 +23,7 @@ class Blind(Shutter):
         self._event_config: [] = event_config
         self._events: [Event] = []
         self.state: State = State.UNKNOWN
-        self.__degree: int = -1
+        self.__degree: int = 90
         self.__duration: float = 1.2
         self._blocker: Blocker = Blocker()
 
