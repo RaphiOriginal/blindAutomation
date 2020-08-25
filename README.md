@@ -38,7 +38,7 @@ walls: #List of walls with blinds of your home
             triggers: #List of triggers you'd like to apply for the device`
             events: #List of events sou'd like to apply for the device
 ```
-###Tasks
+### Tasks
 Tasks defines the actual work that is possible to do. Following tasks are available:
 * `OPEN` Opens the blinds
 * `CLOSE` Closes the blinds
@@ -54,7 +54,7 @@ This will tilt the task for 45°. with:
 task: TILT
 ```
 the default degree of `0` will be applied.
-###Triggers
+### Triggers
 Triggers are either a list of strings where each trigger just uses its default values.
 Available triggers are:
 * `SUNRISE` Will open the blind at sunrise
@@ -77,35 +77,35 @@ How triggers are represented in the settings.yaml file:
     elevation: (ELEVATION and POSITION trigger only, mandatory) defines which elevation should be triggered
     direction: (ELEVATION nd POSITION trigger only, mandatory) defines if trigger should by apply when passing the elevation value on sunrise or sunset
 ```
-#####SUNRISE
+##### SUNRISE
 * Default task: `OPEN`
 * Triggers at sunrise
 * Optional fields:
   * `task:`
   * `at:`
   * `offset:`
-#####SUNSET
+##### SUNSET
 * Default task: `CLOSE`
 * Triggers at sunset
 * Optional fields:
   * `task:`
   * `at:`
   * `offset:`
-#####SUNIN
+##### SUNIN
 * Default task: `TILT`
 * Triggers when sun passes azimuth defined on the wall or device
 * Optional fields:
   * `task:`
   * `at:`
   * `offset:`
-#####SUNOUT
+##### SUNOUT
 * Default task: `OPEN`
 * Triggers when sun passes azimuth defined on the wall or device
 * Optional
   * `task:`
   * `at:`
   * `offset:`
-#####TIME
+##### TIME
 * Triggers when configured time reached
 * Mandatory
   * `task:`
@@ -113,7 +113,7 @@ How triggers are represented in the settings.yaml file:
 * Optional
   * `at:`
   * `offset:`
-#####AZIMUTH
+##### AZIMUTH
 * Default task: `CLOSE`
 * Triggers when sun passes configured azimuth
 * Mandatory
@@ -122,7 +122,7 @@ How triggers are represented in the settings.yaml file:
   * `task:`
   * `at:`
   * `offset:`
-#####ELEVATION
+##### ELEVATION
 * Default task: `CLOSE`
 * Triggers when sun passes configured elevation
 * Mandatory
@@ -132,7 +132,7 @@ How triggers are represented in the settings.yaml file:
   * `task:`
   * `at:`
   * `offset:`
-#####POSITION
+##### POSITION
 * Default task: `CLOSE`
 * Triggers when sun passes configured azimuth and elevation in the configured direction
 * Mandatory
@@ -143,7 +143,7 @@ How triggers are represented in the settings.yaml file:
   * `task:`
   * `at:`
   * `offset:`
-####Trigger Properties
+#### Trigger Properties
 * `task:` Task string or `TILT` object
   * Possible values are `OPEN`, `CLOSE` or `TILT` where `TILT` can have a value between `0`° and `90`°.
 * `at:` List of days of week
@@ -160,7 +160,7 @@ How triggers are represented in the settings.yaml file:
   * Possible values are `RISE` or `SET`.
     * `RISE`: will trigger when sun passes elevation degree on sunrise
     * `SET`: will trigger when sun passes elevation degree on sunset
-####Examples
+#### Examples
 ```
 ...
 triggers:
@@ -181,7 +181,7 @@ triggers:
       direction: SET
 ...
 ```
-###Events
+### Events
 
 ## Running and Installation 🏃🏗
 ##### Balena.io
