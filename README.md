@@ -49,11 +49,13 @@ Example:
 task: 
   TILT: 45
 ```
-This will tilt the task for 45°. with:
+This will tilt the task for 45°.
+
+with:
 ```
 task: TILT
 ```
-the default degree of `0` will be applied.
+the default degree of `0`° will be applied.
 ### Triggers
 Triggers are either a list of strings where each trigger just uses its default values, or trigger objects. String and objects triggers can be mixed in the list.
 Available triggers are:
