@@ -315,6 +315,35 @@ class SpecialWeatherEvent(WeatherEvent):
         return 'SpecialWeatherEvent: {%s}' % super(SpecialWeatherEvent, self).__repr__()
 
 
+class WindEvent(WeatherEvent):
+    def __init__(self, task: Task = Open()):
+        super(WindEvent, self).__init__(task, WeatherConditionEnum.UNKNOWN, [])
+        self.__speed: float = 120.0
+        self.__direction_from: Optional[float] = None
+        self.__direction_to: Optional[float] = None
+
+    def _cond_match(self, weather: Weather) -> bool:
+        cond: bool = self.__speed <= weather.wind.speed
+        if self.__direction_from and self.__direction_to:
+            cond = self.__direction_from < weather.wind.deg < self.__direction_to and cond
+        return cond
+
+    def set_speed(self, speed: float):
+        self.__speed = speed
+
+    def set_direction(self, d_from: float, d_to: float):
+        self.__direction_from = d_from
+        self.__direction_to = d_to
+
+    @staticmethod
+    def type() -> str:
+        return 'WIND'
+
+    @staticmethod
+    def create() -> WeatherEvent:
+        return WindEvent()
+
+
 # endregion
 # region Event creation
 
@@ -354,6 +383,7 @@ def set_optionals(event: WeatherEvent, eventdict: dict):
     set_task(event, eventdict)
     set_night_mode(event, eventdict)
     set_percentage(event, eventdict)
+    set_wind_properties(event, eventdict)
 
 
 def set_intensity(event: WeatherEvent, eventdict: dict):
@@ -389,5 +419,16 @@ def set_percentage(event: WeatherEvent, eventdict: dict):
     if isinstance(event, CloudsEvent) and 'coverage' in eventdict.keys():
         percentage = eventdict['coverage']
         event.set_percentage(percentage)
+
+
+def set_wind_properties(event: WeatherEvent, eventdict: dict):
+    if isinstance(event, WindEvent):
+        if 'direction' in eventdict.keys():
+            f = eventdict['direction']['from']
+            t = eventdict['direction']['to']
+            set_wind_properties(f, t)
+        if 'speed' in eventdict.keys():
+            speed = eventdict['speed']
+            event.set_speed(speed)
 
 # endregion

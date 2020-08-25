@@ -42,6 +42,10 @@ walls:
               - SPECIAL:
                   events:
                     - TORNADO
+              - WIND:
+                  direction:
+                    from: 180.4
+                    to: 200
         - blind:
             name: Blind2
             out: 222
@@ -77,6 +81,7 @@ walls:
               - DRIZZLE
               - SNOW
               - SPECIAL
+              - WIND
   - wall:
       name: west
       in: 200

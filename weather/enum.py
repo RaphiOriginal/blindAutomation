@@ -23,6 +23,9 @@ class WeatherConditionEnum(Enum):
         logger.info('Using fallback enum for code {}'.format(code))
         return WeatherConditionEnum.UNKNOWN
 
+    def __repr__(self):
+        return self.name
+
 
 class WeatherSubConditionEnum(Enum):
     UNKNOWN = []
@@ -79,3 +82,6 @@ class WeatherSubConditionEnum(Enum):
                 return specific
         logger.info('Using fallback enum for code {}'.format(code))
         return WeatherSubConditionEnum.UNKNOWN
+
+    def __repr__(self):
+        return self.name

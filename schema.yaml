@@ -90,9 +90,9 @@ POSITION:
 
 Event: any(include('EventStr'), include('EventObj'))
 
-EventStr: enum('CLOUDY', 'RAIN', 'CLEAR', 'STORM', 'DRIZZLE', 'SNOW', 'SPECIAL')
+EventStr: enum('CLOUDY', 'RAIN', 'CLEAR', 'STORM', 'DRIZZLE', 'SNOW', 'SPECIAL', 'WIND')
 
-EventObj: any(include('CLEAR'), include('CLOUDY'), include('RAIN'), include('STORM'), include('DRIZZLE'), include('SNOW'), include('SPECIAL'))
+EventObj: any(include('CLEAR'), include('CLOUDY'), include('RAIN'), include('STORM'), include('DRIZZLE'), include('SNOW'), include('SPECIAL'), include('WIND'))
 
 CLEAR:
   CLEAR:
@@ -134,6 +134,17 @@ SPECIAL:
     night: bool(required=False)
     task: include('task', required=False)
     events: list(enum('MIST', 'SMOKE', 'HAZE', 'WHIRLS', 'FOG', 'SAND', 'DUST', 'ASH', 'SQUALL', 'TORNADO'), required=False)
+
+WIND:
+  WIND:
+    night: bool(required=False)
+    task: include('task', required=False)
+    speed: num(min=0, required=False)
+    direction: include('wind_direction', required=False)
+
+wind_direction:
+  from: num(min=0)
+  to: num(min=0)
 
 task: any(enum('OPEN', 'CLOSE', 'TILT', 'HALF'), include('TILT'))
 
