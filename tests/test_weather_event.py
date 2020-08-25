@@ -17,7 +17,7 @@ class WeatherEventCase(unittest.TestCase):
     def test_clouds(self):
         # Setup
         e = CloudsEvent()
-        b, trigger = self.__prepare([e], 804, percentage=95)
+        b, trigger = self.__prepare([e], 804, percentage=100)
         # Test
         b.update(trigger)
         # Check
@@ -182,7 +182,7 @@ class WeatherEventBuilder(unittest.TestCase):
         self.assertEqual(CloudsEvent.type(), item.type())
         self.assertEqual(WeatherConditionEnum.CLOUDS, item._main)
         self.assertEqual(0, len(item._sub))
-        self.assertEqual(95, item.percentage)
+        self.assertEqual(100, item.percentage)
         item = result[1]
         self.assertEqual(CloudsEvent.type(), item.type())
         self.assertEqual(WeatherConditionEnum.CLOUDS, item._main)
@@ -294,7 +294,7 @@ class WeatherBlockerTestCase(unittest.TestCase):
     def test_blocking(self):
         # Setup
         e = CloudsEvent()
-        b, trigger = self.__prepare([e], 804, percentage=95)
+        b, trigger = self.__prepare([e], 804, percentage=100)
         # Test
         b.update(trigger)
         # Check
@@ -309,7 +309,7 @@ class WeatherBlockerTestCase(unittest.TestCase):
     def test_unblocking(self):
         # Setup
         e = CloudsEvent()
-        b, trigger = self.__prepare([e], 804, percentage=95)
+        b, trigger = self.__prepare([e], 804, percentage=100)
         # Test
         b.update(trigger)
         # Check
@@ -331,7 +331,7 @@ class WeatherBlockerTestCase(unittest.TestCase):
         # Setup
         c = CloudsEvent()
         r = RainEvent()
-        b, trigger = self.__prepare([c, r], 804, percentage=95)
+        b, trigger = self.__prepare([c, r], 804, percentage=100)
         print(b)
         # Test
         b.update(trigger)
@@ -349,7 +349,7 @@ class WeatherBlockerTestCase(unittest.TestCase):
         # Setup
         c = CloudsEvent()
         r = RainEvent()
-        b, trigger = self.__prepare([r, c], 804, percentage=95)
+        b, trigger = self.__prepare([r, c], 804, percentage=100)
         print(b)
         # Test
         b.update(trigger)
@@ -366,14 +366,14 @@ class WeatherBlockerTestCase(unittest.TestCase):
         # Setup
         c = CloudsEvent()
         r = RainEvent()
-        b, trigger = self.__prepare([r, c], 804, percentage=95)
+        b, trigger = self.__prepare([r, c], 804, percentage=100)
         print(b)
         # Test
         b.update(trigger)
         print(b)
         self.assertTrue(b.blocked)
         # Check
-        rain_trigger = self.__create_trigger(504, percentage=95)
+        rain_trigger = self.__create_trigger(504, percentage=100)
         rain_trigger.trigger.conditions.append(trigger.trigger.conditions[0])
         b.update(rain_trigger)
         self.assertTrue(b.blocked)

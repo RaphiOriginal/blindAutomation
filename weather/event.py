@@ -139,7 +139,7 @@ class WeatherEvent(Event, ABC):
 class CloudsEvent(WeatherEvent):
     def __init__(self, task: Task = Open()):
         super(CloudsEvent, self).__init__(task, WeatherConditionEnum.CLOUDS, [])
-        self.__percentage: int = 95
+        self.__percentage: int = 100
 
     def _cond_match(self, weather: Weather) -> bool:
         return weather.clouds.all >= self.__percentage
