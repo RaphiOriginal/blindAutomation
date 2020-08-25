@@ -55,7 +55,7 @@ task: TILT
 ```
 the default degree of `0` will be applied.
 ###Triggers
-Triggers are either a list of strings where each trigger just uses its default values.`
+Triggers are either a list of strings where each trigger just uses its default values.
 Available triggers are:
 * `SUNRISE` Will open the blind at sunrise
 * `SUNSET` Will close the blind at sunset
@@ -109,7 +109,7 @@ How triggers are represented in the settings.yaml file:
 * Triggers when configured time reached
 * Mandatory
   * `task:`
-  * `time:` in "HH:MM:SS" format
+  * `time:` in 'HH:MM:SS' format
 * Optional
   * `at:`
   * `offset:`
@@ -151,7 +151,7 @@ How triggers are represented in the settings.yaml file:
 * `offset:` Integer
   * Integer in minutes that defines the offset when the task has to be done based on the calculated trigger time. Can be a positive or negative value.
 * `time:`
-  * Time when task has to be triggeret in the format of "HH:MM:SS".
+  * Time when task has to be triggeret in the format of 'HH:MM:SS'.
 * `azimuth:` Integer
   * Defines an azimuth degree between `0`° and `360`° for a trigger.
 * `elevation:` Integer
@@ -160,6 +160,28 @@ How triggers are represented in the settings.yaml file:
   * Possible values are `RISE` or `SET`.
     * `RISE`: will trigger when sun passes elevation degree on sunrise
     * `SET`: will trigger when sun passes elevation degree on sunset
+####Examples
+```
+...
+triggers:
+  - SUNRISE
+  - SUNSET:
+      offset: 20
+  - TIME:
+      task: TILT
+      at:
+        - WORKINGDAY
+      time: '07:30:00'
+  - SUNIN
+  - SUNOUT
+  - ELEVATION:
+      task:
+        TILT: 45
+      elevation: 16
+      direction: SET
+...
+```
+###Events
 
 ## Running and Installation 🏃🏗
 ##### Balena.io
