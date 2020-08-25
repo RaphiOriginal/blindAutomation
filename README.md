@@ -55,7 +55,7 @@ task: TILT
 ```
 the default degree of `0` will be applied.
 ### Triggers
-Triggers are either a list of strings where each trigger just uses its default values.
+Triggers are either a list of strings where each trigger just uses its default values, or trigger objects. String and objects triggers can be mixed in the list.
 Available triggers are:
 * `SUNRISE` Will open the blind at sunrise
 * `SUNSET` Will close the blind at sunset
@@ -182,7 +182,20 @@ triggers:
 ...
 ```
 ### Events
-
+Events are basically triggers too. But they can't be calculated becaus we can't see when they happens in advance.
+Similar to triggers are events also in a list as string or object representation.
+The weather is checked every three minutes and will therefore activate or deactivate the events depending on the weather status.
+####Weather based events
+Following weather based events are available:
+* `CLOUDY` Will open the blinds on a cloudy day ☁️
+* `RAIN` Will open the blinds on a rainy day 🌧
+* `CLEAR` Will close the blinds when the sky is clear ☀️
+* `STORM` Will open the blinds when there is a storm ongoing ⛈
+* `DRIZZLE` Will open the blinds when there is drizzle
+* `SNOW` Will open the blinds when it's snowing 🌨
+* `WIND` Will open the blinds when it's windy 🌬
+* `SPECIAL` Will open the blinds when there is a special weather event like a tornado 🌪 or fog 🌫
+#####
 ## Running and Installation 🏃🏗
 ##### Balena.io
 After you downloaded the project and prepared your settings file, the easiest way to do it is by deploying it with [balena](https://www.balena.io/os)
