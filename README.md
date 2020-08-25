@@ -43,7 +43,7 @@ Tasks defines the actual work that is possible to do. Following tasks are availa
 * `OPEN` Opens the blinds
 * `CLOSE` Closes the blinds
 * `TILT` Will tilt the blinds
-You can define how much the blind should tilt by passing a degree value between 0 and 90, where 0 means fully tilt and 90 means closed.
+You can define how much the blind should tilt by passing a degree value between `0`° and `90`°, where `0`° means fully tilt and `90`° means closed.
 Example:
 ```
 task: 
