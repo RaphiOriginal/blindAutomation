@@ -52,24 +52,39 @@ api: pvlib
 timezone: 'Europe/Zurich'
 ```
 ### Building data
-Basics:
-```
-walls: #List of walls with blinds of your home
-  - wall: #Represents one side of your house with possible multiple blinds
-      name: #where the wall is (can be any name, e.g. 'south' or 'green wall'')
-      in: #When the sun azimuth starts to hit the wall
-      out: #When the sun azimuth stops to hit the wall
-      blinds: #list of blinds you'd like to manage for this wall
-        - blind:
-            name: #Name of blind to identify them more easy
-            in: #(optional) Overrides the wall values for this blind
-            out: #(optional) Overrides the wall values for this blind
-            device-id: #deviceid (can be found in the shelly app in settings) usualy last 6 characters of macadress
-            device-typ: SHELLY #Fix set to Shelly since no other controllers supported yet
-            tilt_time: #(optional) overrides the defaulttime the blind needs to fully tilt
-            triggers: #List of triggers you'd like to apply for the device`
-            events: #List of events sou'd like to apply for the device
-```
+To be able to get all the times correct for example for the `SUNIN` and `SUNOUT` trigger, are some data of the building needes.
+#### Walls
+Of course has every building some walls where possible shutters to be configured are. That's why we need some data for each wall with shutter you'd like to manage.
+* `walls:` holds list of walls that you want to controll
+#### Wall
+Holds data like when the sun will enter and leafe the wall. On an open field without other buildings or trees at a straight wall, that should be a range about 180° between those properties. Of course with other buildings making shadow, it can be less.
+* `wall:` holds the actual data for a wall
+  * Properties are `name`, `in`, `out`, `blinds`
+  * `name:` To give the wall a name for better management and log output.
+  * `in:` Azimuth when the sun would enter the wall.
+    * Value must be between `0`° and `360`°.
+  * `out:` Azimuth when the sun would leave the wall.
+    * Value must be between `0`° and `360`°.
+  * `blinds:` List of blind` that are build into the wall.
+#### Blind
+The `blind` property holds the actual date about the blind and it's device that controls the blind.
+* `name:` Name of the blind some thing like 'Kitchen'
+* `in:` (optional) Overrides the wall azimuth for sun income trigger
+    * Value must be between `0`° and `360`°.
+* `out:` (optional) Overrides the wall azimuth for sun outgoing trigger
+    * Value must be between `0`° and `360`°.
+* `device-id:` ID of the device
+  * string
+* `device-typ:` Defines which device controlls the blind
+  * Possible values are `SHELLY`
+* `tilt-time:` (optional) Overrides the time in seconds the blind needs to tilt from 90° to 0°
+  * If not set the default value is 1.2 seconds
+* `triggers:` List that holds the trigger
+  * List of `trigger` for example `SUNRISE` or `SUNOUT`
+* `events:` List that holds the event
+  * List of `event` for example `CLOUDY` or `WIND`
+#### Example
+For an example of those properties or more please take a look at [settings.yaml.template](https://github.com/RaphiOriginal/blindAutomation/blob/master/settings.yaml.template).
 ### Tasks
 Tasks defines the actual work that is possible to do. Following tasks are available:
 * `OPEN` Opens the blinds
