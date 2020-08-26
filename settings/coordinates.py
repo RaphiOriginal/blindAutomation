@@ -4,3 +4,6 @@ class Coordinates:
         self.lat: float = lat
         self.long: float = long
         self.alt: int = alt
+
+    def __repr__(self):
+        return 'Coordinates: {latitude: %s, longitude: %s, altitude: %s}' % (self.lat, self.long, self.alt)

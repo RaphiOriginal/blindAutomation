@@ -2,14 +2,14 @@
 from datetime import datetime
 from sched import scheduler
 
-from building.blind_interface import BlindInterface
+from building.interface import Shutter
 from jobs.worker import batch
 
 
 class Job:
-    def __init__(self, trigger, blind: BlindInterface):
+    def __init__(self, trigger, blind: Shutter):
         self.__trigger = trigger
-        self.__blind: BlindInterface = blind
+        self.__blind: Shutter = blind
         self.__applies: bool = trigger.applies()
 
     def schedule(self, schedule: scheduler):

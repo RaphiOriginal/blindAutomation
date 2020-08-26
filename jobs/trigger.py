@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import logging
 from datetime import datetime, time, timedelta
+from typing import Optional
 
 import global_date
-from building.blind_interface import BlindInterface
+from building.interface import Shutter
 from jobs import task
 from jobs.interface import Trigger
 from jobs.job import Job
@@ -16,9 +17,9 @@ logger = logging.getLogger(__name__)
 
 
 class TriggerBase(Trigger):
-    def __init__(self, task: Task, runtime: datetime):
+    def __init__(self, task: Task, runtime: Optional[datetime]):
         self._task: Task = task
-        self._time: datetime = runtime
+        self._time: Optional[datetime] = runtime
         self._offset: int = 0
         self._on: [str] = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU']
 
@@ -28,7 +29,7 @@ class TriggerBase(Trigger):
     def set_task(self, task: Task):
         self._task = task
 
-    def time(self) -> datetime:
+    def time(self) -> Optional[datetime]:
         return self.__apply_offset()
 
     def set_offset(self, offset: int):
@@ -40,8 +41,10 @@ class TriggerBase(Trigger):
     def applies(self) -> bool:
         return date.applies(self.time(), self._on)
 
-    def __apply_offset(self) -> datetime:
+    def __apply_offset(self) -> Optional[datetime]:
         delta = timedelta(minutes=abs(self._offset))
+        if not self._time:
+            return self._time
         if self._offset > 0:
             return self._time + delta
         if self._offset < 0:
@@ -235,14 +238,14 @@ class PositionTrigger(TriggerBase):
         return 'ElevationTrigger: { %s }' % (super(PositionTrigger, self).__repr__())
 
 
-def apply_triggers(manager: JobManager, sundata: Sundata, blind: BlindInterface):
+def apply_triggers(manager: JobManager, sundata: Sundata, blind: Shutter):
     triggers = extract_triggers(blind, sundata)
     logger.debug('Triggers for {}: {}'.format(blind.name, triggers))
     for trigger in triggers:
         manager.add(Job(trigger, blind))
 
 
-def extract_triggers(blind: BlindInterface, sundata: Sundata) -> [Trigger]:
+def extract_triggers(blind: Shutter, sundata: Sundata) -> [Trigger]:
     triggers: [Trigger] = []
     for trigger in blind.triggers:
         if build_trigger(trigger, SunriseTrigger.type(), SunriseTrigger.create, triggers, sundata=sundata) or \

@@ -21,6 +21,31 @@ walls:
                   offset: 30
               - SUNIN
               - SUNOUT
+            events:
+              - CLEAR:
+                  night: False
+              - CLOUDY:
+                  coverage: 85
+              - RAIN:
+                  intensity:
+                    - MODERATE
+              - STORM:
+                  task: CLOSE
+                  intensity:
+                    - RAGGED
+              - DRIZZLE:
+                  intensity:
+                    - NORMAL
+              - SNOW:
+                  intensity:
+                    - SLEET
+              - SPECIAL:
+                  events:
+                    - TORNADO
+              - WIND:
+                  direction:
+                    from: 180.4
+                    to: 200
         - blind:
             name: Blind2
             out: 222
@@ -48,6 +73,15 @@ walls:
               - TIME:
                   task: TILT
                   time: '16:00:00'
+            events:
+              - CLOUDY
+              - RAIN
+              - CLEAR
+              - STORM
+              - DRIZZLE
+              - SNOW
+              - SPECIAL
+              - WIND
   - wall:
       name: west
       in: 200

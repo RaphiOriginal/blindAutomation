@@ -9,7 +9,7 @@ from tests.mock.device import DeviceMock
 class Task(unittest.TestCase):
     def test_done_pretilt_open_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         Open(blind).do()
         self.assertEqual(1, device.open_counter)
         self.assertEqual(State.OPEN, device.stats())
@@ -18,7 +18,7 @@ class Task(unittest.TestCase):
 
     def test_done_pretilt_close_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         Close(blind).do()
         self.assertEqual(1, device.close_counter)
         self.assertEqual(State.CLOSED, device.stats())
@@ -27,7 +27,7 @@ class Task(unittest.TestCase):
 
     def test_done_pretilt_tilt_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         Tilt(blind).do()
         self.assertEqual(1, device.tilt_counter)
         self.assertEqual(State.TILT, device.stats())
@@ -36,14 +36,14 @@ class Task(unittest.TestCase):
 
     def test_done_pretilt_moved_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         device.move(50)
         prepare = PreTilt(blind)
         self.assertFalse(prepare.done())
 
     def test_done_tilt_open_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         Open(blind).do()
         self.assertEqual(1, device.open_counter)
         self.assertEqual(State.OPEN, device.stats())
@@ -52,7 +52,7 @@ class Task(unittest.TestCase):
 
     def test_done_tilt_close_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         Close(blind).do()
         self.assertEqual(1, device.close_counter)
         self.assertEqual(State.CLOSED, device.stats())
@@ -61,7 +61,7 @@ class Task(unittest.TestCase):
 
     def test_done_tilt_tilt_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         Tilt(blind).do()
         self.assertEqual(1, device.tilt_counter)
         self.assertEqual(State.TILT, device.stats())
@@ -70,7 +70,7 @@ class Task(unittest.TestCase):
 
     def test_done_tilt_different_tilt_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         Tilt(blind, 45).do()
         self.assertEqual(1, device.tilt_counter)
         self.assertEqual(State.TILT, device.stats())
@@ -79,14 +79,14 @@ class Task(unittest.TestCase):
 
     def test_done_tilt_moved_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         device.move(50)
         tilt = Tilt(blind)
         self.assertFalse(tilt.done())
 
     def test_done_close_open_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         Open(blind).do()
         self.assertEqual(1, device.open_counter)
         self.assertEqual(State.OPEN, device.stats())
@@ -95,7 +95,7 @@ class Task(unittest.TestCase):
 
     def test_done_close_close_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         Close(blind).do()
         self.assertEqual(1, device.close_counter)
         self.assertEqual(State.CLOSED, device.stats())
@@ -104,7 +104,7 @@ class Task(unittest.TestCase):
 
     def test_done_close_tilt_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         Tilt(blind).do()
         self.assertEqual(1, device.tilt_counter)
         self.assertEqual(State.TILT, device.stats())
@@ -113,14 +113,14 @@ class Task(unittest.TestCase):
 
     def test_done_close_moved_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         device.move(50)
         close = Close(blind)
         self.assertFalse(close.done())
 
     def test_done_open_open_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         Open(blind).do()
         self.assertEqual(1, device.open_counter)
         self.assertEqual(State.OPEN, device.stats())
@@ -129,7 +129,7 @@ class Task(unittest.TestCase):
 
     def test_done_open_close_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         Close(blind).do()
         self.assertEqual(1, device.close_counter)
         self.assertEqual(State.CLOSED, device.stats())
@@ -138,7 +138,7 @@ class Task(unittest.TestCase):
 
     def test_done_open_tilt_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         Tilt(blind).do()
         self.assertEqual(1, device.tilt_counter)
         self.assertEqual(State.TILT, device.stats())
@@ -147,7 +147,7 @@ class Task(unittest.TestCase):
 
     def test_done_open_moved_state(self):
         device = DeviceMock('TestDevice')
-        blind = Blind('Test', 0, 0, device, [])
+        blind = Blind('Test', 0, 0, device, [], [])
         device.move(50)
         task = Open(blind)
         self.assertFalse(task.done())

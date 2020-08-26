@@ -1,42 +1,60 @@
+#!/usr/bin/env python3
+from typing import List, Optional
+
 from api.api import ObservableSunAPI
-from building.blind_interface import BlindInterface
+from building.interface import Shutter
 from building.state import State
 from device.device import Device
+from event.blocker import Blocker
+from event.event import Event
+from event.trigger import Trigger
 from jobs import trigger
 from jobs.jobmanager import manager
+from observable.observable import Subject
 
 
-class Blind(BlindInterface):
-    def __init__(self, name: str, sun_in: float, sun_out: float, device: Device, triggers: []):
+class Blind(Shutter):
+    def __init__(self, name: str, sun_in: float, sun_out: float, device: Device, triggers: [], event_config: []):
         self._name: str = name
         self._sun_in: float = sun_in
         self._sun_out: float = sun_out
         self.device: Device = device
         self._triggers: [] = triggers
+        self._event_config: [] = event_config
+        self._events: [Event] = []
         self.state: State = State.UNKNOWN
         self.__degree: int = 90
         self.__duration: float = 1.2
+        self._blocker: Blocker = Blocker()
 
-    def open(self) -> bool:
-        self.__degree = 0
-        return self.device.open()
+    def open(self) -> Optional[Blocker]:
+        if self.__not_blocking():
+            self.__degree = 0
+            self.device.open()
+        return self._blocker
 
-    def close(self) -> bool:
-        self.__degree = 90
-        return self.device.close()
+    def close(self) -> Optional[Blocker]:
+        if self.__not_blocking():
+            self.__degree = 90
+            self.device.close()
+        return self._blocker
 
-    def move(self, pos: int) -> bool:
-        return self.device.move(pos)
+    def move(self, pos: int) -> Optional[Blocker]:
+        if self.__not_blocking():
+            self.device.move(pos)
+        return self._blocker
 
-    def tilt(self, degree: int) -> bool:
-        target = min(max(degree, 0), 90)
-        offset = target - self.__degree
-        duration = abs(self.__duration / 90 * offset)
-        self.__degree = target
-        if offset > 0:
-            return self.device.tilt('close', duration)
-        else:
-            return self.device.tilt('open', duration)
+    def tilt(self, degree: int) -> Optional[Blocker]:
+        if self.__not_blocking():
+            target = min(max(degree, 0), 90)
+            offset = target - self.__degree
+            duration = abs(self.__duration / 90 * offset)
+            self.__degree = target
+            if offset > 0:
+                self.device.tilt('close', duration)
+            else:
+                self.device.tilt('open', duration)
+        return self._blocker
 
     def stats(self) -> State:
         self.state = self.device.stats()
@@ -47,6 +65,15 @@ class Blind(BlindInterface):
 
     def overwrite_degree(self, degree: int):
         self.__degree = degree
+
+    def add_events(self, events: [Event]):
+        for event in events:
+            self._events.append(event)
+
+    @property
+    def events(self) -> [Event]:
+        self._events.sort(key=lambda event: not event.active)
+        return self._events
 
     @property
     def id(self):
@@ -69,12 +96,34 @@ class Blind(BlindInterface):
         return self._sun_out
 
     @property
-    def triggers(self) -> []:
+    def triggers(self) -> List:
         return self._triggers
 
-    def update(self, api: ObservableSunAPI):
-        trigger.apply_triggers(manager, api.sundata, self)
+    @property
+    def event_configs(self) -> List:
+        return self._event_config
+
+    @property
+    def blocked(self) -> bool:
+        if self._blocker:
+            return self._blocker.blocking
+        return False
+
+    @property
+    def blocker(self) -> Blocker:
+        return self._blocker
+
+    def update(self, subject: Subject):
+        if isinstance(subject, ObservableSunAPI):
+            trigger.apply_triggers(manager, subject.sundata, self)
+        if isinstance(subject, Trigger):
+            for event in self.events:
+                if event.applies(subject.trigger, self):
+                    event.do(self)
+
+    def __not_blocking(self) -> bool:
+        return self._blocker is None or not self._blocker.blocking
 
     def __repr__(self):
-        return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, triggers: %s, state: %s }' % \
-               (self.name, self.sun_in, self.sun_out, self.device, self.triggers, self.state)
+        return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, events: %s, triggers: %s, state: %s, event_config: %s}' \
+               % (self.name, self.sun_in, self.sun_out, self.device, self._events, self.triggers, self.state, self._event_config)

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 import logging
+import os
 
 import urllib3
 
 from building import building
 from device.device import Device
 from settings import settings
+from weather.api import OpenWeatherAPI
 
 
 def searching(devices: [Device]) -> bool:

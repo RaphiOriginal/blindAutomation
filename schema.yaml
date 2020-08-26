@@ -12,8 +12,8 @@ coordinates:
 wall:
   wall:
     name: str()
-    in: int()
-    out: int()
+    in: int(min=0, max=360)
+    out: int(min=0, max=360)
     blinds: list(include('blind'), required=False)
 
 blind:
@@ -21,10 +21,11 @@ blind:
     name: str()
     device-id: str()
     device-typ: enum('SHELLY')
-    in: int(required=False)
-    out: int(required=False)
+    in: int(min=0, max=360, required=False)
+    out: int(min=0, max=360, required=False)
     tilt_time: num(required=False)
     triggers: list(include('Trigger'), required=False)
+    events: list(include('Event'), required=False)
 
 Trigger: any(include('TriggerStr'), include('TriggerObj'))
 
@@ -65,14 +66,14 @@ SUNOUT:
 
 AZIMUTH:
   AZIMUTH:
-    azimuth: int()
+    azimuth: int(min=0, max=360)
     task: include('task', required=False)
     at: list(include('day'), required=False)
     offset: int(required=False)
 
 ELEVATION:
   ELEVATION:
-    elevation: int()
+    elevation: int(min=-90, max=90)
     direction: str(any('RISE', 'SET'))
     task: include('task', required=False)
     at: list(include('day'), required=False)
@@ -80,12 +81,70 @@ ELEVATION:
 
 POSITION:
   POSITION:
-    azimuth: int()
-    elevation: int()
+    azimuth: int(min=0, max=360)
+    elevation: int(min=-90, max=90)
     direction: str(any('RISE', 'SET'))
     task: include('task')
     at: list(include('day'), required=False)
     offset: int(required=False)
+
+Event: any(include('EventStr'), include('EventObj'))
+
+EventStr: enum('CLOUDY', 'RAIN', 'CLEAR', 'STORM', 'DRIZZLE', 'SNOW', 'SPECIAL', 'WIND')
+
+EventObj: any(include('CLEAR'), include('CLOUDY'), include('RAIN'), include('STORM'), include('DRIZZLE'), include('SNOW'), include('SPECIAL'), include('WIND'))
+
+CLEAR:
+  CLEAR:
+    night: bool(required=False)
+    task: include('task', required=False)
+
+CLOUDY:
+  CLOUDY:
+    night: bool(required=False)
+    task: include('task', required=False)
+    coverage: int(min=0, max=100, required=False)
+
+RAIN:
+  RAIN:
+    night: bool(required=False)
+    task: include('task', required=False)
+    intensity: list(enum('MODERATE', 'VERY_HEAVY', 'EXTREME', 'FREEZING', 'LIGHT_SHOWER', 'HEAVY_SHOWER', 'RAGGED_SHOWER', 'SHOWER', 'HEAVY', 'LIGHT'), required=False)
+
+STORM:
+  STORM:
+    night: bool(required=False)
+    task: include('task', required=False)
+    intensity: list(enum('LIGHT_RAIN', 'RAIN', 'HEAVY_RAIN', 'LIGHT', 'NORMAL', 'HEAVY', 'RAGGED', 'LIGHT_DRIZZLE', 'DRIZZLE', 'HEAVY_DRIZZLE'), required=False)
+
+DRIZZLE:
+  DRIZZLE:
+    night: bool(required=False)
+    task: include('task', required=False)
+    intensity: list(enum('LIGHT_RAIN', 'RAIN', 'LIGHT', 'NORMAL', 'HEAVY', 'HEAVY_RAIN', 'SHOWER_RAIN', 'HEAVY_SHOWER_RAIN', 'SHOWER'), required=False)
+
+SNOW:
+  SNOW:
+    night: bool(required=False)
+    task: include('task', required=False)
+    intensity: list(enum('LIGHT_RAIN', 'RAIN', 'LIGHT', 'NORMAL', 'HEAVY', 'SHOWER', 'LIGHT_SHOWER', 'HEAVY_SHOWER', 'SLEET', 'LIGHT_SHOWER_SLEET', 'SHOWER_SLEET'), required=False)
+
+SPECIAL:
+  SPECIAL:
+    night: bool(required=False)
+    task: include('task', required=False)
+    events: list(enum('MIST', 'SMOKE', 'HAZE', 'WHIRLS', 'FOG', 'SAND', 'DUST', 'ASH', 'SQUALL', 'TORNADO'), required=False)
+
+WIND:
+  WIND:
+    night: bool(required=False)
+    task: include('task', required=False)
+    speed: num(min=0, required=False)
+    direction: include('wind_direction', required=False)
+
+wind_direction:
+  from: num(min=0)
+  to: num(min=0)
 
 task: any(enum('OPEN', 'CLOSE', 'TILT', 'HALF'), include('TILT'))
 

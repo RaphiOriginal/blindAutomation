@@ -1,12 +1,16 @@
+#!/usr/bin/env python3
 from abc import ABC, abstractmethod
+from typing import List, Optional
 
 from building.state import State
+from event.event import Event, EventBlocker
 from observable.observable import Observer
 
 
-class BlindInterface(Observer, ABC):
+class Shutter(Observer, ABC):
+
     @abstractmethod
-    def open(self) -> bool:
+    def open(self) -> Optional[EventBlocker]:
         """
         Command to open blind
         :return: true if command was successful
@@ -14,7 +18,7 @@ class BlindInterface(Observer, ABC):
         pass
 
     @abstractmethod
-    def close(self) -> bool:
+    def close(self) -> Optional[EventBlocker]:
         """
         Command to close blind
         :return: true if command was successful
@@ -22,7 +26,7 @@ class BlindInterface(Observer, ABC):
         pass
 
     @abstractmethod
-    def move(self, pos: int) -> bool:
+    def move(self, pos: int) -> Optional[EventBlocker]:
         """
         Command to move blind to a desired position
         :param pos: int Position the blind has move to
@@ -31,10 +35,10 @@ class BlindInterface(Observer, ABC):
         pass
 
     @abstractmethod
-    def tilt(self, degree: int) -> bool:
+    def tilt(self, degree: int) -> Optional[EventBlocker]:
         """
         Command to tilt blind to a specific degree
-        :param degree: int Degre the blind has to be tilted to
+        :param degree: int Degree the blind has to be tilted to
         :return: true if command was successful
         """
         pass
@@ -85,9 +89,17 @@ class BlindInterface(Observer, ABC):
         pass
 
     @abstractmethod
-    def triggers(self) -> []:
+    def triggers(self) -> List:
         """
         List of triggers in string or object representation
+        :return: List
+        """
+        pass
+
+    @abstractmethod
+    def event_configs(self) -> List:
+        """
+        List of event in string or object representation
         :return: List
         """
         pass
@@ -99,3 +111,37 @@ class BlindInterface(Observer, ABC):
         :return: int degree
         """
         pass
+
+    @abstractmethod
+    def add_events(self, events: [Event]):
+        """
+        Adds an event trigger to its internal list
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def events(self) -> [Event]:
+        """
+        Returns sorted list of events
+        :return: List of events
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def blocked(self) -> bool:
+        """
+        Check if blind is blocked
+        :return: True if blind is blocked
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def blocker(self) -> EventBlocker:
+        """
+        Returns the Blinds EventBlocker to activate or deactivate it to avoid task overwrites
+        :return: EventBlocker
+        """
+    pass
