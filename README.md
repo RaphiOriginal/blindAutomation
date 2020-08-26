@@ -15,11 +15,10 @@ copy and rename [settings.yaml.template](https://github.com/RaphiOriginal/blindA
 
 Basics:
 ```
-pvlib:
-  coordinates:
-    lat: #Latitude
-    long: #Longitude
-    alt: #Altitude
+coordinates:
+  lat: #Latitude
+  long: #Longitude
+  alt: #Altitude
 api: #Which api you want to use (pvlib is recommended here)
 timezone: #A time zone name (IANA)
 walls: #List of walls with blinds of your home
