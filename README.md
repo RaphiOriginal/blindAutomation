@@ -13,14 +13,47 @@ The API key must be configured as environment variable `OPEN_WEATHER_API_KEY` on
 ## Configuration settings.yaml 🎛
 copy and rename [settings.yaml.template](https://github.com/RaphiOriginal/blindAutomation/blob/master/settings.yaml.template) to settings.yaml and update the properties.
 
-Basics:
+### Main information
+There are some main information necessary like location data and timezone.
+#### Location
+For proper calculation the application needs your location as precise as possible:
+* `coordinates:`
+  * `lat:` Latitude of the building
+  * `long:` Longitude of the building
+  * `alt:` Altitude of the location
+##### Example
 ```
 coordinates:
-  lat: #Latitude
-  long: #Longitude
-  alt: #Altitude
-api: #Which api you want to use (pvlib is recommended here)
-timezone: #A time zone name (IANA)
+  lat: 47.3916
+  long: 8.0512
+  alt: 365
+```
+#### API
+* `api:` Defines which api should be used to calculate sundata. I recommend pvlib which will run on your device.
+  * Possible values are `pvlib` or `mock`, where mock is only for testing purposes where sunrise is 30 seconds after api call and all degrees are 30 seconds apart from each other.
+##### Example
+```
+api: pvlib
+```
+#### Timezone
+* `timezone:` define which timezone you're to match correct times e.g. for the `TIME`trigger.
+  * Check possible values on [Wikipedia](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) in the 'TZ database name' column.
+##### Example
+```
+timezone: 'Europe/Zurich'
+```
+#### Main information example
+```
+coordinates:
+  lat: 47.3916
+  long: 8.0512
+  alt: 365
+api: pvlib
+timezone: 'Europe/Zurich'
+```
+### Building data
+Basics:
+```
 walls: #List of walls with blinds of your home
   - wall: #Represents one side of your house with possible multiple blinds
       name: #where the wall is (can be any name, e.g. 'south' or 'green wall'')
