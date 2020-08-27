@@ -19,11 +19,10 @@ class Event(ABC):
         pass
 
     @abstractmethod
-    def do(self, on: S) -> bool:
+    def do(self, on: S):
         """
-        Execute the event
+        Execute the event task
         :param on: Blinds to be moved
-        :return: True if event was Successfully executed
         """
         pass
 
