@@ -5,7 +5,7 @@ from datetime import datetime
 from dateutil import parser
 
 from blind_automation.util import global_date
-from blind_automation.building.blind import Blind
+from blind_automation.building.blind.blind import Blind
 from blind_automation.jobs import trigger
 from blind_automation.jobs.task import Tilt, Close, Open
 from blind_automation.jobs.trigger import SunriseTrigger, SunsetTrigger, SunInTrigger, SunOutTrigger, TimeTrigger, AzimuthTrigger, \

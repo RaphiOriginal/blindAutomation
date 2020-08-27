@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import unittest
 
-from blind_automation.building.blind import Blind
+from blind_automation.building.blind.blind import Blind
 from blind_automation.building.state import State
 from blind_automation.device.device import Device
 from blind_automation.jobs import trigger

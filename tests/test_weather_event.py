@@ -2,7 +2,7 @@ import json
 import unittest
 from typing import Optional
 
-from blind_automation.building.blind import Blind
+from blind_automation.building.blind.blind import Blind
 from blind_automation.jobs.task import Open, Tilt, Close
 from tests.mock.device import DeviceMock
 from tests.mock.trigger_mock import TriggerMock

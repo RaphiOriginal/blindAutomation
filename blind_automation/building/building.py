@@ -2,7 +2,7 @@
 import logging
 import threading
 
-from .blind import Blind
+from .blind.blind import Blind
 from .wall import Wall
 from ..device import matcher
 from ..device.device import Device

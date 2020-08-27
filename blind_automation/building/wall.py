@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from blind_automation.building.blind import Blind
+from blind_automation.building.blind.blind import Blind
 from blind_automation.device.device import Device
 
 

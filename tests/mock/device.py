@@ -1,6 +1,6 @@
 from typing import Optional
 
-from blind_automation.building.blind_state import BlindState, Direction
+from blind_automation.building.blind.state import BlindState, Direction
 from blind_automation.building.state import State
 from blind_automation.device.device import Device
 

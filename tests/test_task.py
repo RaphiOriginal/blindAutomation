@@ -1,6 +1,6 @@
 import unittest
 
-from blind_automation.building.blind import Blind
+from blind_automation.building.blind.blind import Blind
 from blind_automation.building.state import State
 from blind_automation.jobs.task import PreTilt, Open, Close, Tilt
 from tests.mock.device import DeviceMock

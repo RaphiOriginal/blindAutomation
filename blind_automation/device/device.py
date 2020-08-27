@@ -5,7 +5,7 @@ from enum import Enum
 
 import requests
 
-from blind_automation.building.blind_state import fetch_blindstate
+from blind_automation.building.blind.state import fetch_blindstate
 from blind_automation.building.state import State
 
 logger = logging.getLogger(__name__)
