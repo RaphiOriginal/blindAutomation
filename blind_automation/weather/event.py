@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
+from threading import Thread
 from typing import Any, Optional
 
 from ..building.interface import Shutter
@@ -35,27 +36,22 @@ class WeatherEvent(Event, ABC):
             return self.__applies(trigger, on)
         return False
 
-    def do(self, on: Shutter) -> bool:
+    def do(self, on: Shutter):
         if isinstance(on, Shutter):
             if not self.active:
                 logger.info('On {} Event {} activated'.format(on.name, self))
                 self._set_previous(on)
                 self.activate()
-                success = True
                 for task in self._task.get(on):
-                    success = task[0].do() and success
-                if success:
-                    on.blocker.block()
-                return success
+                    self._execute(task[0])
+                on.blocker.block()
             else:
                 logger.info('On {} Event {} deactivated'.format(on.name, self))
                 self.deactivate()
                 on.blocker.unblock()
-                success = True
                 if self.undo(on.blocker.last):
                     for task in self.undo().get(on):
-                        success = task[0].do() and success
-                return success
+                        self._execute(task[0])
         return False
 
     def __applies(self, weather: Weather, on: Shutter) -> bool:
@@ -110,6 +106,11 @@ class WeatherEvent(Event, ABC):
     @property
     def active(self) -> bool:
         return self.__active
+
+    @staticmethod
+    def _execute(task: Task):
+        thread = Thread(target=task.do, daemon=True)
+        thread.start()
 
     @staticmethod
     @abstractmethod
