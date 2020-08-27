@@ -1,6 +1,6 @@
-from event.trigger import Trigger
-from observable.observable import Subject, Observer
-from weather.weather import Weather
+from blind_automation.event.trigger import Trigger
+from blind_automation.observable.observable import Subject, Observer
+from blind_automation.weather.weather import Weather
 
 
 class TriggerMock(Subject, Trigger):

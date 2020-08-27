@@ -2,8 +2,8 @@
 import json
 import unittest
 
-from weather.enum import WeatherSubConditionEnum
-from weather.weather import WeatherConditionEnum, Condition, Weather, Temperature, Atmosphere, Wind, Clouds, Sun
+from blind_automation.weather.enum import WeatherSubConditionEnum
+from blind_automation.weather.weather import WeatherConditionEnum, Condition, Weather, Temperature, Atmosphere, Wind, Clouds, Sun
 
 
 class WeatherConditionTestCase(unittest.TestCase):

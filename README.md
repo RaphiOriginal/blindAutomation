@@ -11,7 +11,7 @@ For the Weather data is an account and api key from [OpenWeather](https://openwe
 The API key must be configured as environment variable `OPEN_WEATHER_API_KEY` on the run environment.
 
 ## Configuration settings.yaml 🎛
-copy and rename [settings.yaml.template](https://github.com/RaphiOriginal/blindAutomation/blob/master/settings.yaml.template) to settings.yaml and update the properties.
+copy and rename [settings.yaml.template](https://github.com/RaphiOriginal/blindAutomation/blob/reorganisation/data/settings.yaml.template) to settings.yaml and update the properties.
 
 ### Main information
 There are some main information necessary like location data and timezone.

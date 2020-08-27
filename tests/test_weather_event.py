@@ -2,15 +2,15 @@ import json
 import unittest
 from typing import Optional
 
-from building.blind import Blind
-from jobs.task import Open, Tilt, Close
+from blind_automation.building.blind.blind import Blind
+from blind_automation.jobs.task import Open, Tilt, Close
 from tests.mock.device import DeviceMock
 from tests.mock.trigger_mock import TriggerMock
-from weather import event
-from weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
-from weather.event import CloudsEvent, WeatherEvent, RainEvent, ClearEvent, StormEvent, DrizzleEvent, SnowEvent, \
+from blind_automation.weather import event
+from blind_automation.weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
+from blind_automation.weather.event import CloudsEvent, WeatherEvent, RainEvent, ClearEvent, StormEvent, DrizzleEvent, SnowEvent, \
     SpecialWeatherEvent, WindEvent
-from weather.weather import Weather
+from blind_automation.weather.weather import Weather
 
 
 class WeatherEventCase(unittest.TestCase):

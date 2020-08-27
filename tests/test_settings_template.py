@@ -5,8 +5,8 @@ from yamale import YamaleTestCase
 
 
 class SettingsTest(YamaleTestCase):
-    schema = 'schema.yaml'
-    yaml = 'settings.yaml.template'
+    schema = 'blind_automation/schema.yaml'
+    yaml = 'data/settings.yaml.template'
 
     def test_settings_valid(self):
         self.assertTrue(self.validate())

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 import unittest
 
-from building.blind import Blind
-from building.state import State
-from device.device import Device
-from jobs import trigger
-from jobs.job import Job
-from jobs.jobmanager import manager
-from tests.mock.mocks import SunAPIMock
+from blind_automation.building.blind.blind import Blind
+from blind_automation.building.state import State
+from blind_automation.device.device import Device
+from blind_automation.jobs import trigger
+from blind_automation.jobs.job import Job
+from blind_automation.jobs.jobmanager import manager
+from data.mock.api import SunAPIMock
 
 
 class ParallelBlindsCase(unittest.TestCase):
