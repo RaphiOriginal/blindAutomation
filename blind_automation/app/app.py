@@ -10,13 +10,13 @@ from blind_automation.pvlibrary.pvlib_api import PVLibAPI
 from blind_automation.settings import settings
 from blind_automation.util import global_date
 from blind_automation.weather.service import WeatherService
-from tests.mock.mocks import SunAPIMock
+from data.mock.api import SunAPIMock
 
 logger = getLogger(__name__)
 
 
 class App:
-    def __init__(self, setting_file: str = 'blind_automation/settings.yaml', log: str = 'INFO'):
+    def __init__(self, setting_file: str = 'data/settings.yaml', log: str = 'INFO'):
         settings.load_settings(setting_file)
         self._api = self.__api(settings.root.get('api'))
         self._weather_service = WeatherService()

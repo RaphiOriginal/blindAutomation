@@ -22,7 +22,7 @@ def convert_coordinates(coords: dict) -> Coordinates:
     return Coordinates(coords.get('lat'), coords.get('long'))
 
 
-def load_settings(settings_file: str = 'blind_automation/settings.yaml'):
+def load_settings(settings_file: str = 'data/settings.yaml'):
     if path.exists(settings_file):
         schema = yamale.make_schema('blind_automation/schema.yaml')
         data = yamale.make_data(settings_file)

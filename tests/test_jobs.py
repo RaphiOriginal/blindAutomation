@@ -7,7 +7,7 @@ from blind_automation.device.device import Device
 from blind_automation.jobs import trigger
 from blind_automation.jobs.job import Job
 from blind_automation.jobs.jobmanager import manager
-from tests.mock.mocks import SunAPIMock
+from data.mock.api import SunAPIMock
 
 
 class ParallelBlindsCase(unittest.TestCase):
