@@ -48,7 +48,7 @@ class WeatherEvent(Event, ABC):
                     on.blocker.block()
                 return success
             else:
-                logger.info('On {} Event {} activated'.format(on.name, self))
+                logger.info('On {} Event {} deactivated'.format(on.name, self))
                 self.deactivate()
                 on.blocker.unblock()
                 success = True
