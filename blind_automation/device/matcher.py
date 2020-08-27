@@ -2,7 +2,7 @@
 import logging
 
 from blind_automation.device.device import Typ
-from blind_automation.shelly.shelly import Shelly
+from blind_automation.device.shelly import Shelly
 
 logger = logging.getLogger(__name__)
 

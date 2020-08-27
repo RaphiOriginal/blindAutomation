@@ -4,9 +4,9 @@ import threading
 
 from .blind import Blind
 from .wall import Wall
-from ..device import device_matcher
+from ..device import matcher
 from ..device.device import Device
-from ..device.device_manager import DeviceManager
+from ..device.manager import DeviceManager
 from ..settings import settings
 
 logger = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ def prepare_walls() -> [Wall]:
                 blind = blind_item.get('blind')
                 in_sun = w.in_sun
                 out_sun = w.out_sun
-                controller = device_matcher.create(blind.get('device-id'), blind.get('device-typ'))
+                controller = matcher.create(blind.get('device-id'), blind.get('device-typ'))
                 if 'triggers' in blind.keys():
                     triggers = blind.get('triggers')
                 if 'events' in blind.keys():
