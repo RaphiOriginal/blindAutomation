@@ -10,7 +10,7 @@ from blind_automation.jobs.job import Job
 from blind_automation.jobs.jobmanager import JobManager
 from blind_automation.jobs.task import Task, Open, Tilt, Close
 from blind_automation.sun.sundata import Sundata
-from blind_automation.util import date, global_date
+from blind_automation.util import dayutil, dateutil
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class TriggerBase(Trigger):
         self._on = on
 
     def applies(self) -> bool:
-        return date.applies(self.time(), self._on)
+        return dayutil.applies(self.time(), self._on)
 
     def __apply_offset(self) -> Optional[datetime]:
         delta = timedelta(minutes=abs(self._offset))
@@ -144,8 +144,8 @@ class TimeTrigger(TriggerBase):
 
     @staticmethod
     def __prepare_runtime(runtime: time) -> datetime:
-        return global_date.date.current.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second,
-                                                microsecond=0)
+        return dateutil.date.current.replace(hour=runtime.hour, minute=runtime.minute, second=runtime.second,
+                                             microsecond=0)
 
     @staticmethod
     def type() -> str:
@@ -307,4 +307,4 @@ def set_offset(trigger: Trigger, triggerdict):
 def set_on(trigger: Trigger, triggerdict):
     if 'at' in triggerdict:
         on = triggerdict.get('at')
-        trigger.set_days(date.parse_config(on))
+        trigger.set_days(dayutil.parse_config(on))

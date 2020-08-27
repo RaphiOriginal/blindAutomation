@@ -4,7 +4,7 @@ from datetime import datetime
 
 from dateutil import parser
 
-from blind_automation.util import global_date
+from blind_automation.util import dateutil
 from blind_automation.building.blind.blind import Blind
 from blind_automation.jobs import trigger
 from blind_automation.jobs.task import Tilt, Close, Open
@@ -58,14 +58,14 @@ class TriggerTest(unittest.TestCase):
             self.assertEqual('2020-07-27T05:59:00+02:00', item.time().isoformat())
 
     def test_extract_time(self):
-        global_date.date.next()
+        dateutil.date.next()
         triggers = [{'TIME': {'task': 'CLOSE', 'time': '16:00:00'}}]
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(1, len(result))
         self.assertEqual(Close.type(), result[0].task().type())
         for item in result:
             self.assertEqual(TimeTrigger.type(), item.type())
-            now = datetime.now(global_date.zone)
+            now = datetime.now(dateutil.zone)
             self.assertEqual(now.date().isoformat() + 'T16:00:00+02:00', item.time().isoformat())
 
     def test_no_match(self):
@@ -121,7 +121,7 @@ class TriggerTest(unittest.TestCase):
         result = trigger.extract_triggers(blind(triggers), sundata())
         self.assertEqual(6, len(result))
         self.assertEqual(TimeTrigger.type(), result[4].type())
-        now = datetime.now(global_date.zone)
+        now = datetime.now(dateutil.zone)
         self.assertEqual(now.date().isoformat() + 'T00:00:01+02:00', result[4].time().isoformat())
         self.assertEqual(SunriseTrigger.type(), result[0].type())
         self.assertEqual(SunInTrigger.type(), result[1].type())
@@ -178,17 +178,17 @@ def blind(triggers: []) -> Blind:
 
 
 def sundata() -> Sundata:
-    sunrise = parser.parse('2020-07-27T03:59:00Z').astimezone(global_date.zone)
-    sunset = parser.parse('2020-07-27T19:08:00Z').astimezone(global_date.zone)
-    date = parser.parse('2020-07-27T03:59:00Z').astimezone(global_date.zone)
+    sunrise = parser.parse('2020-07-27T03:59:00Z').astimezone(dateutil.zone)
+    sunset = parser.parse('2020-07-27T19:08:00Z').astimezone(dateutil.zone)
+    date = parser.parse('2020-07-27T03:59:00Z').astimezone(dateutil.zone)
     azimuth = Azimuth(date, 15)
     elevation = Elevation(date, 15)
     position = Position(date, azimuth, elevation)
-    date2 = parser.parse('2020-07-27T15:08:00Z').astimezone(global_date.zone)
+    date2 = parser.parse('2020-07-27T15:08:00Z').astimezone(dateutil.zone)
     azimuth2 = Azimuth(date2, 69)
     elevation2 = Elevation(date2, 23.1)
     position2 = Position(date2, azimuth2, elevation2)
-    date3 = parser.parse('2020-07-27T19:08:00Z').astimezone(global_date.zone)
+    date3 = parser.parse('2020-07-27T19:08:00Z').astimezone(dateutil.zone)
     azimuth3 = Azimuth(date3, 189)
     elevation3 = Elevation(date3, 15)
     position3 = Position(date3, azimuth3, elevation3)

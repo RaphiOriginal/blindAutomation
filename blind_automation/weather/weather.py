@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 
-from blind_automation.util import global_date
+from blind_automation.util import dateutil
 from blind_automation.weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
 from blind_automation.weather.interface import ConditionData, WeatherData, TemperatureData, AtmosphereData, WindData, CloudsData, SunData
 
@@ -158,8 +158,8 @@ class Sun(SunData):
     def __parse_sun(self):
         sunrise = self.__data.get('sunrise')
         sunset = self.__data.get('sunset')
-        self.__sunrise = datetime.fromtimestamp(sunrise, global_date.zone)
-        self.__sunset = datetime.fromtimestamp(sunset, global_date.zone)
+        self.__sunrise = datetime.fromtimestamp(sunrise, dateutil.zone)
+        self.__sunset = datetime.fromtimestamp(sunset, dateutil.zone)
 
     def __repr__(self):
         return 'Sun: {sunrise: %s, sunset: %s}' % (self.sunrise, self.sunset)
@@ -213,7 +213,7 @@ class Weather(WeatherData):
 
     def __parse_time(self) -> datetime:
         timestamp = self.__data['dt']
-        return datetime.fromtimestamp(timestamp, global_date.zone)
+        return datetime.fromtimestamp(timestamp, dateutil.zone)
 
     def __repr__(self):
         return 'Weather: {%s, %s, %s, %s, %s, %s, time: %s}' % \

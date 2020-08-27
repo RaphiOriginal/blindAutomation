@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from datetime import datetime, timedelta
 
-from blind_automation.util import global_date
+from blind_automation.util import dateutil
 from blind_automation.api.api import ObservableSunAPI
 from blind_automation.sun.azimuth import Azimuth
 from blind_automation.sun.elevation import Elevation
@@ -15,7 +15,7 @@ class SunAPIMock(ObservableSunAPI):
         return self.sundata
 
 
-def get_sundata_mock(date: datetime = datetime.now(global_date.zone), time_delta: int = 10):
+def get_sundata_mock(date: datetime = datetime.now(dateutil.zone), time_delta: int = 10):
     delta = timedelta(seconds=time_delta)
     multiplier = 1
     positions: [Position] = []

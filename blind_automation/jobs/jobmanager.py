@@ -5,19 +5,19 @@ import time
 from collections import defaultdict
 from datetime import datetime, timedelta
 
-from blind_automation.util import global_date
+from blind_automation.util import dateutil
 from blind_automation.jobs.job import Job
 
 logger = logging.getLogger(__name__)
 
 
 def now():
-    return datetime.now(global_date.zone)
+    return datetime.now(dateutil.zone)
 
 
 def delay(delta):
     if isinstance(delta, timedelta):
-        until = datetime.now(global_date.zone) + delta
+        until = datetime.now(dateutil.zone) + delta
         logger.info('Wait until {}'.format(until.isoformat()))
         time.sleep(delta.total_seconds())
     if isinstance(delta, int):
@@ -42,7 +42,7 @@ class JobManager:
             jobs.sort(key=lambda job: job.get_time())
 
             applies = list(filter(lambda job: job.applies(), jobs))
-            future = list(filter(lambda job: job.get_time() > datetime.now(global_date.zone), applies))
+            future = list(filter(lambda job: job.get_time() > datetime.now(dateutil.zone), applies))
 
             logger.info('{} jobs prepared for {}:'.format(len(future), shelly))
             for job in future:

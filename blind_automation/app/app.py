@@ -8,7 +8,7 @@ from blind_automation.building import building
 from blind_automation.jobs.jobmanager import manager
 from blind_automation.pvlibrary.api import PVLibAPI
 from blind_automation.settings import settings
-from blind_automation.util import global_date
+from blind_automation.util import dateutil
 from blind_automation.weather.service import WeatherService
 from data.mock.api import SunAPIMock
 
@@ -31,7 +31,7 @@ class App:
         self.__attach_observers()
         while True:
             self._weather_service.start()
-            self._api.fetch_sundata(global_date.date.next())
+            self._api.fetch_sundata(dateutil.date.next())
             manager.prepare().run()
             self._weather_service.stop()
 
