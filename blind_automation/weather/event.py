@@ -6,13 +6,13 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Any, Optional
 
-from blind_automation.building.interface import Shutter
-from blind_automation.building.state import State
-from blind_automation.event.event import Event
-from blind_automation.jobs import task
-from blind_automation.jobs.task import Task, Open, Close, Tilt
-from blind_automation.weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
-from blind_automation.weather.weather import Weather, Sun
+from ..building.interface import Shutter
+from ..building.state import State
+from ..event.event import Event
+from ..jobs import task
+from ..jobs.task import Task, Open, Close, Tilt
+from .enum import WeatherConditionEnum, WeatherSubConditionEnum
+from .weather import Weather, Sun
 
 logger = logging.getLogger(__name__)
 

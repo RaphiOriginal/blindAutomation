@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from blind_automation.building.blind.blind import Blind
-from blind_automation.device.device import Device
+from .blind.blind import Blind
+from ..device.device import Device
 
 
 class Wall:

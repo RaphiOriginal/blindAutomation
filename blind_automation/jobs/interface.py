@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Optional
 
-from blind_automation.jobs.task import Task
+from .task import Task
 
 
 class Trigger(ABC):

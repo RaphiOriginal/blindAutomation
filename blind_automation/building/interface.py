@@ -2,9 +2,9 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from blind_automation.building.state import State
-from blind_automation.event.event import Event, EventBlocker
-from blind_automation.observable.observable import Observer
+from .state import State
+from ..event.event import Event, EventBlocker
+from ..observable.observable import Observer
 
 
 class Shutter(Observer, ABC):

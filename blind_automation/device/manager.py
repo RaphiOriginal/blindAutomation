@@ -4,7 +4,7 @@ import time
 
 from zeroconf import ServiceBrowser, Zeroconf
 
-from blind_automation.device.device import Device
+from .device import Device
 
 logger = logging.getLogger(__name__)
 

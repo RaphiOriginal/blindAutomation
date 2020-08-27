@@ -3,14 +3,14 @@ import logging
 from threading import Thread, Event
 from typing import Optional
 
-from blind_automation.building.interface import Shutter
-from blind_automation.event.trigger import Trigger
-from blind_automation.observable.observable import Subject, Observer
-from blind_automation.settings import settings
-from blind_automation.weather import event
-from blind_automation.weather.api import OpenWeatherAPI
-from blind_automation.weather.interface import WeatherAPI
-from blind_automation.weather.weather import Weather
+from ..building.interface import Shutter
+from ..event.trigger import Trigger
+from ..observable.observable import Subject, Observer
+from ..settings import settings
+from . import event
+from .api import OpenWeatherAPI
+from .interface import WeatherAPI
+from .weather import Weather
 
 logger = logging.getLogger(__name__)
 

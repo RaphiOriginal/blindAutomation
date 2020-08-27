@@ -1,6 +1,6 @@
 from typing import Optional, TypeVar
 
-from blind_automation.event.event import EventBlocker
+from .event import EventBlocker
 
 T = TypeVar('T')
 

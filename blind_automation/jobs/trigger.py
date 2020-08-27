@@ -3,14 +3,14 @@ import logging
 from datetime import datetime, time, timedelta
 from typing import Optional
 
-from blind_automation.building.interface import Shutter
-from blind_automation.jobs import task
-from blind_automation.jobs.interface import Trigger
-from blind_automation.jobs.job import Job
-from blind_automation.jobs.jobmanager import JobManager
-from blind_automation.jobs.task import Task, Open, Tilt, Close
-from blind_automation.sun.sundata import Sundata
-from blind_automation.util import dayutil, dateutil
+from ..building.interface import Shutter
+from . import task
+from .interface import Trigger
+from .job import Job
+from .jobmanager import JobManager
+from .task import Task, Open, Tilt, Close
+from ..sun.sundata import Sundata
+from ..util import dayutil, dateutil
 
 logger = logging.getLogger(__name__)
 

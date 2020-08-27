@@ -4,7 +4,7 @@ from time import timezone
 
 from dateutil.tz import tz
 
-from blind_automation.settings import settings
+from ..settings import settings
 
 
 class GlobalDate:

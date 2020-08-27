@@ -2,7 +2,7 @@
 import logging
 import time
 
-from blind_automation.jobs.task import Task
+from .task import Task
 
 logger = logging.getLogger(__name__)
 

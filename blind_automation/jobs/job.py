@@ -2,8 +2,8 @@
 from datetime import datetime
 from sched import scheduler
 
-from blind_automation.building.interface import Shutter
-from blind_automation.jobs.worker import batch
+from ..building.interface import Shutter
+from .worker import batch
 
 
 class Job:

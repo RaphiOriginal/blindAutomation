@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Optional
 
-from blind_automation.weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
+from .enum import WeatherConditionEnum, WeatherSubConditionEnum
 
 
 class ConditionData(ABC):

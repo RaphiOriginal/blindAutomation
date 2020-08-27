@@ -3,9 +3,9 @@ import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
 
-from blind_automation.observable.observable import Observer
-from blind_automation.observable.observable import Subject
-from blind_automation.sun.sundata import Sundata
+from ..observable.observable import Observer
+from ..observable.observable import Subject
+from ..sun.sundata import Sundata
 
 logger = logging.getLogger(__name__)
 

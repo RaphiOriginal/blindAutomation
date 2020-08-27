@@ -5,9 +5,9 @@ from typing import Optional
 
 import requests
 
-from blind_automation.settings.coordinates import Coordinates
-from blind_automation.weather.interface import WeatherAPI
-from blind_automation.weather.weather import Weather
+from ..settings.coordinates import Coordinates
+from .interface import WeatherAPI
+from .weather import Weather
 
 logger = logging.getLogger(__name__)
 

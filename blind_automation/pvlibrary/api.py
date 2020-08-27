@@ -6,12 +6,12 @@ from datetime import datetime
 import pandas
 import pvlib
 
-from blind_automation.api.api import ObservableSunAPI
-from blind_automation.settings import settings
-from blind_automation.sun.azimuth import Azimuth
-from blind_automation.sun.elevation import Elevation
-from blind_automation.sun.position import Position
-from blind_automation.sun.sundata import Sundata
+from ..api.api import ObservableSunAPI
+from ..settings import settings
+from ..sun.azimuth import Azimuth
+from ..sun.elevation import Elevation
+from ..sun.position import Position
+from ..sun.sundata import Sundata
 
 logger = logging.getLogger(__name__)
 

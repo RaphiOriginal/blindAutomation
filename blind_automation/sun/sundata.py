@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 from datetime import datetime
 
-from blind_automation.sun.azimuth import Azimuth
-from blind_automation.sun.elevation import Elevation
-from blind_automation.sun.position import Position
+from .azimuth import Azimuth
+from .elevation import Elevation
+from .position import Position
 
 
 class Sundata:

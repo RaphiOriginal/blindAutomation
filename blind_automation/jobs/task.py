@@ -5,9 +5,9 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Optional, Union
 
-from blind_automation.building.interface import Shutter
-from blind_automation.building.state import State
-from blind_automation.event.blocker import Blocker
+from ..building.interface import Shutter
+from ..building.state import State
+from ..event.blocker import Blocker
 
 logger = logging.getLogger(__name__)
 

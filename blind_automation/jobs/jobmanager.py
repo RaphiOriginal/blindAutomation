@@ -5,8 +5,8 @@ import time
 from collections import defaultdict
 from datetime import datetime, timedelta
 
-from blind_automation.util import dateutil
-from blind_automation.jobs.job import Job
+from ..util import dateutil
+from .job import Job
 
 logger = logging.getLogger(__name__)
 

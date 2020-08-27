@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from blind_automation.building.state import State
-from blind_automation.device.device import Device
+from ..building.state import State
+from .device import Device
 
 
 class Shelly(Device):

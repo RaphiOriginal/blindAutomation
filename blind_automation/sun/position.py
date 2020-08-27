@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 from datetime import datetime
 
-from blind_automation.sun.azimuth import Azimuth
-from blind_automation.sun.elevation import Elevation
+from .azimuth import Azimuth
+from .elevation import Elevation
 
 
 class Position:

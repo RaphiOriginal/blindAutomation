@@ -4,9 +4,9 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 
-from blind_automation.util import dateutil
-from blind_automation.weather.enum import WeatherConditionEnum, WeatherSubConditionEnum
-from blind_automation.weather.interface import ConditionData, WeatherData, TemperatureData, AtmosphereData, WindData, CloudsData, SunData
+from ..util import dateutil
+from .enum import WeatherConditionEnum, WeatherSubConditionEnum
+from .interface import ConditionData, WeatherData, TemperatureData, AtmosphereData, WindData, CloudsData, SunData
 
 logger = logging.getLogger(__name__)
 
