@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import unittest
 
-from jobs import worker
-from jobs.task import BaseTask
+from blind_automation.jobs import worker
+from blind_automation.jobs.task import BaseTask
 
 
 class WorkerTest(unittest.TestCase):

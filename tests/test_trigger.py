@@ -4,16 +4,16 @@ from datetime import datetime
 
 from dateutil import parser
 
-import global_date
-from building.blind import Blind
-from jobs import trigger, task
-from jobs.task import Tilt, Close, Open
-from jobs.trigger import SunriseTrigger, SunsetTrigger, SunInTrigger, SunOutTrigger, TimeTrigger, AzimuthTrigger, \
+from blind_automation.util import global_date
+from blind_automation.building.blind import Blind
+from blind_automation.jobs import trigger
+from blind_automation.jobs.task import Tilt, Close, Open
+from blind_automation.jobs.trigger import SunriseTrigger, SunsetTrigger, SunInTrigger, SunOutTrigger, TimeTrigger, AzimuthTrigger, \
     ElevationTrigger, PositionTrigger
-from sun.azimuth import Azimuth
-from sun.elevation import Elevation
-from sun.position import Position
-from sun.sundata import Sundata
+from blind_automation.sun.azimuth import Azimuth
+from blind_automation.sun.elevation import Elevation
+from blind_automation.sun.position import Position
+from blind_automation.sun.sundata import Sundata
 
 
 class TriggerTest(unittest.TestCase):

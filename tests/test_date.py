@@ -4,7 +4,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta, MO, TU, WE, TH, FR, SA, SU
 
-from util import date
+from blind_automation.util import date
 
 
 class DateTestCase(unittest.TestCase):

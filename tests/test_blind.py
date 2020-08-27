@@ -1,7 +1,7 @@
 import unittest
 
-from building.blind import Blind
-from building.state import State
+from blind_automation.building.blind import Blind
+from blind_automation.building.state import State
 from tests.mock.device import DeviceMock
 
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 from datetime import datetime, timedelta
 
-import global_date
-from api.api import ObservableSunAPI
-from sun.azimuth import Azimuth
-from sun.elevation import Elevation
-from sun.position import Position
-from sun.sundata import Sundata
+from blind_automation.util import global_date
+from blind_automation.api.api import ObservableSunAPI
+from blind_automation.sun.azimuth import Azimuth
+from blind_automation.sun.elevation import Elevation
+from blind_automation.sun.position import Position
+from blind_automation.sun.sundata import Sundata
 
 
 class SunAPIMock(ObservableSunAPI):

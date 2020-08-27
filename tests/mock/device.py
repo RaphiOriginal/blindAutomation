@@ -1,8 +1,8 @@
 from typing import Optional
 
-from building.blind_state import BlindState, Direction
-from building.state import State
-from device.device import Device
+from blind_automation.building.blind_state import BlindState, Direction
+from blind_automation.building.state import State
+from blind_automation.device.device import Device
 
 
 class DeviceMock(Device):
