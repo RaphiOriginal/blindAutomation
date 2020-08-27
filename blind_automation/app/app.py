@@ -6,7 +6,7 @@ from logging import getLogger, DEBUG, INFO, WARNING, ERROR, CRITICAL, FATAL
 from blind_automation.api.api import ObservableSunAPI
 from blind_automation.building import building
 from blind_automation.jobs.jobmanager import manager
-from blind_automation.pvlibrary.pvlib_api import PVLibAPI
+from blind_automation.pvlibrary.api import PVLibAPI
 from blind_automation.settings import settings
 from blind_automation.util import global_date
 from blind_automation.weather.service import WeatherService
