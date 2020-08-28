@@ -278,7 +278,7 @@ events:
 * Default task: `OPEN`
 * Triggers when its raining
 * Available intensities are: `MODERATE`, `VERY_HEAVY`, `EXTREME`, `FREEZING`, `LIGHT_SHOWER`, `HEAVY_SHOWER`, `RAGGED_SHOWER`, `SHOWER`, `HEAVY`, `LIGHT`
-* Default set intensities are: `HEAVY`, `VERY_HEAVY`, `EXTREME`, `SHOWER`, `HEAVY_SHOWER`, `RAGGED_SHOWER`
+* Default set intensities are: `MODERATE`, `HEAVY`, `VERY_HEAVY`, `EXTREME`, `SHOWER`, `HEAVY_SHOWER`, `RAGGED_SHOWER`
 * Optional fields:
   * `night:`
   * `task:`

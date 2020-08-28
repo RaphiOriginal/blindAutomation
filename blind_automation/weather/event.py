@@ -178,7 +178,8 @@ class RainEvent(WeatherEvent):
 
     @property
     def __default(self) -> [WeatherSubConditionEnum]:
-        return [WeatherSubConditionEnum.HEAVY,
+        return [WeatherSubConditionEnum.MODERATE,
+                WeatherSubConditionEnum.HEAVY,
                 WeatherSubConditionEnum.VERY_HEAVY,
                 WeatherSubConditionEnum.EXTREME,
                 WeatherSubConditionEnum.SHOWER,
