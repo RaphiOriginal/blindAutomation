@@ -38,7 +38,7 @@ class Task(ABC):
         pass
 
     @abstractmethod
-    def get(self, blind: Shutter) -> ([Task],):
+    def get(self, blind: Shutter) -> [Task]:
         """
         Combines blinds with task necessary before calling do()
         :param blind: Blind which the task belongs to
@@ -84,9 +84,9 @@ class BaseTask(Task):
     def do(self) -> bool:
         pass
 
-    def get(self, blind: Shutter) -> ([Task],):
+    def get(self, blind: Shutter) -> [Task]:
         self.blind = blind
-        return ([],)
+        return []
 
     def _target(self):
         return self.__target
@@ -117,9 +117,9 @@ class Close(BaseTask):
             return False
         return True
 
-    def get(self, blind: Shutter) -> ([Task],):
+    def get(self, blind: Shutter) -> [Task]:
         self.blind = blind
-        return ([Close(blind)],)
+        return [Close(blind)]
 
     @staticmethod
     def type() -> str:
@@ -144,8 +144,8 @@ class Open(BaseTask):
             return False
         return True
 
-    def get(self, blind: Shutter) -> ([Task],):
-        return ([Open(blind)],)
+    def get(self, blind: Shutter) -> [Task]:
+        return [Open(blind)]
 
     @staticmethod
     def type() -> str:
@@ -201,8 +201,8 @@ class Tilt(BaseTask):
             return False
         return True
 
-    def get(self, blind: Shutter) -> ([Task],):
-        return ([PreTilt(blind), Tilt(blind, self.__degree)],)
+    def get(self, blind: Shutter) -> [Task]:
+        return [PreTilt(blind), Tilt(blind, self.__degree)]
 
     @staticmethod
     def type() -> str:

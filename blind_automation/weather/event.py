@@ -43,7 +43,7 @@ class WeatherEvent(Event, ABC):
                 self._set_previous(on)
                 self.activate()
                 task = self._task.get(on)
-                self._execute(task[0])
+                self._execute(task)
                 on.blocker.block()
             else:
                 logger.info('On {} Event {} deactivated.'.format(on.name, self.type()))
@@ -52,7 +52,7 @@ class WeatherEvent(Event, ABC):
                 if self.undo(on.blocker.last):
                     logger.info('Reset to intended state {}'.format(self.undo()))
                     task = self.undo().get(on)
-                    self._execute(task[0])
+                    self._execute(task)
         return False
 
     def __applies(self, weather: Weather, on: Shutter) -> bool:
