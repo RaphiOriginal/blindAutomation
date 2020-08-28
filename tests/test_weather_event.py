@@ -44,7 +44,7 @@ class WeatherEventCase(unittest.TestCase):
     def test_rain_not_applying(self):
         # Setup
         e = RainEvent()
-        b, trigger = self.__prepare([e], 501)
+        b, trigger = self.__prepare([e], 500)
         # Test
         b.update(trigger)
         # Check
