@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 
 class Device(ABC):
     url: str = None
-    __active = False
+    __active: bool = False
+    __queue: [str] = []
 
     @abstractmethod
     def close(self) -> bool:
@@ -61,6 +62,9 @@ class Device(ABC):
     def activate(self):
         logger.info('Activating: {}'.format(self))
         self.__active = True
+        if len(self.__queue) > 0:
+            self._send(self.__queue.pop())
+            self.__queue = []
 
     def deactivate(self):
         logger.info('Deactivating: {}'.format(self))
@@ -70,9 +74,11 @@ class Device(ABC):
     def active(self) -> bool:
         return self.__active
 
-    def _send(self, url) -> bool:
+    def _send(self, path) -> bool:
+        url = '{}/{}'.format(self.url, path)
         if not self.__active:
             logger.info('Device not active')
+            self.__queue.append(path)
             return False
         order = requests.get(url)
         if order.status_code != 200:
@@ -82,10 +88,10 @@ class Device(ABC):
             logger.info('Task {} send: {}'.format(url, order.text))
             return True
 
-    def _fetch_stats(self, url: str) -> State:
+    def _fetch_stats(self, path: str) -> State:
         if not self.active:
             return State.UNKNOWN
-        return fetch_blindstate(url).state()
+        return fetch_blindstate('{}/{}'.format(self.url, path)).state()
 
     @abstractmethod
     def id(self) -> str:

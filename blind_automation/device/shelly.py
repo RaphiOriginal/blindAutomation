@@ -12,23 +12,20 @@ class Shelly(Device):
     def id(self) -> str:
         return self.__id
 
-    def get_status(self):
-        return '{}/status'.format(self.url)
-
     def stats(self) -> State:
-        return self._fetch_stats('{}/roller/0'.format(self.url))
+        return self._fetch_stats('roller/0')
 
     def move(self, pos: int) -> bool:
-        return self._send('{}/roller/0?go=to_pos&roller_pos={}'.format(self.url, pos))
+        return self._send('roller/0?go=to_pos&roller_pos={}'.format(pos))
 
     def tilt(self, direction: str, time: float) -> bool:
-        return self._send('{}/roller/0?go={}&duration={}'.format(self.url, direction, time))
+        return self._send('roller/0?go={}&duration={}'.format(direction, time))
 
     def open(self) -> bool:
-        return self._send('{}/roller/0?go=open'.format(self.url))
+        return self._send('roller/0?go=open')
 
     def close(self) -> bool:
-        return self._send('{}/roller/0?go=close'.format(self.url))
+        return self._send('roller/0?go=close')
 
     def __repr__(self):
         return 'Shelly: { id: %s, ip: %s}' % (self.__id, self.url)
