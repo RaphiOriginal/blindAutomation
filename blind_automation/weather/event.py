@@ -39,19 +39,20 @@ class WeatherEvent(Event, ABC):
     def do(self, on: Shutter):
         if isinstance(on, Shutter):
             if not self.active:
-                logger.info('On {} Event {} activated'.format(on.name, self))
+                logger.info('On {} Event {} activated.'.format(on.name, self.type()))
                 self._set_previous(on)
                 self.activate()
-                for task in self._task.get(on):
-                    self._execute(task[0])
+                task = self._task.get(on)
+                self._execute(task[0])
                 on.blocker.block()
             else:
-                logger.info('On {} Event {} deactivated'.format(on.name, self))
+                logger.info('On {} Event {} deactivated.'.format(on.name, self.type()))
                 self.deactivate()
                 on.blocker.unblock()
                 if self.undo(on.blocker.last):
-                    for task in self.undo().get(on):
-                        self._execute(task[0])
+                    logger.info('Reset to intended state {}'.format(self.undo()))
+                    task = self.undo().get(on)
+                    self._execute(task[0])
         return False
 
     def __applies(self, weather: Weather, on: Shutter) -> bool:
