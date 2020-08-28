@@ -109,9 +109,10 @@ class WeatherEvent(Event, ABC):
         return self.__active
 
     @staticmethod
-    def _execute(task: Task):
-        thread = Thread(target=task.do, daemon=True)
-        thread.start()
+    def _execute(tasks: [Task]):
+        for task in tasks:
+            thread = Thread(target=task.do, daemon=True)
+            thread.start()
 
     @staticmethod
     @abstractmethod
