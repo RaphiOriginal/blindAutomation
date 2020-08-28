@@ -50,7 +50,7 @@ class WeatherService(Subject, Trigger):
         self.__event.set()
         if self.__thread and self.__thread.is_alive():
             self.__thread.join()
-        logger.info('Service stopped')
+        logger.debug('Service stopped')
 
     def start(self):
         logger.debug('Starting service')
@@ -58,7 +58,7 @@ class WeatherService(Subject, Trigger):
         self.__event.clear()
         self.__thread = Thread(target=self.run, daemon=True)
         self.__thread.start()
-        logger.info('Service started')
+        logger.debug('Service started')
 
     def run(self):
         while not self.__event.is_set():
