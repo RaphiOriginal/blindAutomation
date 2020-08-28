@@ -32,7 +32,7 @@ class WeatherService(Subject, Trigger):
         logger.debug('Adding observer {}'.format(observer))
         if isinstance(observer, Shutter):
             event.apply_weather_events(observer)
-            logger.info('Adding Events to {}: {}'.format(observer.name, observer.events))
+            logger.info('Adding Events to {}: {}'.format(observer.name, list(map(lambda e: e.type(), observer.events))))
         self.__observers.append(observer)
 
     def detach(self, observer: Observer):

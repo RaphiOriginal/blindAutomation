@@ -27,4 +27,5 @@ class Job:
         return self.__applies
 
     def __repr__(self):
-        return 'Job: { trigger: %s, blind: %s }' % (self.__trigger, self.__blind)
+        return 'Job: { trigger: %s, blind: %s at: %s}' % \
+               (self.__trigger.type(), self.__blind.name, self.__trigger.time())
