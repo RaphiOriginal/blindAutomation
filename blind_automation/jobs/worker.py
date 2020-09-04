@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import logging
 import time
+from threading import Thread
 
 from .task import Task
 
@@ -17,6 +18,11 @@ def work(task: Task):
         logger.info('Task {} already done'.format(task))
 
 
-def batch(tasks: [Task]):
+def execute(tasks: [Task]):
     for task in tasks:
         work(task)
+
+
+def batch(tasks: [Task]):
+    thread = Thread(target=execute, args=[tasks], daemon=True)
+    thread.start()
