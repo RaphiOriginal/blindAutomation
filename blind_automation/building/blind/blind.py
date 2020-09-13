@@ -50,7 +50,7 @@ class Blind(Shutter):
             offset = target - self.__degree
             duration = abs(self.__duration / 90 * offset)
             self.__degree = target
-            if offset > 0:
+            if offset >= 0:
                 self.device.tilt('close', duration)
             else:
                 self.device.tilt('open', duration)
