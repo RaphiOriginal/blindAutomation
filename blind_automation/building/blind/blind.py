@@ -125,5 +125,5 @@ class Blind(Shutter):
         return self._blocker is None or not self._blocker.blocking
 
     def __repr__(self):
-        return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, events: %s, triggers: %s, state: %s, event_config: %s}' \
-               % (self.name, self.sun_in, self.sun_out, self.device, self._events, self.triggers, self.state, self._event_config)
+        return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, events: %s, triggers: %s, state: %s, degree: %s, event_config: %s}' \
+               % (self.name, self.sun_in, self.sun_out, self.device, self._events, self.triggers, self.state, self.__degree, self._event_config)
