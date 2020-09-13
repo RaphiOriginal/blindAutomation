@@ -258,6 +258,7 @@ events:
       direction: (optional, WIND only) define a range in degree in which direction the wind should blow to open the blind
         from: degree starting the wind direction range
         to: degree stopping the wind direction range
+      at: (optional) list of days or range or placeholders to define at which days the trigger should be applied. Default is every day!`
 ```
 
 ##### CLOUDY
@@ -268,12 +269,14 @@ events:
   * `night:`
   * `task:`
   * `coverage:`
+  * `at:`
 ##### CLEAR
 * Default task: `OPEN`
 * Triggers when the sky is clear
 * Optional fields:
   * `night:`
   * `task:`
+  * `at:`
 ##### RAIN
 * Default task: `OPEN`
 * Triggers when its raining
@@ -283,6 +286,7 @@ events:
   * `night:`
   * `task:`
   * `intensity:`
+  * `at:`
 ##### STORM
 * Default task: `OPEN`
 * Triggers when there is a storm
@@ -292,6 +296,7 @@ events:
   * `night:`
   * `task:`
   * `intensity:`
+  * `at:`
 ##### DRIZZLE
 * Default task: `OPEN`
 * Triggers when there is drizzle
@@ -301,6 +306,7 @@ events:
   * `night:`
   * `task:`
   * `intensity:`
+  * `at:`
 ##### SNOW
 * Default task: `OPEN`
 * Triggers when it is snowing
@@ -310,6 +316,7 @@ events:
   * `night:`
   * `task:`
   * `intensity:`
+  * `at:`
 ##### SPECIAL
 * Default task: `OPEN`
 * Triggers when there appears one of the defined events
@@ -319,6 +326,7 @@ events:
   * `night:`
   * `task:`
   * `events:`
+  * `at:`
 ##### WIND
 * Default task: `OPEN`
 * Triggers when the wind hits a certain speed and if configured a specific direction
@@ -328,6 +336,7 @@ events:
   * `night:`
   * `task:`
   * `direction:`
+  * `at:`
 #### Event properties
 * `night:` Property to turn on or off the night mode.
   * Possible values are `True` or `False`. Default for all events is `True`.
@@ -345,6 +354,8 @@ events:
   * `from:` Value between `0`° and `360`°.
   * `to:` Value between `0`° and `360`°.
   * the `from` property also can be lower than the `to` property then the range goes from `to`° over `0`° to `from`°.
+* `at:` List of days of week
+  * List Possible values are `MO`, `TU`, `WE`, `TH`, `FR`, `SA`, `SU`, `WEEKEND`, `WORKINGDAY` or a range between days e.g. `MO-TH`. The different styles can be mixed, so you can have days and ranges in the list.
 #### Examples
 ```
 ...
@@ -370,6 +381,8 @@ events:
       direction:
         from: 180.4
         to: 200
+      at:
+        - WEEKEND
 ...
 ```
 ## Running and Installation 🏃🏗
