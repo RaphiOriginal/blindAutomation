@@ -45,6 +45,8 @@ class Blind(Shutter):
         return self._blocker
 
     def tilt(self, degree: int) -> Optional[Blocker]:
+        if self.state == State.UNKNOWN:
+            self.stats()
         if self.__not_blocking():
             target = min(max(degree, 0), 90)
             offset = target - self.__degree
@@ -58,6 +60,12 @@ class Blind(Shutter):
 
     def stats(self) -> State:
         self.state = self.device.stats()
+        if State.CLOSED == self.state:
+            self.__degree = 90
+        if State.OPEN == self.state:
+            self.__degree = 0
+        if State.TILT == self.state and self.__degree == 90:
+            self.__degree = 0
         return self.state
 
     def override_tilt_duration(self, duration):
@@ -125,5 +133,7 @@ class Blind(Shutter):
         return self._blocker is None or not self._blocker.blocking
 
     def __repr__(self):
-        return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, events: %s, triggers: %s, state: %s, degree: %s, event_config: %s}' \
-               % (self.name, self.sun_in, self.sun_out, self.device, self._events, self.triggers, self.state, self.__degree, self._event_config)
+        return 'Blind: { name: %s, sun_in: %s, sun_out: %s, device: %s, events: %s, triggers: %s, state: %s, ' \
+               'degree: %s, event_config: %s}' \
+               % (self.name, self.sun_in, self.sun_out, self.device, self._events, self.triggers, self.state,
+                  self.__degree, self._event_config)

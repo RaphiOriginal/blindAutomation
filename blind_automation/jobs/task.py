@@ -168,7 +168,6 @@ class PreTilt(BaseTask):
         if blocker is not None and blocker.blocking:
             blocker.update(self)
             return False
-        self.blind.overwrite_degree(90)
         return True
 
     @staticmethod
