@@ -23,7 +23,7 @@ class BlindDegreeCase(unittest.TestCase):
         self.assertEqual(State.OPEN, mock.stats())
         blind.tilt(0)
         self.assertEqual(0, mock.time)
-        self.assertEqual('open', mock.direction)
+        self.assertEqual('close', mock.direction)
 
     def test_tilt_calculation_close(self):
         mock = DeviceMock('👨‍🏫')
@@ -51,7 +51,7 @@ class BlindDegreeCase(unittest.TestCase):
         # starting from 90
         blind.tilt(90)
         self.assertEqual(0, mock.time)
-        self.assertEqual('open', mock.direction)
+        self.assertEqual('close', mock.direction)
 
     def test_tilt_calculation_30_60(self):
         mock = DeviceMock('👨‍🏫')
