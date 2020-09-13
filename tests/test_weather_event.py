@@ -379,6 +379,26 @@ class WeatherEventBuilder(unittest.TestCase):
         self.assertEqual(WeatherSubConditionEnum.SCATTERED, result._sub[0])
         self.assertEqual(WeatherSubConditionEnum.OVERCAST, result._sub[1])
 
+    def test_day_extraction(self):
+        events = [{'RAIN': {'at': ['WEEKEND']}}]
+        b = blind(events)
+        event.apply_weather_events(b)
+        result = b.events
+        self.assertEqual(1, len(result))
+        e = result[0]
+        self.assertEqual(2, len(e._on))
+        for day in e._on:
+            self.assertTrue(day in ['SU', 'SA'], 'Day {} not in list {}'.format(day, e._on))
+
+    def test_day_extraction_default(self):
+        events = ['RAIN']
+        b = blind(events)
+        event.apply_weather_events(b)
+        result = b.events
+        self.assertEqual(1, len(result))
+        e = result[0]
+        self.assertEqual(7, len(e._on))
+
 
 class WeatherBlockerTestCase(unittest.TestCase):
     def test_blocking(self):
