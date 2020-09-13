@@ -98,42 +98,49 @@ CLEAR:
   CLEAR:
     night: bool(required=False)
     task: include('task', required=False)
+    at: list(include('day'), required=False)
 
 CLOUDY:
   CLOUDY:
     night: bool(required=False)
     task: include('task', required=False)
     coverage: int(min=0, max=100, required=False)
+    at: list(include('day'), required=False)
 
 RAIN:
   RAIN:
     night: bool(required=False)
     task: include('task', required=False)
     intensity: list(enum('MODERATE', 'VERY_HEAVY', 'EXTREME', 'FREEZING', 'LIGHT_SHOWER', 'HEAVY_SHOWER', 'RAGGED_SHOWER', 'SHOWER', 'HEAVY', 'LIGHT'), required=False)
+    at: list(include('day'), required=False)
 
 STORM:
   STORM:
     night: bool(required=False)
     task: include('task', required=False)
     intensity: list(enum('LIGHT_RAIN', 'RAIN', 'HEAVY_RAIN', 'LIGHT', 'NORMAL', 'HEAVY', 'RAGGED', 'LIGHT_DRIZZLE', 'DRIZZLE', 'HEAVY_DRIZZLE'), required=False)
+    at: list(include('day'), required=False)
 
 DRIZZLE:
   DRIZZLE:
     night: bool(required=False)
     task: include('task', required=False)
     intensity: list(enum('LIGHT_RAIN', 'RAIN', 'LIGHT', 'NORMAL', 'HEAVY', 'HEAVY_RAIN', 'SHOWER_RAIN', 'HEAVY_SHOWER_RAIN', 'SHOWER'), required=False)
+    at: list(include('day'), required=False)
 
 SNOW:
   SNOW:
     night: bool(required=False)
     task: include('task', required=False)
     intensity: list(enum('LIGHT_RAIN', 'RAIN', 'LIGHT', 'NORMAL', 'HEAVY', 'SHOWER', 'LIGHT_SHOWER', 'HEAVY_SHOWER', 'SLEET', 'LIGHT_SHOWER_SLEET', 'SHOWER_SLEET'), required=False)
+    at: list(include('day'), required=False)
 
 SPECIAL:
   SPECIAL:
     night: bool(required=False)
     task: include('task', required=False)
     events: list(enum('MIST', 'SMOKE', 'HAZE', 'WHIRLS', 'FOG', 'SAND', 'DUST', 'ASH', 'SQUALL', 'TORNADO'), required=False)
+    at: list(include('day'), required=False)
 
 WIND:
   WIND:
@@ -141,6 +148,7 @@ WIND:
     task: include('task', required=False)
     speed: num(min=0, required=False)
     direction: include('wind_direction', required=False)
+    at: list(include('day'), required=False)
 
 wind_direction:
   from: num(min=0)

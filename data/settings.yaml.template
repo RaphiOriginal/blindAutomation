@@ -29,6 +29,8 @@ walls:
               - RAIN:
                   intensity:
                     - MODERATE
+                  at:
+                    - WEEKEND
               - STORM:
                   task: CLOSE
                   intensity:

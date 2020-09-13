@@ -7,13 +7,14 @@ from datetime import datetime
 from threading import Thread
 from typing import Any, Optional
 
+from .enum import WeatherConditionEnum, WeatherSubConditionEnum
+from .weather import Weather, Sun
 from ..building.interface import Shutter
 from ..building.state import State
 from ..event.event import Event
 from ..jobs import task
 from ..jobs.task import Task, Open, Close, Tilt
-from .enum import WeatherConditionEnum, WeatherSubConditionEnum
-from .weather import Weather, Sun
+from ..util import dayutil
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ class WeatherEvent(Event, ABC):
         self.__active: bool = False
         self._undo: Optional[Task] = None
         self._night_mode: bool = True
+        self._on: [str] = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU']
 
     def applies(self, trigger: Any, on: Shutter) -> bool:
         if trigger and isinstance(trigger, Weather):
@@ -56,7 +58,7 @@ class WeatherEvent(Event, ABC):
         return False
 
     def __applies(self, weather: Weather, on: Shutter) -> bool:
-        cond: bool = self._cond_match(weather)
+        cond: bool = self._cond_match(weather) and dayutil.applies(datetime.now(), self._on)
         if self.__active:
             return not cond or not self._allowed(weather)
         else:
@@ -92,6 +94,9 @@ class WeatherEvent(Event, ABC):
             self._undo = Close(blind)
         if previous == State.TILT:
             self._undo = Tilt(blind)
+
+    def set_days(self, on: [str]):
+        self._on = on
 
     def activate(self):
         self.__active = True
@@ -400,6 +405,7 @@ def set_optionals(event: WeatherEvent, eventdict: dict):
     set_night_mode(event, eventdict)
     set_percentage(event, eventdict)
     set_wind_properties(event, eventdict)
+    set_on(event, eventdict)
 
 
 def set_intensity(event: WeatherEvent, eventdict: dict):
@@ -446,5 +452,11 @@ def set_wind_properties(event: WeatherEvent, eventdict: dict):
         if 'speed' in eventdict.keys():
             speed = eventdict['speed']
             event.set_speed(speed)
+
+
+def set_on(event: WeatherEvent, eventdict: dict):
+    if 'at' in eventdict:
+        on = eventdict.get('at')
+        event.set_days(dayutil.parse_config(on))
 
 # endregion
