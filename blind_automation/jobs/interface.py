@@ -47,6 +47,15 @@ class Trigger(ABC):
         """
         pass
 
+    @property
+    @abstractmethod
+    def set_order(self, order: Optional[int]):
+        """
+        Sets order which is needed to merge triggers
+        :param order: int
+        """
+        pass
+
     @abstractmethod
     def applies(self) -> bool:
         """

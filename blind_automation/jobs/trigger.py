@@ -21,6 +21,7 @@ class TriggerBase(Trigger):
         self._time: Optional[datetime] = runtime
         self._offset: int = 0
         self._on: [str] = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU']
+        self._order: Optional[int] = None
 
     def task(self) -> Task:
         return self._task
@@ -36,6 +37,9 @@ class TriggerBase(Trigger):
 
     def set_days(self, on: [str]):
         self._on = on
+
+    def set_order(self, order: Optional[int]):
+        self._order = order
 
     def applies(self) -> bool:
         return dayutil.applies(self.time(), self._on)
@@ -54,9 +58,9 @@ class TriggerBase(Trigger):
     def create(trigger, **args) -> Trigger:
         raise NotImplementedError()
 
-    @staticmethod
-    def order() -> int:
-        return 1
+    @property
+    def order(self) -> Optional[int]:
+        return self._order
 
     def __repr__(self):
         return 'runtime: %s, task: %s, offset: %s, on: %s' % (self._time, self._task, self._offset, self._on)
@@ -90,10 +94,6 @@ class SunsetTrigger(TriggerBase):
     def create(trigger, **args) -> Trigger:
         return SunsetTrigger(args.get('sundata'))
 
-    @staticmethod
-    def order() -> int:
-        return 5
-
     def __repr__(self):
         return 'SunsetTrigger: { %s }' % (super(SunsetTrigger, self).__repr__())
 
@@ -110,10 +110,6 @@ class SunInTrigger(TriggerBase):
     def create(trigger, **args) -> Trigger:
         return SunInTrigger(args.get('sundata'), args.get('azimuth'))
 
-    @staticmethod
-    def order() -> int:
-        return 2
-
     def __repr__(self):
         return 'SunInTrigger: { %s }' % (super(SunInTrigger, self).__repr__())
 
@@ -129,10 +125,6 @@ class SunOutTrigger(TriggerBase):
     @staticmethod
     def create(trigger, **args) -> Trigger:
         return SunOutTrigger(args.get('sundata'), args.get('azimuth'))
-
-    @staticmethod
-    def order() -> int:
-        return 3
 
     def __repr__(self):
         return 'SunOutTrigger: { %s }' % (super(SunOutTrigger, self).__repr__())
@@ -198,10 +190,6 @@ class ElevationTrigger(TriggerBase):
             return rising.time
         return setting.time
 
-    @staticmethod
-    def order() -> int:
-        return 4
-
     def __repr__(self):
         return 'ElevationTrigger: { %s }' % (super(ElevationTrigger, self).__repr__())
 
@@ -246,40 +234,61 @@ def apply_triggers(manager: JobManager, sundata: Sundata, blind: Shutter):
 
 def extract_triggers(blind: Shutter, sundata: Sundata) -> [Trigger]:
     triggers: [Trigger] = []
+    order: Order = Order()
     for trigger in blind.triggers:
-        if build_trigger(trigger, SunriseTrigger.type(), SunriseTrigger.create, triggers, sundata=sundata) or \
-                build_trigger(trigger, SunsetTrigger.type(), SunsetTrigger.create, triggers, sundata=sundata) or \
-                build_trigger(trigger, SunInTrigger.type(), SunInTrigger.create, triggers, sundata=sundata,
+        next = order.next
+        if build_trigger(trigger, SunriseTrigger.type(), SunriseTrigger.create, triggers, next, sundata=sundata) or \
+                build_trigger(trigger, SunsetTrigger.type(), SunsetTrigger.create, triggers, next, sundata=sundata) or \
+                build_trigger(trigger, SunInTrigger.type(), SunInTrigger.create, triggers, next, sundata=sundata,
                               azimuth=blind.sun_in) or \
-                build_trigger(trigger, SunOutTrigger.type(), SunOutTrigger.create, triggers, sundata=sundata,
+                build_trigger(trigger, SunOutTrigger.type(), SunOutTrigger.create, triggers, next, sundata=sundata,
                               azimuth=blind.sun_out) or \
                 build_trigger(trigger, TimeTrigger.type(), TimeTrigger.create, triggers) or \
-                build_trigger(trigger, AzimuthTrigger.type(), AzimuthTrigger.create, triggers, sundata=sundata) or \
-                build_trigger(trigger, ElevationTrigger.type(), ElevationTrigger.create, triggers, sundata=sundata) or \
-                build_trigger(trigger, PositionTrigger.type(), PositionTrigger.create, triggers, sundata=sundata):
+                build_trigger(trigger, AzimuthTrigger.type(), AzimuthTrigger.create, triggers, next,
+                              sundata=sundata) or \
+                build_trigger(trigger, ElevationTrigger.type(), ElevationTrigger.create, triggers, next,
+                              sundata=sundata) or \
+                build_trigger(trigger, PositionTrigger.type(), PositionTrigger.create, triggers, next, sundata=sundata):
             continue
         logger.error('No Trigger for {} existing'.format(trigger))
 
     sort(triggers)
-    return triggers
+    return merge(triggers)
+
+
+def merge(triggers: [Trigger]) -> [Trigger]:
+    merged: [Trigger] = []
+    smallest: int = next(iter(map(lambda t: t.order, filter(lambda t: t.order is not None, triggers))), 0)
+    for trigger in triggers:
+        if trigger.order is None:
+            merged.append(trigger)
+            continue
+        if smallest <= trigger.order:
+            merged.append(trigger)
+            smallest = trigger.order
+
+    return merged
 
 
 def sort(triggers):
-    triggers.sort(key=lambda t: t.order())
+    triggers.sort(key=lambda t: t.order or 0)
     triggers.sort(key=lambda t: t.time())
 
 
-def build_trigger(triggerdata, type: str, constructor, triggers: [Trigger], **args) -> bool:
+def build_trigger(triggerdata, type: str, constructor, triggers: [Trigger], order: Optional[int] = None, **args) -> bool:
     logger.debug('parse: {} for {}'.format(triggers, type))
     if isinstance(triggerdata, str):
         if triggerdata == type:
-            triggers.append(constructor(trigger=triggerdata, **args))
+            trigger = constructor(trigger=triggerdata, **args)
+            trigger.set_order(order)
+            triggers.append(trigger)
             return True
         return False
     if type in triggerdata.keys():
         triggerdict = triggerdata.get(type)
         trigger = constructor(trigger=triggerdict, **args)
         set_optionals(trigger, triggerdict)
+        trigger.set_order(order)
         triggers.append(trigger)
         return True
     return False
@@ -308,3 +317,12 @@ def set_on(trigger: Trigger, triggerdict):
     if 'at' in triggerdict:
         on = triggerdict.get('at')
         trigger.set_days(dayutil.parse_config(on))
+
+
+class Order:
+    __counter = 0
+
+    @property
+    def next(self):
+        self.__counter += 1
+        return self.__counter
