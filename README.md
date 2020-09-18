@@ -104,7 +104,7 @@ task: TILT
 ```
 the default degree of `0`° will be applied.
 ### Triggers
-Triggers are either a list of strings where each trigger just uses its default values, or trigger objects. String and objects triggers can be mixed in the list.
+Triggers are either a list of strings where each trigger just uses its default values, or trigger objects. String and objects triggers can be mixed in the list. Order of the triggers is relevant. If the second trigger gets triggered before the first one, the first trigger will be skipped (Except Time triggers).
 Available triggers are:
 * `SUNRISE` Will open the blind at sunrise
 * `SUNSET` Will close the blind at sunset
