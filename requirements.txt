@@ -1,9 +1,9 @@
-requests~=2.24.0
+requests~=2.25.1
 python-dateutil~=2.8.1
-PyYAML~=5.3.1
-yamale~=3.0.2
-zeroconf~=0.28.0
-numpy~=1.19.1
-pyephem~=3.7.7.0
-pvlib~=0.7.2
-pandas~=1.1.0
+PyYAML~=5.4.1
+yamale~=3.0.4
+zeroconf~=0.29.0
+numpy~=1.20.2
+pyephem~=9.99
+pvlib~=0.8.1
+pandas~=1.2.4
